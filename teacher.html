@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Наши учителя — 2024/2025</title>
+<style>
+  /* ===== тема ===== */
+  *{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --bg:#121212;--bg-2:#1a1a1a;--bg-3:#1f1f1f;
+    --fg:#eeeeee;--muted:#aaaaaa;--line:#2b2b2b;
+    --accent:#f5c542;--shadow:0 10px 30px rgba(0,0,0,.6);
+  }
+  body{font-family:Segoe UI,Arial,sans-serif;background:var(--bg);color:var(--fg);line-height:1.7;overflow-x:hidden}
+
+  /* ===== hero ===== */
+  header.hero{
+    position:relative;text-align:center;padding:90px 20px;
+    background:#0f0f0f url("assets/images/hero-teachers.jpg") center/cover no-repeat; /* не обязательно иметь картинку */
+  }
+  header.hero::after{content:"";position:absolute;inset:0;background:rgba(0,0,0,.60)}
+  header .inner{position:relative;z-index:1;max-width:1100px;margin:0 auto}
+  .title{font-size:clamp(2rem,4.8vw,3rem);color:var(--accent);text-shadow:0 0 16px rgba(245,197,66,.7)}
+  .subtitle{margin-top:6px;color:#e7e7e7}
+  .back-btn{
+    display:inline-block;margin-top:16px;padding:10px 18px;background:var(--accent);
+    color:#121212;font-weight:600;text-decoration:none;border-radius:8px;transition:.25s
+  }
+  .back-btn:hover{background:#d4a52a;color:#fff}
+
+  /* ===== макет ===== */
+  main{max-width:1200px;margin:0 auto;padding:40px 20px;display:grid;grid-template-columns:280px 1fr;gap:22px}
+  @media (max-width:980px){main{grid-template-columns:1fr}}
+
+  /* боковая колонка */
+  .side{
+    position:sticky;top:16px;align-self:start;background:var(--bg-2);
+    border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);padding:16px
+  }
+  .side h3{color:var(--accent);font-size:1.05rem;margin-bottom:10px}
+  .toc a{display:block;color:#ddd;text-decoration:none;padding:8px;border-radius:8px}
+  .toc a:hover{background:#242424}
+  .meta{color:var(--muted);font-size:.9rem;margin-top:10px}
+
+  /* поиск */
+  .search{display:flex;gap:8px;margin-top:10px}
+  .search input{
+    flex:1;background:#1b1b1b;border:1px solid var(--line);border-radius:10px;color:#eee;
+    padding:10px 12px;outline:none
+  }
+
+  /* ===== секции ===== */
+  .section{background:var(--bg-3);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);padding:18px 18px 8px;margin-bottom:16px}
+  .section h2{color:var(--accent);font-size:1.25rem;margin-bottom:8px;display:flex;align-items:center;gap:8px}
+  .badge{background:#262626;border:1px solid var(--line);border-radius:999px;padding:2px 10px;color:#ccc;font-size:.85rem}
+
+  /* список учителей */
+  .teachers{columns:2;column-gap:22px;padding-left:0;list-style:none}
+  .teachers li{break-inside:avoid;margin:6px 0;padding:6px 10px;border-radius:8px}
+  .teachers li mark{background:transparent;color:var(--accent);font-weight:600}
+  @media (max-width:720px){.teachers{columns:1}}
+
+  /* — карточка-персона с фото — */
+  .teachers li.person{
+    display:flex;align-items:center;gap:12px;padding:10px;background:#1b1b1b;
+    border:1px solid var(--line);border-radius:12px
+  }
+  .teachers .avatar{
+    width:64px;height:64px;flex:0 0 64px;border-radius:50%;object-fit:cover;
+    border:2px solid var(--accent);box-shadow:0 6px 16px rgba(0,0,0,.5);background:#0f0f0f;
+    transition:transform .2s
+  }
+  .teachers li.person:hover .avatar{transform:scale(1.03)}
+  .teachers .info .name{font-weight:700;color:#eee;line-height:1.2}
+  .teachers .info .meta-line{margin-top:2px;color:#cfcfcf;font-size:.92rem}
+  .teachers .chip{
+    display:inline-block;padding:2px 8px;margin-right:8px;background:#262626;color:#e9e9e9;
+    border:1px solid var(--line);border-radius:999px;font-size:.85rem
+  }
+
+  /* ===== плавные появления: безопасный режим ===== */
+  .fade{opacity:1;transform:none;transition:all .7s ease}  /* без JS всё видно */
+  .reveal .fade{opacity:0;transform:translateY(28px)}      /* если JS включён — анимируем */
+  .reveal .fade.show{opacity:1;transform:translateY(0)}
+
+  /* футер */
+  footer{background:#0d0d0d;color:#8a8a8a;text-align:center;padding:26px 20px;margin-top:24px}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="inner">
+    <h1 class="title">Наши учителя</h1>
+    <p class="subtitle">2024/2025 учебный год • (на 01.09.2025)</p>
+    <a href="index.html" class="back-btn">← Вернуться на главную</a>
+  </div>
+</header>
+
+<main id="content">
+  <!-- Сайдбар -->
+  <aside class="side fade">
+    <h3>Поиск</h3>
+    <div class="search">
+      <input id="q" type="search" placeholder="Фамилия или предмет…" aria-label="Поиск"/>
+    </div>
+
+    <h3 style="margin-top:14px">Разделы</h3>
+    <nav class="toc">
+      <a href="#bel-lang">Белорусский язык и литература</a>
+      <a href="#rus-lang">Русский язык и литература</a>
+      <a href="#math">Математика</a>
+      <a href="#foreign">Иностранные языки</a>
+      <a href="#physics">Физика</a>
+      <a href="#history">История и обществоведение</a>
+      <a href="#geography">География</a>
+      <a href="#chemistry">Химия</a>
+      <a href="#biology">Биология</a>
+      <a href="#pe">Физическая культура и здоровье</a>
+      <a href="#labor">Трудовое обучение</a>
+      <a href="#informatics">Информатика</a>
+      <a href="#primary">Начальные классы</a>
+      <a href="#social">Педагоги социальные</a>
+      <a href="#psych">Педагоги-психологи</a>
+      <a href="#organizers">Педагоги-организаторы</a>
+      <a href="#vpp">Руководитель по ВПП</a>
+      <a href="#defect">Учителя-дефектологи</a>
+      <a href="#music">Учитель музыки</a>
+      <a href="#gpd">Воспитатели ГПД</a>
+    </nav>
+
+    <div class="meta">Совет: введите часть фамилии или предмет — список отфильтруется.</div>
+  </aside>
+
+  <!-- Контент -->
+  <div>
+
+    <!-- Белорусский -->
+    <section id="bel-lang" class="section fade">
+      <h2>Учителя белорусского языка и литературы <span class="badge">5</span></h2>
+      <ul class="teachers">
+        <li>Лапицкая О.В. <mark>(заместитель директора по воспитательной работе)</mark></li>
+        <li>Астапович В.Н.</li>
+        <li>Высоцкая Е.Н.</li>
+        <li>Грибанова Л.А.</li>
+        <li>Саверченко М.А.</li>
+      </ul>
+    </section>
+
+    <!-- Русский -->
+    <section id="rus-lang" class="section fade">
+      <h2>Учителя русского языка и литературы <span class="badge">4</span></h2>
+      <ul class="teachers">
+        <li>Дубровская В.А.</li>
+        <li>Самбук А.А.</li>
+        <li>Стельмашенко А.Н.</li>
+        <li>Тимошенко А.Г.</li>
+      </ul>
+    </section>
+
+    <!-- Математика -->
+    <section id="math" class="section fade">
+      <h2>Учителя математики <span class="badge">7</span></h2>
+      <ul class="teachers">
+        <li>Белько М.В. <mark>(директор)</mark></li>
+        <li>Абучина Л.С.</li>
+        <li>Загорцева О.М.</li>
+        <li>Коровкина Л.П.</li>
+        <li>Михаленко О.Б.</li>
+        <li>Мойсеенко И.В.</li>
+        <li>Юрченко Т.А.</li>
+      </ul>
+    </section>
+
+    <!-- Иностранные -->
+    <section id="foreign" class="section fade">
+      <h2>Учителя иностранного языка <span class="badge">7</span></h2>
+      <ul class="teachers">
+        <li>Адинцова И.В.</li>
+        <li>Буланчикова Т.В.</li>
+        <li>Ерошенко А.Н.</li>
+        <li>Ковалева А.А.</li>
+        <li>Лебедева А.Е.</li>
+        <li>Логвинова И.В.</li>
+        <li>Соколова В.В.</li>
+      </ul>
+    </section>
+
+    <!-- Физика -->
+    <section id="physics" class="section fade">
+      <h2>Учителя физики <span class="badge">2</span></h2>
+      <ul class="teachers">
+        <li>Герасименко Е.А.</li>
+        <li>Лусс А.В.</li>
+      </ul>
+    </section>
+
+    <!-- История -->
+    <section id="history" class="section fade">
+      <h2>Учителя истории и обществоведения <span class="badge">4</span></h2>
+      <ul class="teachers">
+        <li>Лусс Е.А.</li>
+        <li>Подольская А.И.</li>
+        <li>Припутенко И.В.</li>
+        <li>Федянина Е.К.</li>
+      </ul>
+    </section>
+
+    <!-- География -->
+    <section id="geography" class="section fade">
+      <h2>Учителя географии <span class="badge">2</span></h2>
+      <ul class="teachers">
+        <li>Сенько Т.А. <mark>(заместитель директора по учебной работе)</mark></li>
+        <li>Тронина О.М.</li>
+      </ul>
+    </section>
+
+    <!-- Химия -->
+    <section id="chemistry" class="section fade">
+      <h2>Учителя химии <span class="badge">2</span></h2>
+      <ul class="teachers">
+        <li>Гончар М.А.</li>
+        <li>Плешевская В.А.</li>
+      </ul>
+    </section>
+
+    <!-- Биология -->
+    <section id="biology" class="section fade">
+      <h2>Учителя биологии <span class="badge">3</span></h2>
+      <ul class="teachers">
+        <li>Козлова Т.В.</li>
+        <li>Силкова Г.В.</li>
+        <li>Битченко В.Д.</li>
+      </ul>
+    </section>
+
+    <!-- ФКиЗ -->
+    <section id="pe" class="section fade">
+      <h2>Учителя физической культуры и здоровья <span class="badge">4</span></h2>
+      <ul class="teachers">
+        <li>Жук А.С.</li>
+        <li>Менделев И.Д.</li>
+        <li>Панасюк Е.Н.</li>
+        <li>Чернявская Я.Е.</li>
+      </ul>
+    </section>
+
+    <!-- Труд -->
+    <section id="labor" class="section fade">
+      <h2>Учителя трудового обучения <span class="badge">3</span></h2>
+      <ul class="teachers">
+        <li>Ермоленко А.Ф.</li>
+        <li>Картузова Е.М.</li>
+        <li>Поцелуенок З.М.</li>
+      </ul>
+    </section>
+
+    <!-- Информатика -->
+    <section id="informatics" class="section fade">
+      <h2>Учителя информатики <span class="badge">2</span></h2>
+      <ul class="teachers">
+        <li>Маховик Ю.Ю.</li>
+        <li>Какаулин Д.В.</li>
+      </ul>
+    </section>
+
+    <!-- Начальные классы -->
+    <section id="primary" class="section fade">
+      <h2>Учителя начальных классов <span class="badge">18</span></h2>
+      <ul class="teachers">
+        <li>Аксенова Л.М.</li>
+        <li>Бирукова Т.А.</li>
+        <li>Виклюк Н.В.</li>
+        <li>Ермоленко В.Н.</li>
+        <li>Желдак Т.А.</li>
+        <li>Жигар Н.В.</li>
+        <li>Лебедева Е.В.</li>
+        <li>Лукашевич Е.И.</li>
+        <li>Маркина Е.А.</li>
+        <li>Набиванцева Т.Н.</li>
+        <li>Осипова В.Ю.</li>
+        <li>Рай Л.Л.</li>
+        <li>Санько И.И.</li>
+        <li>Сидоренко О.Ф.</li>
+        <li>Сусолкина С.В.</li>
+        <li>Терешкова Е.Д.</li>
+        <li>Шевчук С.В.</li>
+      </ul>
+    </section>
+
+    <!-- Социальные педагоги -->
+    <section id="social" class="section fade">
+      <h2>Педагоги социальные <span class="badge">1</span></h2>
+      <ul class="teachers">
+        <li>Хомина М.В. <mark>(1 ст.)</mark></li>
+      </ul>
+    </section>
+
+    <!-- Психологи -->
+    <section id="psych" class="section fade">
+      <h2>Педагоги-психологи <span class="badge">2</span></h2>
+      <ul class="teachers">
+        <li>Джалая Е.В. <mark>(1 ст.)</mark></li>
+        <li>Казаченко А.Г. <mark>(0,5 ст.)</mark></li>
+      </ul>
+    </section>
+
+    <!-- Организаторы -->
+    <section id="organizers" class="section fade">
+      <h2>Педагоги-организаторы <span class="badge">1</span></h2>
+      <ul class="teachers">
+        <li>Липская Е.В. <mark>(1 ст.)</mark></li>
+      </ul>
+    </section>
+
+    <!-- Руководитель по ВПВ — с фото -->
+    <section id="vpp" class="section fade">
+      <h2>Руководитель по ВПВ <span class="badge">1</span></h2>
+      <ul class="teachers">
+        <li class="person">
+          <img class="avatar" src="assets/images/teachers/titov.png" alt="Титов Е.А." />
+          <div class="info">
+            <div class="name">Титов Е.А.</div>
+            <div class="meta-line"><span class="chip">Cамый лучший</span> Руководитель по военно-патриотическому воспитанию</div>
+          </div>
+        </li>
+      </ul>
+    </section>
+
+    <!-- Дефектологи -->
+    <section id="defect" class="section fade">
+      <h2>Учителя-дефектологи <span class="badge">3</span></h2>
+      <ul class="teachers">
+        <li>Баклаженко Т.В.</li>
+        <li>Демина В.Н.</li>
+        <li>Ломакина Т.И.</li>
+      </ul>
+    </section>
+
+    <!-- Музыка -->
+    <section id="music" class="section fade">
+      <h2>Учитель музыки <span class="badge">1</span></h2>
+      <ul class="teachers">
+        <li>Шустова О.А.</li>
+      </ul>
+    </section>
+
+    <!-- ГПД -->
+    <section id="gpd" class="section fade">
+      <h2>Воспитатели ГПД <span class="badge">8</span></h2>
+      <ul class="teachers">
+        <li>Зеньковец С.В.</li>
+        <li>Лазовская Е.Г.</li>
+        <li>Николаенко Ю.В.</li>
+        <li>Малахова Т.А.</li>
+        <li>Пиво А.Л.</li>
+        <li>Таптухина В.И.</li>
+        <li>Шмагун О.А.</li>
+        <li>Шуканова В.Н.</li>
+      </ul>
+    </section>
+
+  </div>
+</main>
+
+<footer>
+  <p>© 2025 Урицкая средняя школа</p>
+</footer>
+
+<script>
+  /* включаем плавные появления только если JS доступен */
+  document.body.classList.add('reveal');
+  (function(){
+    const fades = document.querySelectorAll('.fade');
+    if(!('IntersectionObserver' in window)){fades.forEach(el=>el.classList.add('show'));return;}
+    const io = new IntersectionObserver(es=>{ es.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('show'); }); },{threshold:.2});
+    fades.forEach(n=>io.observe(n));
+  })();
+
+  /* Поиск по странице */
+  const q=document.getElementById('q');
+  q.addEventListener('input',()=>{
+    const term=q.value.trim().toLowerCase();
+    document.querySelectorAll('.section').forEach(sec=>{
+      let any=false;
+      const list=sec.querySelector('.teachers');
+      if(!list){ sec.style.display=""; return; }
+      list.querySelectorAll('li').forEach(li=>{
+        const ok = li.textContent.toLowerCase().includes(term);
+        li.style.display = ok ? "" : "none";
+        if(ok) any=true;
+      });
+      sec.style.display = (term && !any) ? "none" : "";
+    });
+  });
+</script>
+</body>
+</html>

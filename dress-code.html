@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Деловой стиль одежды — 2024/2025</title>
+<style>
+  /* ===== базовые переменные / тема ===== */
+  *{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --bg:#121212;--bg-2:#1a1a1a;--bg-3:#1f1f1f;
+    --fg:#eeeeee;--muted:#aaaaaa;--line:#2b2b2b;
+    --accent:#f5c542;--shadow:0 10px 30px rgba(0,0,0,.6);
+  }
+  body{font-family:Segoe UI,Arial,sans-serif;background:var(--bg);color:var(--fg);line-height:1.7;overflow-x:hidden}
+
+  /* ===== hero (малый баннер) ===== */
+  header.hero{
+    position:relative;text-align:center;padding:90px 20px;
+    background:url("assets/images/hero-dress.jpg") center/cover no-repeat; /* замените путь при необходимости */
+  }
+  header.hero::after{content:"";position:absolute;inset:0;background:rgba(0,0,0,.72)}
+  header .inner{position:relative;z-index:1;max-width:1100px;margin:0 auto}
+  .title{font-size:clamp(1.9rem,4.5vw,2.7rem);color:var(--accent);text-shadow:0 0 16px rgba(245,197,66,.7)}
+  .subtitle{margin-top:8px;color:#e7e7e7}
+
+  /* ===== макет ===== */
+  main{max-width:1100px;margin:0 auto;padding:40px 20px;display:grid;grid-template-columns:1fr;gap:22px}
+  .section{background:var(--bg-3);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:22px}
+  .section h2{color:var(--accent);font-size:1.45rem;margin-bottom:10px}
+  .lead{color:#e4e4e4}
+  p{margin:.5rem 0}
+
+  /* список ссылок как карточки */
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;margin-top:12px}
+  .card{
+    position:relative;background:var(--bg-2);border:1px solid var(--line);border-radius:14px;padding:16px 18px;
+    box-shadow:var(--shadow);transition:transform .25s, background .25s;overflow:hidden
+  }
+  .card:hover{transform:translateY(-6px);background:#262626}
+  .card h3{color:var(--accent);font-size:1.05rem;margin-bottom:6px}
+  .card p{color:#d9d9d9;font-size:.95rem}
+  .card a.main{
+    display:inline-block;margin-top:8px;color:var(--accent);text-decoration:none;font-weight:600
+  }
+  .card a.main:hover{text-decoration:underline}
+
+  /* выезжающее подменю (по желанию) */
+  .submenu{
+    position:absolute;left:0;right:0;bottom:-110px;background:#171717;border-top:1px solid var(--line);
+    display:flex;gap:12px;justify-content:center;padding:10px 12px;opacity:0;transition:all .28s ease
+  }
+  .submenu a{
+    color:var(--accent);text-decoration:none;font-size:.92rem;padding:6px 10px;border-radius:8px;transition:.2s;border:1px solid transparent
+  }
+  .submenu a:hover{background:#2b2b2b;border-color:#3a3a3a}
+  .card:hover .submenu{bottom:0;opacity:1}
+
+  /* цитата/заметка */
+  .note{
+    background:#1a1a1a;border-left:4px solid var(--accent);padding:12px 14px;border-radius:8px;margin-top:10px;color:#ddd
+  }
+
+  /* футер */
+  footer{background:#0d0d0d;color:#8a8a8a;text-align:center;padding:26px 20px}
+
+  /* плавные появления */
+  .fade{opacity:0;transform:translateY(34px);transition:all .8s ease}
+  .fade.show{opacity:1;transform:translateY(0)}
+
+  /* док-панель */
+  .dock{position:fixed;right:22px;bottom:22px;display:flex;flex-direction:column;gap:14px;z-index:50}
+  .group{position:relative}
+  .fab,.sub{
+    display:grid;place-items:center;cursor:pointer;border:none;width:58px;height:58px;border-radius:50%;
+    background:var(--bg-3);color:var(--accent);outline:none;box-shadow:var(--shadow);border:1px solid var(--line);
+    transition:transform .2s,background .2s,opacity .2s
+  }
+  .fab:hover{transform:translateY(-2px);background:#2a2a2a}
+  .fab span{font-size:24px}
+  .submenu-fab{position:absolute;right:70px;bottom:0;display:flex;gap:10px;opacity:0;transform:translateX(10px);pointer-events:none}
+  .sub{width:46px;height:46px;font-size:18px}
+  .label{position:absolute;right:70px;bottom:8px;background:#000000b3;color:#fff;padding:6px 10px;border-radius:10px;font-size:.85rem;border:1px solid #222;opacity:0;transform:translateX(10px);pointer-events:none;white-space:nowrap}
+  .group:hover .submenu-fab,.group:hover .label{opacity:1;transform:translateX(0);pointer-events:auto}
+  .group.open .submenu-fab,.group.open .label{opacity:1;transform:translateX(0);pointer-events:auto}
+  @media (max-width:520px){.label{display:none}}
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="inner">
+    <h1 class="title">Деловой стиль одежды</h1>
+    <p class="subtitle">2024/2025 учебный год</p>
+  </div>
+</header>
+
+<main>
+  <!-- Вступление -->
+  <section class="section fade">
+    <h2>Уважаемые родители!</h2>
+    <p class="lead">В нашей стране поэтапно вводится обязательная школьная форма начиная с 2022/2023 учебного года.</p>
+  </section>
+
+  <!-- Правовая основа / требования -->
+  <section class="section fade">
+    <h2>Требования к деловому стилю</h2>
+    <p>В ходе образовательного процесса во всех видах учреждений общего среднего образования учащиеся І–ХІ классов придерживаются одежды делового стиля. Ношение одежды делового стиля учащимися учреждений общего среднего образования является нормой, которая определяется уставом и правилами внутреннего трудового распорядка учреждения общего среднего образования.</p>
+    <div class="note">
+      В соответствии с пунктом 4 статьи 20 Кодекса Республики Беларусь об образовании учреждение образования обязано обеспечить разработку и принятие правил внутреннего распорядка обучающихся, правил внутреннего трудового распорядка учреждения образования.
+    </div>
+    <p style="margin-top:.7rem">Школа — это официальное учреждение, поэтому от учащихся требуется деловой официальный вид одежды.</p>
+    <p><b>Деловой стиль одежды</b> — это строгий выдержанный стиль одежды, предназначенный для посещения учащимися учебных занятий в учреждениях общего среднего образования. Комплект одежды делового стиля должен быть многофункциональным, гигиеничным, удобным и соответствовать современным направлениям моды.</p>
+  </section>
+
+  <!-- Полезные материалы (карточки со ссылками) -->
+  <section class="section fade">
+    <h2>Полезные материалы</h2>
+    <div class="grid">
+      <article class="card">
+        <h3>Всё о школьной форме</h3>
+        <p>(информация сайта Министерства образования Республики Беларусь)</p>
+        <a class="main" href="#" target="_blank" rel="noopener">Перейти →</a>
+        <!-- Подменю (по желанию) -->
+        <div class="submenu">
+          <a href="#" target="_blank">Статья</a>
+          <a href="#" target="_blank">Памятка PDF</a>
+        </div>
+      </article>
+
+      <article class="card">
+        <h3>Каталог «Школьная коллекция 2024–2025»</h3>
+        <p>Подготовлен концерном «Беллегпром».</p>
+        <a class="main" href="#" target="_blank" rel="noopener">Открыть каталог →</a>
+        <div class="submenu">
+          <a href="#" target="_blank">Сайт</a>
+          <a href="#" target="_blank">PDF</a>
+        </div>
+      </article>
+
+      <article class="card">
+        <h3>Шевроны для одежды делового стиля</h3>
+        <p>Список организаций-производителей шевронов и трикотажных изделий.</p>
+        <a class="main" href="#" target="_blank" rel="noopener">Список организаций →</a>
+      </article>
+
+      <article class="card">
+        <h3>Производители одежды делового стиля</h3>
+        <p>Информация о производителях для учреждений общего среднего образования.</p>
+        <a class="main" href="#" target="_blank" rel="noopener">Перейти к списку →</a>
+      </article>
+    </div>
+    <p style="margin-top:10px;color:var(--muted)">* Замените <code>#</code> на реальные ссылки, когда они будут готовы.</p>
+  </section>
+</main>
+
+<!-- Футер -->
+<footer>
+  <p>© 2025 Урицкая средняя школа</p>
+</footer>
+
+<!-- Док-панель -->
+<div class="dock" aria-label="Быстрые действия">
+  <div class="group" data-mobile-toggle>
+    <button class="fab" aria-label="Навигация"><span>🧭</span></button>
+    <div class="label">Навигация</div>
+    <div class="submenu-fab">
+      <a class="sub" href="index.html" title="Главная">🏠</a>
+      <a class="sub" href="#top" title="Вверх">⬆️</a>
+      <a class="sub" href="admin-schedule.html" title="График приёма">🗓️</a>
+    </div>
+  </div>
+</div>
+
+<script>
+  // плавные появления
+  const fades=document.querySelectorAll('.fade');
+  const io=new IntersectionObserver(es=>{
+    es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('show')})
+  },{threshold:.2});
+  fades.forEach(n=>io.observe(n));
+
+  // док-панель: поддержка тач
+  const groups=document.querySelectorAll('.group[data-mobile-toggle]');
+  groups.forEach(g=>{
+    const btn=g.querySelector('.fab');
+    btn.addEventListener('click',ev=>{
+      g.classList.toggle('open'); ev.preventDefault();
+    });
+    document.addEventListener('click',e=>{
+      if(!g.contains(e.target)) g.classList.remove('open');
+    });
+  });
+</script>
+</body>
+</html>
