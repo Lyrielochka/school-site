@@ -133,6 +133,13 @@
     .submenu-fab{right:64px}
     .label{display:none}
   }
+  .credit img {
+  filter: drop-shadow(0 0 0 rgba(245,197,66,0));
+  transition: .25s;
+}
+.credit:hover img {
+  filter: drop-shadow(0 0 8px rgba(245,197,66,.45));
+}
 </style>
 </head>
 <body>
@@ -241,7 +248,8 @@
 
   <!-- ФУТЕР -->
   <footer id="contacts">
-    <p>© 2025 Титов Егор</p>
+     <p class="credit">
+    <img src="assets/icons/et-medallion.svg" alt="ЕТ" width="40" height="40" style="vertical-align:-3px;margin-right:6px;">
     <p>Адрес: Тенистая ул., 10, агрогородок Урицкое · Тел.: <a href="tel:+375232985102">+375 23 298-51-02</a></p>
   </footer>
 
