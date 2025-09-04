@@ -1,0 +1,22 @@
+backend:
+  name: git-gateway
+  branch: main   # если у тебя главная ветка называется main
+
+media_folder: "assets/uploads"     # куда сохранять картинки в репозитории
+public_folder: "/assets/uploads"   # путь к этим картинкам на сайте
+
+locale: 'ru'
+
+collections:
+  - name: "news"
+    label: "Новости"
+    label_singular: "Новость"
+    folder: "news"
+    create: true
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    fields:
+      - {label: "Заголовок", name: "title", widget: "string"}
+      - {label: "Дата", name: "date", widget: "datetime", format: "YYYY-MM-DDTHH:mm:ssZ"}
+      - {label: "Обложка", name: "cover", widget: "image", required: false}
+      - {label: "Краткое описание", name: "excerpt", widget: "text", required: false}
+      - {label: "Текст", name: "body", widget: "markdown"}
