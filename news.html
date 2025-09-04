@@ -2,9 +2,10 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Новости — Урицкая средняя школа</title>
-<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>События — Урицкая средняя школа</title>
+
+<!-- Тема в стиле сайта -->
 <style>
   :root{--bg:#121212;--bg2:#1a1a1a;--bg3:#1f1f1f;--fg:#eee;--muted:#aaa;--line:#2b2b2b;--accent:#f5c542;--shadow:0 10px 30px rgba(0,0,0,.6)}
   *{box-sizing:border-box;margin:0;padding:0}
@@ -18,15 +19,24 @@
   .back-btn:hover{background:#d4a52a;color:#fff}
 
   main{max-width:1100px;margin:0 auto;padding:26px 20px}
+
+  /* список */
+  .toolbar{display:flex;gap:10px;justify-content:space-between;align-items:center;margin-bottom:14px}
+  .search{flex:1}
+  .search input{width:100%;background:#1b1b1b;border:1px solid var(--line);border-radius:10px;color:#eee;padding:10px 12px;outline:none}
+  .btn{background:#222;border:1px solid var(--line);color:#eee;border-radius:8px;padding:8px 10px;text-decoration:none}
+  .btn:hover{background:#2a2a2a}
+
   .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px}
   .card{background:var(--bg3);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);overflow:hidden;display:flex;flex-direction:column}
   .card img{width:100%;height:160px;object-fit:cover;border-bottom:1px solid var(--line)}
   .card .body{padding:14px}
-  .card h3{color:#fff;font-size:1.1rem}
-  .card small{display:block;color:var(--muted);margin:.25rem 0 .5rem}
+  .card h3{color:#fff;font-size:1.1rem;margin-bottom:4px}
+  .card small{display:block;color:var(--muted);margin:.1rem 0 .5rem}
   .card a{color:var(--accent);text-decoration:none}
   .card a:hover{text-decoration:underline}
 
+  /* статья */
   .article{max-width:900px;margin:0 auto;background:var(--bg3);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);overflow:hidden}
   .article .cover{width:100%;height:320px;object-fit:cover;border-bottom:1px solid var(--line)}
   .article .pad{padding:18px}
@@ -36,68 +46,73 @@
   .article .content p{margin:.6rem 0}
   .article .content img{max-width:100%;border-radius:10px;border:1px solid var(--line)}
   .article .content h2,.article .content h3{margin-top:1rem;color:#fff}
-  .empty{color:#bbb}
 
-  .toolbar{display:flex;gap:10px;justify-content:space-between;align-items:center;margin-bottom:14px}
-  .search{flex:1}
-  .search input{width:100%;background:#1b1b1b;border:1px solid var(--line);border-radius:10px;color:#eee;padding:10px 12px;outline:none}
-  .filters{display:flex;gap:8px}
-  .btn{background:#222;border:1px solid var(--line);color:#eee;border-radius:8px;padding:8px 10px;text-decoration:none}
-  .btn:hover{background:#2a2a2a}
+  /* скелет/сообщения */
+  .skeleton{background:linear-gradient(90deg,#1a1a1a,#202020,#1a1a1a);background-size:400% 100%;animation:s 1.5s infinite}
+  @keyframes s{0%{background-position:0% 0}100%{background-position:100% 0}}
+  .empty,.error{color:#bbb;margin-top:10px}
+
+  footer{background:#0d0d0d;color:#8a8a8a;text-align:center;padding:22px 20px;margin-top:26px}
 </style>
+
+<!-- Netlify Identity (для скрытой админ-кнопки; безопасно) -->
+<script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+<!-- Markdown парсер -->
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
 <body>
 
 <header>
   <div class="inner">
-    <h1 class="title">Новости</h1>
-    <p class="subtitle">Актуальные события школы</p>
+    <h1 class="title">События</h1>
+    <p class="subtitle">Новости школы</p>
     <a href="index.html" class="back-btn">← Вернуться на главную</a>
   </div>
 </header>
 
 <main id="app">
-  <!-- Список новостей -->
+  <!-- СПИСОК -->
   <section id="list-view">
     <div class="toolbar">
       <div class="search"><input id="q" type="search" placeholder="Поиск по заголовку/аннотации…"></div>
-      <div class="filters">
-        <a class="btn" id="add-news-btn" href="admin/" target="_blank" style="display:none">
-  ➕ Добавить (админ)
-</a>
-      </div>
+      <a class="btn" id="add-news-btn" href="admin/" target="_blank" style="display:none">➕ Добавить (админ)</a>
     </div>
     <div id="news-grid" class="grid"></div>
     <p id="list-empty" class="empty" style="display:none">Пока нет новостей.</p>
+    <p id="list-error" class="error" style="display:none">Не удалось загрузить новости.</p>
   </section>
 
-  <!-- Одна новость -->
+  <!-- СТАТЬЯ -->
   <section id="article-view" style="display:none">
     <a class="btn" href="news.html">← К списку</a>
     <article class="article" id="article">
-      <!-- наполняется скриптом -->
+      <div class="cover skeleton" style="height:220px"></div>
+      <div class="pad">
+        <div class="skeleton" style="height:24px;width:60%"></div>
+        <div class="skeleton" style="height:14px;width:30%;margin-top:10px"></div>
+        <div class="skeleton" style="height:12px;width:100%;margin-top:14px"></div>
+      </div>
     </article>
   </section>
 </main>
 
-<!-- Markdown парсер -->
-<script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+<footer>© 2025 Урицкая средняя школа</footer>
+
 <script>
-/* === настройки репозитория (замени на свои!) === */
+/* ====== НАСТРОЙКИ РЕПОЗИТОРИЯ (подставлены твои) ====== */
 const REPO_OWNER = "Lyrielochka";
 const REPO_NAME  = "school-site";
 const BRANCH     = "main";
 
-/* === утилиты === */
+/* ====== УТИЛИТЫ ====== */
 const $ = s => document.querySelector(s);
 const params = new URLSearchParams(location.search);
-const slug = params.get('slug'); // имя файла .md
+const slug = params.get('slug'); // имя .md файла
 
 function fmtDate(s){
-  try{ return new Date(s).toLocaleDateString('ru-RU',{year:'numeric',month:'long',day:'2-digit'});}
+  try{ return new Date(s).toLocaleDateString('ru-RU',{year:'numeric',month:'long',day:'2-digit'}); }
   catch{ return s; }
 }
-
 function parseFrontMatter(md){
   const m = md.match(/^---\s*([\s\S]*?)\s*---\s*([\s\S]*)$/);
   if(!m) return {meta:{}, body:md};
@@ -114,34 +129,56 @@ function parseFrontMatter(md){
   return {meta, body};
 }
 
-/* === API GitHub (public repo) === */
+/* ====== ИСТОЧНИКИ ДАННЫХ ====== */
+/* Public-репозиторий: читаем напрямую из GitHub */
 const API_LIST = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/news?ref=${BRANCH}`;
-const API_FILE = (name)=>`https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/${BRANCH}/news/${encodeURIComponent(name)}`;
+const RAW_FILE = name => `https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/${BRANCH}/news/${encodeURIComponent(name)}`;
 
-/* === рендер списка === */
+/* ====== РЕНДЕР СПИСКА ====== */
 async function renderList(){
   $('#article-view').style.display='none';
   $('#list-view').style.display='';
+
+  // скелеты на время загрузки
+  $('#news-grid').innerHTML = Array.from({length:6}).map(()=>`
+    <article class="card">
+      <div class="skeleton" style="width:100%;height:160px"></div>
+      <div class="body">
+        <div class="skeleton" style="height:20px;width:80%"></div>
+        <div class="skeleton" style="height:12px;width:40%;margin-top:8px"></div>
+        <div class="skeleton" style="height:12px;width:100%;margin-top:14px"></div>
+      </div>
+    </article>
+  `).join('');
+  $('#list-empty').style.display='none';
+  $('#list-error').style.display='none';
+
   try{
     const res = await fetch(API_LIST);
-    if(!res.ok) throw new Error('list '+res.status);
+    if(!res.ok) throw res;
     const files = await res.json();
     const mdFiles = files.filter(f=>/\.md$/i.test(f.name));
 
-    // загрузим и распарсим фронт-маттер
-    const raws = await Promise.all(mdFiles.map(f=>fetch(API_FILE(f.name)).then(r=>r.text().then(t=>({name:f.name, text:t})))));
+    // грузим содержимое .md
+    const raws = await Promise.all(mdFiles.map(f=>
+      fetch(RAW_FILE(f.name)).then(r=>r.ok?r.text():Promise.reject(r)).then(text=>({name:f.name, text}))
+    ));
+
+    // парсим мету/аннотацию
     let items = raws.map(({name,text})=>{
       const {meta, body} = parseFrontMatter(text);
+      const firstLine = (body.split('\n').find(l=>l.trim())||"").trim();
       return {
         file: name,
         title: meta.title || name.replace(/\.md$/,''),
         date:  meta.date || "",
         cover: meta.cover || "",
-        excerpt: meta.excerpt || (body.split('\n').find(l=>l.trim())||"").slice(0,160) + '…'
+        excerpt: meta.excerpt || (firstLine.length>0 ? (firstLine.length>160?firstLine.slice(0,160)+'…':firstLine) : "")
       };
-    }).sort((a,b)=> new Date(b.date)-new Date(a.date));
+    }).sort((a,b)=> new Date(b.date) - new Date(a.date));
 
-    const q = $('#q').value.trim().toLowerCase();
+    // фильтр поиска
+    const q = ($('#q').value||'').trim().toLowerCase();
     if(q){
       items = items.filter(it =>
         (it.title||'').toLowerCase().includes(q) ||
@@ -149,33 +186,43 @@ async function renderList(){
       );
     }
 
-    $('#list-empty').style.display = items.length? 'none':'';
+    // вывод
     $('#news-grid').innerHTML = items.map(it=> `
       <article class="card">
-        ${it.cover ? `<img src="${it.cover}" alt="">` : ``}
+        ${it.cover ? `<img src="${it.cover}" loading="lazy" alt="">` : ``}
         <div class="body">
           <h3><a href="news.html?slug=${encodeURIComponent(it.file)}">${it.title}</a></h3>
-          ${it.date ? `<small>${fmtDate(it.date)}</small>`:''}
-          ${it.excerpt ? `<p>${it.excerpt}</p>`:''}
+          ${it.date ? `<small>${fmtDate(it.date)}</small>` : ``}
+          ${it.excerpt ? `<p>${it.excerpt}</p>` : ``}
         </div>
       </article>
     `).join('');
-  }catch(e){
-    console.error(e);
-    $('#list-empty').style.display='';
-    $('#news-grid').innerHTML='';
+
+    $('#list-empty').style.display = items.length ? 'none' : '';
+  }catch(err){
+    console.error('LIST ERR', err);
+    $('#news-grid').innerHTML = '';
+    $('#list-error').style.display = '';
   }
 }
 
-/* === рендер одной статьи === */
+/* ====== РЕНДЕР ОДНОЙ СТАТЬИ ====== */
 async function renderArticle(file){
   $('#list-view').style.display='none';
   $('#article-view').style.display='';
+
   const box = $('#article');
-  box.innerHTML = '<div class="pad">Загрузка…</div>';
+  box.innerHTML = `
+    <div class="cover skeleton" style="height:220px"></div>
+    <div class="pad">
+      <div class="skeleton" style="height:24px;width:60%"></div>
+      <div class="skeleton" style="height:14px;width:30%;margin-top:10px"></div>
+      <div class="skeleton" style="height:12px;width:100%;margin-top:14px"></div>
+    </div>
+  `;
 
   try{
-    const md = await fetch(API_FILE(file)).then(r=>r.text());
+    const md = await fetch(RAW_FILE(file)).then(r=>r.ok?r.text():Promise.reject(r));
     const {meta, body} = parseFrontMatter(md);
     const html = marked.parse(body);
     box.innerHTML = `
@@ -186,34 +233,37 @@ async function renderArticle(file){
         <div class="content">${html}</div>
       </div>
     `;
-  }catch(e){
-    console.error(e);
+  }catch(err){
+    console.error('FILE ERR', err);
     box.innerHTML = `<div class="pad">Не удалось загрузить новость.</div>`;
   }
 }
 
-/* === init === */
+/* ====== ПОИСК ====== */
 $('#q').addEventListener('input', ()=>renderList());
-if(slug){ renderArticle(slug); } else { renderList(); }
-</script>
-<script>
-(function(){
-  var btn = document.getElementById('add-news-btn');
-  function update() {
-    var user = window.netlifyIdentity && window.netlifyIdentity.currentUser();
-    btn.style.display = user ? 'inline-block' : 'none';
 
-    // Если нужно показывать ТОЛЬКО админам, раскомментируй:
-    // const roles = user && user.app_metadata && user.app_metadata.roles || [];
+/* ====== БЕЗОПАСНОЕ ПОКАЗЫВАНИЕ КНОПКИ «ДОБАВИТЬ (АДМИН)» ====== */
+(function(){
+  const btn = document.getElementById('add-news-btn');
+  function update(){
+    if(!btn) return;
+    const id = window.netlifyIdentity;
+    const user = id && id.currentUser ? id.currentUser() : null;
+    btn.style.display = user ? 'inline-block' : 'none';
+    // если нужно только для роли admin, раскомментируй:
+    // const roles = (user && user.app_metadata && user.app_metadata.roles) || [];
     // btn.style.display = roles.includes('admin') ? 'inline-block' : 'none';
   }
-  if (window.netlifyIdentity) {
+  if(window.netlifyIdentity){
     window.netlifyIdentity.on('init', update);
-    window.netlifyIdentity.on('login', () => { update(); });
-    window.netlifyIdentity.on('logout', () => { update(); });
+    window.netlifyIdentity.on('login', update);
+    window.netlifyIdentity.on('logout', update);
     window.netlifyIdentity.init();
   }
 })();
+
+/* ====== СТАРТ ====== */
+if(slug){ renderArticle(slug); } else { renderList(); }
 </script>
 </body>
 </html>
