@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Группы продленного дня — 2024/2025</title>
+<style>
+:root{
+  --bg:#000;--panel:#0f0f0f;--panel2:#111;--ink:#f6f6f6;--muted:#b3b3b3;--gold:#d4af37;--glow:rgba(212,175,55,.35);--border:rgba(255,255,255,.12)
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 Inter,system-ui,Segoe UI,Roboto,Arial}
+.wrap{max-width:1100px;margin:32px auto;padding:0 16px}
+.header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px;flex-wrap:wrap}
+.back{background:var(--panel);border:1px solid var(--border);color:var(--ink);padding:10px 14px;border-radius:12px;font-weight:700;cursor:pointer}
+.back:hover{box-shadow:0 0 0 2px var(--gold) inset;color:var(--gold)}
+.title{font-size:34px;font-weight:900;color:var(--gold);letter-spacing:.2px;margin:6px 0}
+.subtitle{color:var(--muted);margin:-6px 0 8px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;margin-top:10px}
+.card{position:relative;border:1px solid var(--border);border-radius:16px;background:linear-gradient(180deg,#0e0e0e,#090909);padding:16px;box-shadow:0 8px 24px rgba(0,0,0,.35)}
+.card:before{content:"";position:absolute;inset:-1px -1px auto -1px;height:6px;border-radius:16px 16px 0 0;background:linear-gradient(90deg,#ffd700,var(--gold));box-shadow:0 6px 18px var(--glow)}
+.card h3{margin:6px 0 8px;font-size:18px;color:var(--gold)}
+.card .classes{font-weight:700;color:#e9e9e9}
+.card .teacher{color:var(--muted);margin-top:4px}
+
+.section{margin-top:28px}
+.section h2{color:var(--gold);font-size:22px;margin:6px 0 12px}
+.list{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
+.item{border:1px solid var(--border);border-radius:14px;background:var(--panel2);padding:14px}
+.item a{color:var(--ink);text-decoration:none;font-weight:700}
+.item a:hover{color:var(--gold);text-shadow:0 0 18px var(--glow)}
+.footer{margin-top:22px;color:var(--muted);font-size:13px}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="header">
+      <button class="back" onclick="history.back()">← Назад</button>
+      <div>
+        <div class="title">Группы продленного дня</div>
+        <div class="subtitle">Учебный год 2024/2025</div>
+      </div>
+    </div>
+
+    <div class="grid" id="gpdGrid">
+      <!-- Карточки ГПД заполняем ниже -->
+    </div>
+
+    <div class="section">
+      <h2>В помощь воспитателю ГПД</h2>
+      <div class="list">
+        <div class="item"><a href="#">Методические рекомендации по организации прогулок в режиме ГПД</a></div>
+        <div class="item"><a href="#">Методические рекомендации по проведению внеклассных воспитательных мероприятий</a></div>
+        <div class="item"><a href="#">Организация самоподготовки в условиях ГПД</a></div>
+        <div class="item"><a href="#">Физические упражнения (спортивный час) в группах продлённого дня</a></div>
+      </div>
+    </div>
+
+    <div class="footer">Страница оформлена в стиле главной: лёгкие карточки, мягкие тени, золотой акцент.</div>
+  </div>
+
+<script>
+const DATA = [
+  { num: 1, classes: '1 «А» + 1 «Г»', teacher: 'Лазовская Е.Г.' },
+  { num: 2, classes: '1 «Б» + 1 «Г»', teacher: 'Малахова Т.А.' },
+  { num: 3, classes: '1 «В» + 1 «Г»', teacher: 'Шуканова В.Н.' },
+  { num: 4, classes: '2 «А» + 4-е классы', teacher: 'Зеньковец С.В.' },
+  { num: 5, classes: '2 «Б» + 4-е классы', teacher: 'Таптухина В.И.' },
+  { num: 6, classes: '2 «Г» + 4-е классы', teacher: 'Николаенко Ю.В.' },
+  { num: 7, classes: '2 «В» + 4-е классы', teacher: 'Пиво А.Л.' },
+  { num: 8, classes: '3-е классы', teacher: 'Шмагун О.А.' },
+  { num: 9, classes: '1, 2, 4-е классы', teacher: 'Казаченко А.Г.' }
+];
+
+const grid = document.getElementById('gpdGrid');
+function render(){
+  grid.innerHTML = DATA.map(({num,classes,teacher})=> `
+    <div class="card">
+      <h3>ГПД № ${num}</h3>
+      <div class="classes">${classes}</div>
+      <div class="teacher">Воспитатель — ${teacher}</div>
+    </div>
+  `).join('');
+}
+render();
+</script>
+</body>
+</html>

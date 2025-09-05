@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Расписание</title>
+  <style>
+    :root {
+      --bg: #0b0e14; /* фон сайта */
+      --panel: #0f1523; /* карточки */
+      --panel-2: #0c1220;
+      --accent: #7c3aed; /* фиолетовый как на других страницах */
+      --muted: #94a3b8;
+      --text: #e5e7eb;
+      --ok: #10b981; /* 1 смена */
+      --warn: #f59e0b; /* 2 смена */
+      --grid-border: rgba(255,255,255,.08);
+      --chip: rgba(124,58,237,.14);
+    }
+    html,body{height:100%}
+    body{margin:0;background:radial-gradient(1200px 600px at 10% -10%, rgba(124,58,237,.15), transparent), linear-gradient(180deg,var(--bg),#0c1220 35%,#0a0f1a);font:16px/1.5 Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial; color:var(--text)}
+
+    .wrap{max-width:1200px;margin:24px auto;padding:0 16px}
+    .header{display:flex;gap:12px;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap}
+    .title{font-weight:800;font-size:28px;letter-spacing:0.3px}
+    .toolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+
+    .btn{background:var(--panel);border:1px solid var(--grid-border);color:var(--text);padding:10px 14px;border-radius:12px;font-weight:700;cursor:pointer}
+    .btn:hover{box-shadow:0 0 0 2px var(--chip) inset}
+
+    .seg{display:flex;background:var(--panel);border-radius:12px;padding:4px;border:1px solid var(--grid-border)}
+    .seg button{appearance:none;border:0;background:transparent;color:var(--muted);padding:8px 12px;border-radius:10px;cursor:pointer;font-weight:600}
+    .seg button[aria-pressed="true"]{background:var(--chip);color:var(--text)}
+
+    .filters{display:flex;gap:10px;flex-wrap:wrap}
+    .select{position:relative}
+    .select select{appearance:none;background:var(--panel);border:1px solid var(--grid-border);color:var(--text);padding:10px 36px 10px 12px;border-radius:12px;font-weight:600}
+    .select:after{content:"▾";position:absolute;right:12px;top:50%;transform:translateY(-50%);color:var(--muted)}
+
+    .legend{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:13px}
+    .pill{height:10px;width:10px;border-radius:2px;display:inline-block}
+
+    .grid{overflow:auto;border:1px solid var(--grid-border);border-radius:16px;background:linear-gradient(180deg, var(--panel), var(--panel-2))}
+    .grid table{width:100%;border-collapse:separate;border-spacing:0;min-width:720px}
+    thead th{position:sticky;top:0;background:rgba(15,23,42,.9);backdrop-filter: blur(6px);z-index:2}
+    th, td{border-bottom:1px solid var(--grid-border);border-right:1px solid var(--grid-border);padding:10px 12px;text-align:left;vertical-align:top}
+    th:first-child, td:first-child{position:sticky;left:0;background:linear-gradient(180deg, rgba(17,24,39,.95), rgba(17,24,39,.95));z-index:1}
+    th:first-child{z-index:3}
+
+    thead th{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+    tbody td{font-size:14px}
+
+    .time{white-space:nowrap;color:var(--muted);font-weight:700}
+    .lesson{display:flex;flex-direction:column;gap:4px}
+    .subject{font-weight:700}
+
+    /* tooltip с кабинетом только при наведении */
+    .cell{position:relative}
+    .cell .tooltip{position:absolute;inset:auto auto calc(100% + 8px) 0;display:none;background:#0b1220;border:1px solid var(--grid-border);padding:8px 10px;border-radius:10px;white-space:nowrap;box-shadow:0 6px 24px rgba(0,0,0,.25);font-size:13px}
+    .cell:hover .tooltip{display:block}
+
+    .shift-1{box-shadow:inset 0 0 0 2px rgba(16,185,129,.28)}
+    .shift-2{box-shadow:inset 0 0 0 2px rgba(245,158,11,.28)}
+
+    .kbd{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; font-size:12px;color:#cbd5e1;background:rgba(148,163,184,.15);padding:2px 6px;border-radius:6px}
+
+    .notice{margin-top:12px;color:var(--muted);font-size:13px}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="header">
+      <div class="title">Расписание на 2025–2026</div>
+      <div class="toolbar">
+        <button class="btn" id="backBtn">← Назад</button>
+        <div class="seg" id="shiftSeg" role="tablist" aria-label="Смены">
+          <button type="button" role="tab" aria-pressed="true" data-shift="1">1 смена (5, 7, 9, 10, 11)</button>
+          <button type="button" role="tab" aria-pressed="false" data-shift="2">2 смена (6, 8)</button>
+        </div>
+        <div class="filters">
+          <div class="select">
+            <select id="classSelect" title="Класс"></select>
+          </div>
+          <div class="select">
+            <select id="profileSelect" title="Профиль/параллель">
+              <option value="">Все профили</option>
+              <option value="базовый">Базовый</option>
+              <option value="м-ф">М-Ф</option>
+              <option value="х-б">Х-Б</option>
+              <option value="англ-рус">Англ.-Рус.</option>
+            </select>
+          </div>
+        </div>
+        <div class="legend">
+          <span class="pill" style="background:var(--ok)"></span> 1 смена
+          <span class="pill" style="background:var(--warn)"></span> 2 смена
+        </div>
+      </div>
+    </div>
+
+    <div class="grid" id="grid"></div>
+    <div class="notice">Подсказка: наведите на предмет — появится кабинет. Клавиши <span class="kbd">[</span>/<span class="kbd">]</span> листают дни недели.</div>
+  </div>
+
+  <script>
+    const DAY_ORDER = ["пон.", "вт.", "ср.", "чт.", "пт.", "сб."];
+
+    let SCHEDULE = {};
+    async function loadSchedule(){
+      try{
+        const res = await fetch('schedule.json');
+        if(!res.ok) throw new Error('HTTP '+res.status);
+        SCHEDULE = await res.json();
+      }catch(e){
+        console.warn('schedule.json недоступен, загружаем демо-данные');
+        SCHEDULE = {"5А":{shift:1,days:{"пон.":[{time:"08:00–08:45",subject:"Математика",room:"26"},{time:"08:55–09:40",subject:"Белорусский язык",room:"38"}]}}};
+      }
+    }
+
+    const classSelect = document.getElementById('classSelect');
+    const profileSelect = document.getElementById('profileSelect');
+    const grid = document.getElementById('grid');
+
+    const allClasses = () => Object.keys(SCHEDULE).sort((a,b)=>{
+      const na = parseInt(a,10); const nb=parseInt(b,10);
+      if(na!==nb) return na-nb; return a.localeCompare(b,'ru');
+    });
+
+    function fillClassOptions(){
+      const list = allClasses();
+      classSelect.innerHTML = list.map(c => `<option value="${c}">${c}</option>`).join('');
+    }
+
+    function renderGrid(selectedClass){
+      const entry = SCHEDULE[selectedClass];
+      if(!entry){ grid.innerHTML = '<div style="padding:16px">Нет данных</div>'; return; }
+      const shiftClass = entry.shift === 2 ? 'shift-2' : 'shift-1';
+      const timesSet = new Set();
+      DAY_ORDER.forEach(d => (entry.days[d]||[]).forEach(item => timesSet.add(item.time)) );
+      const times = Array.from(timesSet).sort((a,b)=>{
+        const pa = (a||'').split('–')[0].trim();
+        const pb = (b||'').split('–')[0].trim();
+        return pa.localeCompare(pb);
+      });
+
+      let html = '<table><thead><tr>'+
+        '<th>Время</th>'+
+        DAY_ORDER.map(d=>`<th>${d}</th>`).join('')+
+        '</tr></thead><tbody>';
+
+      times.forEach(time=>{
+        html += '<tr>';
+        html += `<td class="time">${time||''}</td>`;
+        DAY_ORDER.forEach(day=>{
+          const items = (entry.days[day]||[]).filter(x=>x.time===time);
+          if(items.length){
+            const x = items[0];
+            html += `<td class="cell ${shiftClass}">`+
+              `<div class="lesson">`+
+              `<span class="subject">${x.subject||''}</span>`+
+              `</div>`+
+              (x.room? `<div class="tooltip">Кабинет: ${x.room}</div>`:'')+
+              `</td>`;
+          } else {
+            html += '<td></td>';
+          }
+        });
+        html += '</tr>';
+      });
+
+      html += '</tbody></table>';
+      grid.innerHTML = html;
+    }
+
+    // навигация по сменам
+    document.getElementById('shiftSeg').addEventListener('click', (e)=>{
+      if(e.target.tagName!=='BUTTON') return;
+      [...e.currentTarget.children].forEach(btn=>btn.setAttribute('aria-pressed','false'));
+      e.target.setAttribute('aria-pressed','true');
+      const shift = Number(e.target.dataset.shift);
+      const first = allClasses().find(c => (SCHEDULE[c]||{}).shift===shift);
+      if(first){ classSelect.value = first; renderGrid(first); }
+    });
+
+    // листать дни [ / ]
+    let dayOffset = 0; // 0 = все дни
+    document.addEventListener('keydown', (e)=>{
+      if(e.key==='[' || e.key===']'){
+        const dir = e.key===']' ? 1 : -1;
+        dayOffset = (dayOffset + dir + DAY_ORDER.length + 1) % (DAY_ORDER.length + 1);
+        const tbl = grid.querySelector('table'); if(!tbl) return;
+        const heads = [...tbl.querySelectorAll('thead th')]; const cols = heads.length;
+        for(let c=1;c<cols;c++){
+          const show = (dayOffset===0) || (c===dayOffset);
+          heads[c].style.display = show? 'table-cell':'none';
+          tbl.querySelectorAll(`tbody tr td:nth-child(${c+1})`).forEach(td=>td.style.display = show? 'table-cell':'none');
+        }
+      }
+    });
+
+    // кнопка Назад
+    document.getElementById('backBtn').addEventListener('click', ()=> history.back());
+
+    // init
+    (async function init(){
+      await loadSchedule();
+      fillClassOptions();
+      classSelect.addEventListener('change', ()=> renderGrid(classSelect.value));
+      const firstClass = allClasses().find(c => (SCHEDULE[c]||{}).shift===1) || allClasses()[0];
+      if(firstClass){ classSelect.value = firstClass; renderGrid(firstClass); }
+    })();
+  </script>
+</body>
+</html>
