@@ -223,28 +223,24 @@
   </section>
 
   <!-- СОБЫТИЯ -->
-  <section id="events">
-    <div class="container">
-      <h2 class="section-title fade">Последние события</h2>
-      <div class="grid fade">
-        <div class="event">
-          <h3>1 сентября — День знаний</h3>
-          <small>01.09.2025</small>
-          <p>Торжественная линейка и праздничный концерт для учеников и родителей.</p>
-        </div>
-        <div class="event">
-          <h3>Спортивные достижения</h3>
-          <small>25.08.2025</small>
-          <p>Команда школы заняла 1 место в районных соревнованиях по волейболу.</p>
-        </div>
-        <div class="event">
-          <h3>Открытие обновлённой библиотеки</h3>
-          <small>15.08.2025</small>
-          <p>Новый фонд, рабочие места и зона тихого чтения.</p>
-        </div>
-      </div>
-    </div>
-  </section>
+ <section id="events">
+  <div class="container">
+    <h2 class="section-title fade">Последние события</h2>
+
+    <!-- карточки новостей -->
+    <div id="latest-news" class="grid fade"></div>
+
+    <!-- кнопка "Показать все" в стиле сайта -->
+    <p style="text-align:center;margin-top:14px">
+      <a href="news.html" style="display:inline-block;padding:10px 16px;border:1px solid var(--line);border-radius:10px;background:#1b1b1b;color:var(--fg);text-decoration:none">
+        Показать все события →
+      </a>
+    </p>
+
+    <p id="latest-error" style="color:#aaa;display:none;margin-top:8px">Не удалось загрузить новости.</p>
+  </div>
+</section>
+
 
   <!-- О ШКОЛЕ -->
   <section id="about">
@@ -323,5 +319,84 @@
     });
   });
 </script>
+<script>
+(function(){
+  const BOX = document.getElementById('latest-news');
+  const ERR = document.getElementById('latest-error');
+
+  // твой репозиторий
+  const REPO_OWNER = "Lyrielochka";
+  const REPO_NAME  = "school-site";
+  const BRANCH     = "main";
+
+  const API_LIST = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/news?ref=${BRANCH}`;
+  const RAW_FILE = (name)=>`https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/${BRANCH}/news/${encodeURIComponent(name)}`;
+
+  function parseFrontMatter(md){
+    const m = md.match(/^---\s*([\s\S]*?)\s*---\s*([\s\S]*)$/);
+    if(!m) return {meta:{}, body:md};
+    const yaml = m[1], body = m[2];
+    const meta = {};
+    yaml.split(/\r?\n/).forEach(line=>{
+      const mm = line.match(/^(\w+):\s*(.*)$/);
+      if(mm){
+        const k=mm[1].trim(); let v=mm[2].trim();
+        if(/^".*"$/.test(v)||/^'.*'$/.test(v)) v=v.slice(1,-1);
+        meta[k]=v;
+      }
+    });
+    return {meta, body};
+  }
+  const fmtDate = s => {
+    try { return new Date(s).toLocaleDateString('ru-RU',{year:'numeric',month:'long',day:'2-digit'}); }
+    catch { return s; }
+  };
+
+  async function loadLatest(){
+    try{
+      const res = await fetch(API_LIST);
+      if(!res.ok) throw res;
+      const files = await res.json();
+      const mdFiles = files.filter(f=>/\.md$/i.test(f.name));
+      const raws = await Promise.all(mdFiles.map(f=>fetch(RAW_FILE(f.name)).then(r=>r.text().then(t=>({name:f.name, text:t})))));
+
+      let items = raws.map(({name,text})=>{
+        const {meta, body} = parseFrontMatter(text);
+        const firstLine = (body.split('\n').find(l=>l.trim())||"").trim();
+        return {
+          file: name,
+          title: meta.title || name.replace(/\.md$/,''),
+          date:  meta.date || "",
+          cover: meta.cover || "",
+          excerpt: meta.excerpt || (firstLine.length>140? firstLine.slice(0,140)+'…' : firstLine)
+        };
+      }).sort((a,b)=> new Date(b.date)-new Date(a.date))
+        .slice(0,3);
+
+      // верстаем под твой стиль «event»-карточек
+      BOX.innerHTML = items.map(it=>`
+        <article class="event" style="overflow:hidden">
+          ${it.cover ? `
+            <img src="${it.cover}" alt="" loading="lazy"
+                 style="width:100%;height:160px;object-fit:cover;border-radius:10px;border:1px solid var(--line);margin-bottom:10px">
+          ` : ``}
+          <h3 style="color:var(--accent);margin:0">${it.title}</h3>
+          ${it.date ? `<small>${fmtDate(it.date)}</small>` : ``}
+          ${it.excerpt ? `<p style="margin-top:6px">${it.excerpt}</p>` : ``}
+          <p style="margin-top:8px">
+            <a href="news.html?slug=${encodeURIComponent(it.file)}" style="color:var(--accent);text-decoration:none">Читать полностью →</a>
+          </p>
+        </article>
+      `).join('');
+    }catch(e){
+      console.error(e);
+      ERR.style.display = '';
+    }
+  }
+
+  loadLatest();
+})();
+</script>
+
 </body>
 </html>
