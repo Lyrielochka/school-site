@@ -17,6 +17,7 @@
     body{font-family:Segoe UI,Arial,sans-serif;background:var(--bg);color:var(--fg);line-height:1.6;overflow-x:hidden}
     a{color:var(--accent);text-decoration:none}
     a:hover{text-decoration:underline}
+    img{max-width:100%;height:auto}
 
     /* ========= утилиты против наложения текста ========= */
     .wrap{overflow-wrap:anywhere;word-break:break-word}
@@ -27,79 +28,81 @@
     .container{max-width:1200px;margin:0 auto;padding:24px}
 
     /* ========= шапка ========= */
-    header.page{padding:32px 24px 12px}
+    header.page{padding:8px 0 12px}
     .kicker{color:var(--muted);font-size:14px}
-    h1{font-size:clamp(26px,3.6vw,40px);letter-spacing:.2px}
+    h1{font-size:clamp(26px,3.6vw,40px);letter-spacing:.2px;color:var(--accent)}
     .sub{color:var(--muted)}
 
     /* ========= макет ========= */
-    .layout{display:grid;grid-template-columns:300px 1fr;gap:24px;margin-top:12px}
+    .layout{display:grid;grid-template-columns:300px 1fr;gap:24px;margin-top:16px}
     @media (max-width: 980px){.layout{grid-template-columns:1fr}}
 
     /* ========= карточки ========= */
     .card{background:var(--bg-2);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
     .card .body{padding:18px}
 
+    /* ========= кнопка назад ========= */
+    .back-btn{display:inline-flex;align-items:center;gap:8px;padding:10px 16px;border-radius:10px;border:1px solid var(--line);background:var(--accent);color:#111;font-weight:700;box-shadow:var(--shadow);cursor:pointer}
+    .back-btn svg{flex-shrink:0}
+    .back-btn:hover{filter:brightness(1.05)}
+
     /* ========= сайдбар ========= */
     .sidebar .search{display:flex;align-items:center;gap:10px;border:1px solid var(--line);background:var(--bg-3);padding:10px 12px;border-radius:12px}
     .sidebar input[type="search"]{flex:1;background:transparent;border:0;outline:0;color:var(--fg)}
-
     .menu{margin-top:18px}
     .menu h3{font-size:16px;margin:0 0 8px}
-    .menu ul{display:grid;gap:8px}
+    .menu ul{display:grid;gap:8px;list-style:none}
     .menu a{display:block;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:var(--bg-3);color:var(--fg);text-decoration:none}
     .menu a.active{background:var(--accent);color:#111;border-color:#000}
 
     /* ========= список секций ========= */
-    .group{position:relative}
     .group+.group{margin-top:16px}
     .group .title{display:flex;align-items:center;gap:8px;font-weight:800;font-size:clamp(18px,2.2vw,24px);color:var(--accent)}
     .counter{display:inline-block;min-width:28px;padding:4px 8px;font-size:12px;border-radius:999px;background:var(--bg-3);border:1px solid var(--line);text-align:center;color:#cfcfcf}
-
     .teachers{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:10px}
     @media (max-width: 760px){.teachers{grid-template-columns:1fr}}
-
     .teacher{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:12px 14px;border-radius:12px;background:var(--bg-3);border:1px solid var(--line)}
     .teacher .name{font-weight:600}
     .teacher .note{color:var(--accent)}
 
-    /* чип выбранного фильтра */
-    .chips{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 0}
-    .chip{padding:6px 10px;border-radius:999px;border:1px solid var(--line);background:var(--bg-3);font-size:12px}
-
     /* ========= мобильные улучшения ========= */
-    @media (max-width:600px){
-      .card .body{padding:14px}
-      header.page{padding:20px 16px 6px}
+    @media (max-width:900px){
+      /* при активном поиске показываем сначала результаты, затем сайдбар */
+      .layout.search-active{display:flex;flex-direction:column}
+      .layout.search-active #results{order:-1}
+      .layout.search-active .sidebar{order:1}
     }
   </style>
 </head>
 <body>
+  <div class="container">
+    <button class="back-btn" id="backBtn" aria-label="Назад">
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+      Назад
+    </button>
+  </div>
+
   <header class="page container">
     <div class="kicker">Наши учителя</div>
     <h1 class="lh-tight wrap">2024/2025 учебный год</h1>
     <p class="sub">актуально на 01.09.2025</p>
   </header>
 
-  <main class="container layout">
+  <main class="container layout" id="layoutRoot">
     <!-- Сайдбар -->
-    <aside class="sidebar">
-      <section class="card">
-        <div class="body">
-          <label class="wrap" for="q">Поиск</label>
-          <div class="search" role="search">
-            <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
-            <input id="q" type="search" placeholder="Фамилия или предмет…" autocomplete="off" />
-          </div>
-
-          <div class="chips" id="activeFilters" aria-live="polite"></div>
-
-          <div class="menu">
-            <h3>Разделы</h3>
-            <ul id="subjectMenu"></ul>
-          </div>
+    <aside class="sidebar card">
+      <div class="body">
+        <label class="wrap" for="q">Поиск</label>
+        <div class="search" role="search">
+          <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+          <input id="q" type="search" placeholder="Фамилия или предмет…" autocomplete="off" />
         </div>
-      </section>
+
+        <div class="menu">
+          <h3>Разделы</h3>
+          <ul id="subjectMenu"></ul>
+        </div>
+      </div>
     </aside>
 
     <!-- Контент -->
@@ -123,7 +126,7 @@
   </template>
 
   <script>
-    // ======= данные =======
+    // ======= данные (из твоего списка) =======
     const DATA = [
       {subject:'Учителя белорусского языка и литературы', list:[
         'Лапицкая О.В. (заместитель директора по воспитательной работе)',
@@ -161,15 +164,9 @@
     // ======= helpers =======
     const q = (sel,root=document)=>root.querySelector(sel);
     const qa = (sel,root=document)=>Array.from(root.querySelectorAll(sel));
+    const layout = q('#layoutRoot');
 
-    const state = {
-      text:'',
-      subject:null
-    };
-
-    function normalize(s){
-      return s.toLowerCase().replace(/[ё]/g,'е');
-    }
+    function normalize(s){return s.toLowerCase().replace(/[ё]/g,'е');}
 
     function renderMenu(){
       const menu = q('#subjectMenu');
@@ -193,25 +190,9 @@
       });
     }
 
-    function renderActiveChips(){
-      const box = q('#activeFilters');
-      box.innerHTML='';
-      if(state.subject){
-        const chip = document.createElement('span');
-        chip.className='chip wrap';
-        chip.textContent = state.subject;
-        box.appendChild(chip);
-      }
-      if(state.text){
-        const chip = document.createElement('span');
-        chip.className='chip wrap';
-        chip.textContent = `поиск: "${state.text}"`;
-        box.appendChild(chip);
-      }
-    }
+    const state = { text:'', subject:null };
 
     function render(){
-      renderActiveChips();
       const root = q('#results');
       root.innerHTML='';
 
@@ -227,30 +208,35 @@
         })
         .filter(g=>g.list.length>0);
 
+      const gTpl = q('#groupTpl');
+      const tTpl = q('#teacherTpl');
+
       if(groups.length===0){
         const empty = document.createElement('div');
         empty.className='card';
         empty.innerHTML = '<div class="body">Ничего не найдено. Попробуйте изменить запрос.</div>';
         root.appendChild(empty);
-        return;
+      } else {
+        groups.forEach(g=>{
+          const gNode = gTpl.content.cloneNode(true);
+          gNode.querySelector('.text').textContent = g.subject;
+          gNode.querySelector('.counter').textContent = g.list.length;
+          const holder = gNode.querySelector('.teachers');
+          g.list.forEach(n=>{
+            const t = tTpl.content.cloneNode(true);
+            const m = /^(.*?)(\((.*?)\))?$/.exec(n);
+            const name = (m && m[1] ? m[1] : n).trim();
+            const note = (m && m[2] ? m[2] : '').trim();
+            t.querySelector('.name').textContent = name;
+            t.querySelector('.note').textContent = note;
+            holder.appendChild(t);
+          });
+          root.appendChild(gNode);
+        });
       }
 
-      const gTpl = q('#groupTpl');
-      const tTpl = q('#teacherTpl');
-      groups.forEach(g=>{
-        const gNode = gTpl.content.cloneNode(true);
-        gNode.querySelector('.text').textContent = g.subject;
-        gNode.querySelector('.counter').textContent = g.list.length;
-        const holder = gNode.querySelector('.teachers');
-        g.list.forEach(n=>{
-          const t = tTpl.content.cloneNode(true);
-          const [name, noteMatch] = /^(.*?)(\((.*?)\))?$/.exec(n).slice(1);
-          t.querySelector('.name').textContent = name.trim();
-          t.querySelector('.note').textContent = noteMatch? noteMatch.trim(): '';
-          holder.appendChild(t);
-        });
-        root.appendChild(gNode);
-      });
+      // мобильная перестановка: при активном поиске — результаты наверх, сайдбар вниз
+      layout.classList.toggle('search-active', !!state.text);
     }
 
     // ======= init =======
@@ -259,29 +245,11 @@
 
     q('#q').addEventListener('input', (e)=>{ state.text = e.target.value.trim(); render(); });
 
-    // Сохранение/восстановление фильтров из hash (удобно делиться ссылкой)
-    function saveHash(){
-      const params = new URLSearchParams();
-      if(state.subject) params.set('subject', state.subject);
-      if(state.text) params.set('q', state.text);
-      history.replaceState(null, '', params.toString()? ('#'+params.toString()): location.pathname);
-    }
-    function loadHash(){
-      const h = location.hash.replace('#','');
-      const p = new URLSearchParams(h);
-      state.subject = p.get('subject');
-      state.text = p.get('q')||'';
-      const input = q('#q');
-      if(input) input.value = state.text;
-      qa('#subjectMenu a').forEach(a=>{
-        a.classList.toggle('active', (a.dataset.subject||'')=== (state.subject||''));
-      });
-      render();
-    }
-    window.addEventListener('hashchange', loadHash);
-    // при первом заходе
-    loadHash();
-
+    // Кнопка «Назад»: history.back с фоллбеком
+    q('#backBtn').addEventListener('click', (e)=>{
+      e.preventDefault();
+      if (history.length > 1) history.back(); else window.location.href = '/';
+    });
   </script>
 </body>
 </html>
