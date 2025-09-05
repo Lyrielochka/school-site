@@ -6,58 +6,76 @@
 <title>Группы продленного дня — 2024/2025</title>
 <style>
 :root{
-  --bg:#000;--panel:#0f0f0f;--panel2:#111;--ink:#f6f6f6;--muted:#b3b3b3;--gold:#d4af37;--glow:rgba(212,175,55,.35);--border:rgba(255,255,255,.12)
+  --bg:#121212;--bg-2:#1a1a1a;--bg-3:#1f1f1f;
+  --fg:#eeeeee;--muted:#aaaaaa;--line:#2b2b2b;
+  --accent:#f5c542;--shadow:0 10px 30px rgba(0,0,0,.6);
 }
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 Inter,system-ui,Segoe UI,Roboto,Arial}
-.wrap{max-width:1100px;margin:32px auto;padding:0 16px}
-.header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px;flex-wrap:wrap}
-.back{background:var(--panel);border:1px solid var(--border);color:var(--ink);padding:10px 14px;border-radius:12px;font-weight:700;cursor:pointer}
-.back:hover{box-shadow:0 0 0 2px var(--gold) inset;color:var(--gold)}
-.title{font-size:34px;font-weight:900;color:var(--gold);letter-spacing:.2px;margin:6px 0}
-.subtitle{color:var(--muted);margin:-6px 0 8px}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;margin-top:10px}
-.card{position:relative;border:1px solid var(--border);border-radius:16px;background:linear-gradient(180deg,#0e0e0e,#090909);padding:16px;box-shadow:0 8px 24px rgba(0,0,0,.35)}
-.card:before{content:"";position:absolute;inset:-1px -1px auto -1px;height:6px;border-radius:16px 16px 0 0;background:linear-gradient(90deg,#ffd700,var(--gold));box-shadow:0 6px 18px var(--glow)}
-.card h3{margin:6px 0 8px;font-size:18px;color:var(--gold)}
-.card .classes{font-weight:700;color:#e9e9e9}
-.card .teacher{color:var(--muted);margin-top:4px}
+body{font-family:Segoe UI,Arial,sans-serif;background:var(--bg);color:var(--fg);line-height:1.6;overflow-x:hidden;margin:0}
 
-.section{margin-top:28px}
-.section h2{color:var(--gold);font-size:22px;margin:6px 0 12px}
-.list{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
-.item{border:1px solid var(--border);border-radius:14px;background:var(--panel2);padding:14px}
-.item a{color:var(--ink);text-decoration:none;font-weight:700}
-.item a:hover{color:var(--gold);text-shadow:0 0 18px var(--glow)}
-.footer{margin-top:22px;color:var(--muted);font-size:13px}
+.hero{position:relative;min-height:48vh;display:grid;place-items:center;text-align:center;isolation:isolate}
+.hero:before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.55),rgba(0,0,0,.75)),url('hero-gpd.jpg');background-size:cover;background-position:center;z-index:-1}
+.hero .title{font-weight:900;font-size:clamp(28px,6vw,56px);letter-spacing:.3px;color:var(--accent);text-shadow:0 2px 24px rgba(0,0,0,.6)}
+.hero .subtitle{margin-top:10px;color:var(--muted);font-size:clamp(14px,2.2vw,18px)}
+
+.wrap{max-width:1200px;margin:-40px auto 32px;padding:0 16px;position:relative}
+
+.section-head{text-align:center;margin:20px 0 10px}
+.section-head .h{color:var(--accent);font-size:clamp(20px,2.6vw,28px);font-weight:800}
+.section-head .sub{color:var(--muted);font-size:14px}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:18px;margin-top:18px}
+.card{border:1px solid var(--line);border-radius:14px;background:var(--bg-2);padding:18px;box-shadow:var(--shadow);text-align:center;transition:transform .2s}
+.card:hover{transform:translateY(-4px)}
+.card h3{margin:6px 0 10px;font-size:20px;color:var(--accent);font-weight:800}
+.card .classes{font-weight:600;color:var(--fg)}
+.card .teacher{color:var(--muted);margin-top:6px}
+
+.section{margin-top:32px}
+.links{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;justify-items:center}
+.link{width:100%;border:1px solid var(--line);border-radius:12px;background:var(--bg-3);padding:14px;text-align:center;box-shadow:var(--shadow);transition:transform .2s}
+.link:hover{transform:translateY(-3px)}
+.link a{color:var(--fg);text-decoration:none;font-weight:600}
+.link a:hover{color:var(--accent)}
+
+.back{position:fixed;right:18px;bottom:18px;height:54px;width:54px;border-radius:50%;display:grid;place-items:center;background:var(--bg-2);border:1px solid var(--line);color:var(--accent);cursor:pointer;box-shadow:var(--shadow)}
+.back:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.8)}
+
+.footer{margin-top:28px;color:var(--muted);font-size:13px;text-align:center}
 </style>
 </head>
 <body>
-  <div class="wrap">
-    <div class="header">
-      <button class="back" onclick="history.back()">← Назад</button>
-      <div>
-        <div class="title">Группы продленного дня</div>
-        <div class="subtitle">Учебный год 2024/2025</div>
+  <section class="hero">
+    <div>
+      <div class="title">Группы продленного дня</div>
+      <div class="subtitle">Учебный год 2024/2025</div>
+    </div>
+  </section>
+
+  <main class="wrap">
+    <div class="section-head">
+      <div class="h">Состав групп</div>
+      <div class="sub">Перечень ГПД и ответственные воспитатели</div>
+    </div>
+
+    <div class="grid" id="gpdGrid"></div>
+
+    <section class="section">
+      <div class="section-head">
+        <div class="h">В помощь воспитателю</div>
+        <div class="sub">Методические материалы</div>
       </div>
-    </div>
-
-    <div class="grid" id="gpdGrid">
-      <!-- Карточки ГПД заполняем ниже -->
-    </div>
-
-    <div class="section">
-      <h2>В помощь воспитателю ГПД</h2>
-      <div class="list">
-        <div class="item"><a href="#">Методические рекомендации по организации прогулок в режиме ГПД</a></div>
-        <div class="item"><a href="#">Методические рекомендации по проведению внеклассных воспитательных мероприятий</a></div>
-        <div class="item"><a href="#">Организация самоподготовки в условиях ГПД</a></div>
-        <div class="item"><a href="#">Физические упражнения (спортивный час) в группах продлённого дня</a></div>
+      <div class="links">
+        <div class="link"><a href="#">Методические рекомендации по организации прогулок</a></div>
+        <div class="link"><a href="#">Проведение внеклассных воспитательных мероприятий</a></div>
+        <div class="link"><a href="#">Организация самоподготовки</a></div>
+        <div class="link"><a href="#">Физические упражнения (спортивный час)</a></div>
       </div>
-    </div>
+    </section>
 
-    <div class="footer">Страница оформлена в стиле главной: лёгкие карточки, мягкие тени, золотой акцент.</div>
-  </div>
+    <div class="footer">Страница выполнена в едином стиле сайта: тёмная палитра, золотые акценты.</div>
+  </main>
+
+  <button class="back" onclick="history.back()" aria-label="Назад">↩</button>
 
 <script>
 const DATA = [
@@ -75,11 +93,11 @@ const DATA = [
 const grid = document.getElementById('gpdGrid');
 function render(){
   grid.innerHTML = DATA.map(({num,classes,teacher})=> `
-    <div class="card">
+    <article class="card">
       <h3>ГПД № ${num}</h3>
       <div class="classes">${classes}</div>
       <div class="teacher">Воспитатель — ${teacher}</div>
-    </div>
+    </article>
   `).join('');
 }
 render();
