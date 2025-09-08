@@ -5,127 +5,266 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Урицкая средняя школа</title>
 <style>
-  /* ========= базовые стили ========= */
+  /* ========= базовые стили / палитра ========= */
   *{box-sizing:border-box;margin:0;padding:0}
   :root{
-    --bg:#121212;--bg-2:#1a1a1a;--bg-3:#1f1f1f;
-    --fg:#eeeeee;--muted:#aaaaaa;--line:#2b2b2b;
-    --accent:#f5c542;--shadow:0 10px 30px rgba(0,0,0,.6);
+    --bg:#121212; --bg-2:#1a1a1a; --bg-3:#1f1f1f;
+    --fg:#eeeeee; --muted:#aaaaaa; --line:#2b2b2b;
+    --accent:#f5c542;                          /* золото */
+    --accent-08: rgba(245,197,66,.08);
+    --accent-12: rgba(245,197,66,.12);
+    --accent-18: rgba(245,197,66,.18);
+    --accent-28: rgba(245,197,66,.28);
+    --shadow:0 10px 30px rgba(0,0,0,.6);
   }
-  body{font-family:Segoe UI,Arial,sans-serif;background:var(--bg);color:var(--fg);line-height:1.6;overflow-x:hidden}
+  html,body{height:100%}
+  body{
+    font-family:Segoe UI,Arial,sans-serif; color:var(--fg); line-height:1.6; overflow-x:hidden;
+    background:
+      radial-gradient(1200px 600px at 60% -10%, #1a1a1a 0%, transparent 60%),
+      radial-gradient(900px 300px at 8% 120%, #151515 0%, transparent 60%),
+      radial-gradient(900px 300px at 92% 120%, #151515 0%, transparent 60%),
+      var(--bg);
+  }
+  body:after{
+    content:""; position:fixed; inset:0; pointer-events:none; opacity:.05;
+    background-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="140" height="140"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23n)" opacity="0.35"/></svg>');
+    mix-blend-mode:soft-light;
+  }
 
-  /* ========= hero ========= */
+  /* ========= HERO ========= */
   header.hero{
-    position:relative;text-align:center;padding:140px 20px;
+    position:relative; text-align:center; padding:140px 20px;
     background:url("assets/images/school.jpg") center/cover no-repeat;
+    /* убрал обычный бордер — линия будет через ::before */
+    border-bottom:none;
   }
-  header.hero::after{content:"";position:absolute;inset:0;background:rgba(0,0,0,.7)}
-  header .inner{position:relative;z-index:1;max-width:1100px;margin:0 auto}
-  .title{font-size:clamp(2rem,5vw,3.2rem);color:var(--accent);text-shadow:0 0 18px rgba(245,197,66,.8)}
-  .subtitle{margin-top:14px;color:#ddd;font-size:1.1rem}
+  /* приятная золотая линия под картинкой (деликатный градиент + свечение) */
+  header.hero::before{
+    content:""; position:absolute; left:50%; bottom:-1px; transform:translateX(-50%);
+    width:min(780px,92vw); height:2px; border-radius:999px;
+    background:linear-gradient(90deg, transparent, rgba(245,197,66,.65), transparent);
+    box-shadow:0 0 14px rgba(245,197,66,.25);
+  }
+  header.hero::after{
+    content:""; position:absolute; inset:0;
+    background:
+      linear-gradient(180deg, rgba(0,0,0,.55), rgba(0,0,0,.78)),
+      radial-gradient(900px 260px at 50% 86%, var(--accent-12), transparent 60%);
+  }
+  header .inner{position:relative; z-index:1; max-width:1100px; margin:0 auto}
+  .title{
+    font-size:clamp(2rem,5vw,3.2rem);
+    color:var(--accent);
+    letter-spacing:.3px;
+    text-shadow:0 2px 0 rgba(0,0,0,.5), 0 0 24px var(--accent-28);
+  }
+  .subtitle{margin-top:14px;color:#ddd;font-size:1.1rem;opacity:.95}
+
+  /* ========= верхнее меню-пилюли ========= */
   .topnav{margin-top:28px;display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
   .topnav a{
-    display:inline-block;padding:10px 18px;border-radius:30px;border:2px solid var(--accent);
-    color:var(--accent);text-decoration:none;font-weight:600;transition:.25s
+    display:inline-block; padding:10px 18px; border-radius:30px;
+    color:var(--accent); text-decoration:none; font-weight:700; letter-spacing:.2px;
+    border:1px solid rgba(245,197,66,.35);
+    background:linear-gradient(180deg, #1b1b1b, #141414);
+    box-shadow:inset 0 0 0 1px rgba(255,255,255,.03), 0 10px 24px rgba(0,0,0,.45);
+    position:relative; transition:.25s;
   }
-  .topnav a:hover{background:var(--accent);color:#121212}
+  .topnav a::after{
+    content:""; position:absolute; inset:-2px; border-radius:36px; pointer-events:none;
+    background: radial-gradient(100% 100% at 50% 0%, var(--accent-18), transparent 60%);
+    opacity:0; transition:.25s;
+  }
+  .topnav a:hover{
+    color:#121212; background:var(--accent);
+    box-shadow:0 10px 24px rgba(245,197,66,.28), 0 0 0 1px rgba(245,197,66,.45) inset;
+  }
+  .topnav a:hover::after{opacity:1}
+  .topnav a:focus-visible{outline:2px solid var(--accent); outline-offset:2px; border-color:transparent}
 
   /* ========= секции ========= */
   section{padding:64px 20px}
   .container{max-width:1100px;margin:0 auto}
-  .section-title{font-size:1.9rem;color:var(--accent);text-align:center;margin-bottom:24px}
+  .section-title{
+    /* центрирование заголовков секций */
+    display:block; text-align:center; margin:0 auto 26px;
+    font-size:1.9rem; color:var(--accent); letter-spacing:.2px;
+    position:relative;
+  }
+  .section-title::after{
+    content:""; display:block; height:1px; width:min(680px,86vw); margin:12px auto 0;
+    background:linear-gradient(90deg, transparent, rgba(245,197,66,.45), transparent);
+    border-radius:999px;
+  }
 
-  /* карточная сетка */
+  /* ========= кнопки внутри карточек ========= */
+  .btn{
+    display:inline-block; padding:10px 16px; border-radius:12px;
+    font-weight:800; letter-spacing:.2px; text-decoration:none;
+    color:#121212; background:var(--accent);
+    border:1px solid rgba(245,197,66,.5);
+    box-shadow:0 10px 24px rgba(245,197,66,.18), inset 0 0 0 1px rgba(255,255,255,.15);
+    transition:.25s;
+  }
+  .btn:hover{
+    transform:translateY(-1px);
+    box-shadow:0 14px 28px rgba(245,197,66,.28), 0 0 0 1px rgba(245,197,66,.35) inset;
+  }
+
+  /* ========= карточки ========= */
   .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px}
   .card{
-    position:relative;
-    background:var(--bg-3);border:1px solid var(--line);border-radius:14px;padding:22px;
-    box-shadow:var(--shadow);transition:transform .25s,background .25s;overflow:hidden;
-    text-align:center;
+    position:relative; text-align:center; overflow:hidden;
+    background:linear-gradient(180deg, #202020, #181818);
+    border:1px solid var(--line); border-radius:14px; padding:22px;
+    box-shadow:var(--shadow);
+    transition:transform .25s, background .25s, box-shadow .25s, border-color .25s;
   }
-  .card:hover{transform:translateY(-6px);background:#262626}
-  .card h3{color:var(--accent);margin-bottom:8px}
-
-  /* подменю: раскрывается вниз, без обрезания */
-.submenu-card{
-  margin-top:10px;
-  background:#171717;
-  border-top:1px solid #333;
-  padding:10px 12px;
-
-  display:grid;
-  grid-template-columns:repeat(auto-fit, minmax(160px, 1fr));
-  gap:10px;
-
-  max-height:0;          /* спрятано */
+  ..card::before{
+  content:"";
+  position:absolute;
+  inset:-1px;
+  border-radius:16px;
+  z-index:0;
+  background: conic-gradient(...);
+  filter: blur(14px);
+  pointer-events: none;   /* ← ВСТАВИТЬ ЭТУ СТРОКУ */
   opacity:0;
-  overflow:hidden;
-  transition:max-height .35s ease, opacity .35s ease;
+  transition:.3s;
 }
-
-/* показываем при наведении и при .open (мобилки) */
-.card:hover .submenu-card,
-.card.open .submenu-card{
-  max-height:1000px;     /* достаточно большое значение, чтобы влез весь список */
-  opacity:1;
+  .card::after{
+    content:""; position:absolute; left:-40%; top:-140%; width:80%; height:300%;
+    transform: rotate(18deg); pointer-events:none;
+    background:linear-gradient(90deg, transparent, rgba(255,255,255,.12), transparent);
+    opacity:0; transition:.35s;
+  }
+  .card:hover{
+    transform:translateY(-6px);
+    background:linear-gradient(180deg, #242424, #1c1c1c);
+    border-color:rgba(245,197,66,.28);
+    box-shadow:0 16px 32px rgba(0,0,0,.55), 0 0 0 1px rgba(245,197,66,.15) inset;
+  }
+  .card:hover::before{opacity:1}
+  .card:hover::after{opacity:1; left:120%}
+  .card h3{color:var(--accent);margin-bottom:8px}
+  .card h3 { margin-bottom: 8px; }
+.card h3 .link-title{
+  color: var(--accent);
+  text-decoration: none;
+  display: inline-block;
+  position: relative;
+  padding: 2px 0;
 }
-
-.submenu-card a{
-  color:var(--accent);
-  text-decoration:none;
-  font-size:.92rem;
-  padding:6px 10px;
-  border-radius:8px;
-  border:1px solid transparent;
-  white-space:nowrap;
+.card h3 .link-title::after{
+  content:"";
+  position:absolute; left:0; right:0; bottom:-4px; height:2px;
+  background:linear-gradient(90deg, transparent, rgba(245,197,66,.6), transparent);
+  transform:scaleX(0); transform-origin:left; transition:.25s;
 }
-.submenu-card a:hover{ background:#2b2b2b; border-color:#3a3a3a; }
+.card h3 .link-title:hover::after{ transform:scaleX(1); }
 
 
-  /* события */
-  .event{background:var(--bg-2);border:1px solid var(--line);border-radius:12px;padding:18px;transition:background .25s}
-  .event:hover{background:#262626}
+  .submenu-card{
+    margin-top:10px; background:#171717; border-top:1px solid #333; padding:10px 12px;
+    display:grid; grid-template-columns:repeat(auto-fit, minmax(160px, 1fr)); gap:10px;
+    max-height:0; opacity:0; overflow:hidden;
+    transition:max-height .35s ease, opacity .35s ease, filter .35s ease;
+    filter:saturate(.9);
+    border-bottom-left-radius:10px; border-bottom-right-radius:10px;
+  }
+  .card:hover .submenu-card, .card.open .submenu-card{
+    max-height:1000px; opacity:1; filter:saturate(1);
+  }
+  .submenu-card a{
+    color:var(--accent); text-decoration:none; font-size:.92rem; padding:6px 10px; border-radius:8px;
+    border:1px solid transparent; white-space:nowrap; transition:.2s;
+    background:linear-gradient(180deg,#1b1b1b,#151515);
+  }
+  .submenu-card a:hover{ background:#262626; border-color:#3a3a3a; box-shadow:0 0 0 1px rgba(245,197,66,.18) inset }
+
+  /* ========= события ========= */
+  .event{
+    background:linear-gradient(180deg,#191919,#141414);
+    border:1px solid var(--line); border-radius:12px; padding:18px; transition:background .25s, border-color .25s, box-shadow .25s;
+    box-shadow:0 10px 24px rgba(0,0,0,.35);
+  }
+  .event:hover{
+    background:linear-gradient(180deg,#1f1f1f,#171717);
+    border-color:rgba(245,197,66,.25);
+    box-shadow:0 14px 28px rgba(0,0,0,.45), 0 0 0 1px rgba(245,197,66,.12) inset;
+  }
   .event small{display:block;color:var(--muted);margin:.15rem 0 .5rem}
 
-  /* о школе */
-  .about-list{list-style:none;max-width:680px;margin:0 auto;border:1px solid var(--line);border-radius:12px;overflow:hidden}
-  .about-list li{display:flex;gap:12px;justify-content:space-between;padding:14px 16px;background:var(--bg-3)}
-  .about-list li:not(:last-child){border-bottom:1px solid var(--line)}
-  .about-list b{color:#ddd}
+  /* ========= о школе ========= */
+  .about-list{
+    list-style:none; max-width:680px; margin:0 auto;
+    border:1px solid var(--line); border-radius:12px; overflow:hidden;
+    background:linear-gradient(180deg,#191919,#151515);
+    box-shadow:0 12px 24px rgba(0,0,0,.35);
+  }
+  .about-list li{
+    display:flex; gap:12px; justify-content:space-between; padding:14px 16px; background:transparent; position:relative;
+  }
+  .about-list li:not(:last-child){border-bottom:1px solid #262626}
+  .about-list li::before{
+    content:""; position:absolute; left:0; top:0; bottom:0; width:3px; background:linear-gradient(180deg, var(--accent-28), transparent);
+  }
+  .about-list b{color:#e8e8e8}
 
-  /* футер */
-  footer{background:#0d0d0d;color:#8a8a8a;text-align:center;padding:28px 20px}
+  /* ========= футер ========= */
+  footer{
+    background:linear-gradient(180deg,#0f0f0f,#0b0b0b);
+    color:#8a8a8a; text-align:center; padding:32px 20px 36px; position:relative;
+    border-top:1px solid rgba(245,197,66,.25);
+  }
+  footer::before{
+    content:""; position:absolute; left:50%; transform:translateX(-50%); top:0;
+    width:min(740px,92vw); height:1px; background:linear-gradient(90deg,transparent,rgba(245,197,66,.5),transparent);
+  }
   footer a{color:var(--accent);text-decoration:none}
   footer a:hover{text-decoration:underline}
+  .credit img{ filter: drop-shadow(0 0 0 rgba(245,197,66,0)); transition:.25s; }
+  .credit:hover img{ filter: drop-shadow(0 0 10px rgba(245,197,66,.45)); }
 
   /* ========= плавные появления ========= */
   .fade{opacity:0;transform:translateY(36px);transition:all .8s ease}
   .fade.show{opacity:1;transform:translateY(0)}
 
-  /* ========= плавающая панель с кнопками ========= */
+  /* ========= док-панель ========= */
   .dock{position:fixed;right:22px;bottom:22px;display:flex;flex-direction:column;gap:14px;z-index:50}
   .dock .group{position:relative}
   .fab, .sub{
-    display:grid;place-items:center;cursor:pointer;border:none;
-    width:58px;height:58px;border-radius:50%;background:var(--bg-3);
-    color:var(--accent);outline:none;box-shadow:var(--shadow);border:1px solid var(--line);
-    transition:transform .2s,background .2s,opacity .2s
+    display:grid; place-items:center; cursor:pointer; border:none;
+    width:58px; height:58px; border-radius:50%; color:var(--accent); outline:none;
+    background:linear-gradient(180deg,#202020,#141414);
+    border:1px solid var(--line); box-shadow:var(--shadow); position:relative;
+    transition:transform .2s, background .2s, opacity .2s, box-shadow .2s, border-color .2s;
   }
-  .fab:hover{transform:translateY(-2px);background:#2a2a2a}
+  .fab::after, .sub::after{
+    content:""; position:absolute; inset:-3px; border-radius:50%;
+    background:radial-gradient(100% 100% at 50% 0%, var(--accent-18), transparent 70%);
+    opacity:.0; transition:.25s;
+  }
+  .fab:hover, .sub:hover{
+    transform:translateY(-2px); background:#2a2a2a; border-color:rgba(245,197,66,.28);
+    box-shadow:0 14px 28px rgba(0,0,0,.45), 0 0 0 1px rgba(245,197,66,.12) inset;
+  }
+  .fab:hover::after, .sub:hover::after{ opacity:1 }
+
   .fab span{font-size:24px;line-height:1}
 
-  /* submenu для док-панели — влево */
   .submenu-fab{
-    position:absolute;right:70px;bottom:0;display:flex;gap:10px;pointer-events:none;
-    opacity:0;transform:translateX(10px);transition:.2s
+    position:absolute; right:70px; bottom:0; display:flex; gap:10px; pointer-events:none;
+    opacity:0; transform:translateX(10px); transition:.2s
   }
   .sub{width:46px;height:46px;font-size:18px}
   .label{
-    position:absolute;right:70px;bottom:8px;background:#000000b3;color:#fff;
-    padding:6px 10px;border-radius:10px;font-size:.85rem;border:1px solid #222;opacity:0;transform:translateX(10px);
-    pointer-events:none;white-space:nowrap;transition:.2s
+    position:absolute; right:70px; bottom:8px; background:#000000b3; color:#fff;
+    padding:6px 10px; border-radius:10px; font-size:.85rem; border:1px solid #222;
+    opacity:0; transform:translateX(10px); pointer-events:none; white-space:nowrap; transition:.2s
   }
-  .group:hover .submenu-fab, .group:hover .label{opacity:1;transform:translateX(0);pointer-events:auto}
+  .group:hover .submenu-fab, .group:hover .label,
   .group.open .submenu-fab, .group.open .label{opacity:1;transform:translateX(0);pointer-events:auto}
 
   @media (max-width:520px){
@@ -133,29 +272,25 @@
     .submenu-fab{right:64px}
     .label{display:none}
   }
-  .credit img {
-  filter: drop-shadow(0 0 0 rgba(245,197,66,0));
-  transition: .25s;
-}
-.credit:hover img {
-  filter: drop-shadow(0 0 8px rgba(245,197,66,.45));
-}
+
+  @media (prefers-reduced-motion: reduce){
+    .fade{transition:none} .card, .topnav a, .fab, .sub, .btn{transition:none}
+    .card::after, .card::before{display:none}
+  }
 </style>
 </head>
 <body>
 
   <!-- HERO -->
   <header class="hero">
-    
     <div class="inner fade">
       <h1 class="title">Вот это мне заняться нечем</h1>
       <p class="subtitle">Тут работы года на 4.</p>
       <nav class="topnav">
-  <a href="news.html">События</a>
-  <a href="#about">О школе</a>
-  <a href="#contacts">Контакты</a>
-</nav>
-
+        <a href="news.html">События</a>
+        <a href="#about">О школе</a>
+        <a href="#contacts">Контакты</a>
+      </nav>
     </div>
   </header>
 
@@ -164,33 +299,28 @@
     <div class="container">
       <h2 class="section-title fade">Быстрый доступ</h2>
       <div class="grid fade">
-
         <article class="card">
-  <h3>События</h3>
+  <h3><a class="link-title" href="news.html">События</a></h3>
   <p>Будьте в курсе школьной жизни: олимпиады, праздники, конкурсы.</p>
-  <p style="margin-top:8px"><a href="news.html" style="color:var(--accent);text-decoration:none">Открыть →</a></p>
 </article>
 
 
         <article class="card">
-          <h3>Расписание</h3>
-          <p>Актуальные уроки и звонки.</p>
-           <p style="margin-top:8px"><a href="raspisanie.html" style="color:var(--accent);text-decoration:none">Открыть →</a></p>
-        </article>
+  <h3><a class="link-title" href="raspisanie.html">Расписание</a></h3>
+  <p>Актуальные уроки и звонки.</p>
+</article>
 
         <article class="card">
-          <h3>Учителя</h3>
-          <p>Команда профессионалов и классных руководителей.</p>
-          <p style="margin-top:8px"><a href="teacher.html" style="color:var(--accent);text-decoration:none">Открыть →</a></p>
-        </article>
+  <h3><a class="link-title" href="teacher.html">Учителя</a></h3>
+  <p>Команда профессионалов и классных руководителей.</p>
+</article>
 
         <article class="card">
-          <h3>График работы администрации</h3>
-          <p>Часы приёма директора и заместителей.</p>
-          <p style="margin-top:8px"><a href="admin-schedule.html" style="color:var(--accent);text-decoration:none">Открыть →</a></p>
-        </article>
+  <h3><a class="link-title" href="admin-schedule.html">График работы администрации</a></h3>
+  <p>Часы приёма директора и заместителей.</p>
+</article>
 
-        <!-- Карточка с большим подменю -->
+
         <article class="card">
           <h3>Для законных представителей</h3>
           <p>Важные материалы и сервисы.</p>
@@ -204,7 +334,7 @@
             <a href="future-firstgraders.html">Школа будущих первоклассников</a>
           </div>
         </article>
- <!-- Карточка с большим подменю -->
+
         <article class="card">
           <h3>Для обучающихся</h3>
           <p>Важная информация.</p>
@@ -223,24 +353,18 @@
   </section>
 
   <!-- СОБЫТИЯ -->
- <section id="events">
-  <div class="container">
-    <h2 class="section-title fade">Последние события</h2>
+  <section id="events">
+    <div class="container">
+      <h2 class="section-title fade">Последние события</h2>
+      <div id="latest-news" class="grid fade"></div>
 
-    <!-- карточки новостей -->
-    <div id="latest-news" class="grid fade"></div>
+      <p style="text-align:center;margin-top:14px">
+        <a href="news.html" class="btn" style="background:#1b1b1b;color:var(--fg);border:1px solid var(--line)">Показать все события</a>
+      </p>
 
-    <!-- кнопка "Показать все" в стиле сайта -->
-    <p style="text-align:center;margin-top:14px">
-      <a href="news.html" style="display:inline-block;padding:10px 16px;border:1px solid var(--line);border-radius:10px;background:#1b1b1b;color:var(--fg);text-decoration:none">
-        Показать все события →
-      </a>
-    </p>
-
-    <p id="latest-error" style="color:#aaa;display:none;margin-top:8px">Не удалось загрузить новости.</p>
-  </div>
-</section>
-
+      <p id="latest-error" style="color:#aaa;display:none;margin-top:8px">Не удалось загрузить новости.</p>
+    </div>
+  </section>
 
   <!-- О ШКОЛЕ -->
   <section id="about">
@@ -255,155 +379,135 @@
     </div>
   </section>
 
-<!-- ФУТЕР -->
-<footer id="contacts">
-  <p class="credit">
-    <a href="https://reklama322228.netlify.app/" target="_blank" rel="noopener">
-      <img src="assets/icons/logo 4.png" alt="ЕТ" width="80" height="80" 
-           style="vertical-align:-3px;margin-right:6px;">
-    </a>
-  </p>
-  <p>
-    Адрес: Тенистая ул., 10, агрогородок Урицкое · 
-    Тел.: <a href="tel:+375232985102">+375 23 298-51-02</a>
-  </p>
-</footer>
+  <!-- ФУТЕР -->
+  <footer id="contacts">
+    <p class="credit">
+      <a href="https://reklama322228.netlify.app/" target="_blank" rel="noopener">
+        <img src="assets/icons/logo 4.png" alt="ЕТ" width="80" height="80" style="vertical-align:-3px;margin-right:6px;">
+      </a>
+    </p>
+    <p>
+      Адрес: Тенистая ул., 10, агрогородок Урицкое · 
+      Тел.: <a href="tel:+375232985102">+375 23 298-51-02</a>
+    </p>
+  </footer>
 
-<!-- ========= ПАНЕЛЬ С СОЦСЕТЯМИ ========= -->
-<div class="dock" aria-label="Соцсети">
-  <!-- Telegram -->
-  <div class="group">
-    <a class="fab" href="https://t.me/uritskoe_school" target="_blank" aria-label="Telegram">
-      <!-- SVG иконка Telegram --> 
-      <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" width="26" height="26">
-        <path d="M12 2c5.52 0 10 4.48 10 10s-4.48 10-10 10S2 17.52 2 12 6.48 2 12 2zm3.5 6.56-8.06 3.18c-.55.22-.55.53-.1.66l2.06.65 4.77-3c.22-.15.43-.07.26.1l-3.86 3.65-.14 2.06c.2 0 .29-.09.4-.2l.98-.94 2.03 1.5c.38.2.65.1.74-.35l1.35-6.55c.12-.6-.23-.87-.73-.66z"/>
-      </svg>
-    </a>
-    <div class="label">Telegram</div>
+  <!-- ========= ПАНЕЛЬ С СОЦСЕТЯМИ ========= -->
+  <div class="dock" aria-label="Соцсети">
+    <div class="group">
+      <a class="fab" href="https://t.me/uritskoe_school" target="_blank" aria-label="Telegram">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" width="26" height="26">
+          <path d="M12 2c5.52 0 10 4.48 10 10s-4.48 10-10 10S2 17.52 2 12 6.48 2 12 2zm3.5 6.56-8.06 3.18c-.55.22-.55.53-.1.66l2.06.65 4.77-3c.22-.15.43-.07.26.1l-3.86 3.65-.14 2.06c.2 0 .29-.09.4-.2l.98-.94 2.03 1.5c.38.2.65.1.74-.35l1.35-6.55c.12-.6-.23-.87-.73-.66z"/>
+        </svg>
+      </a>
+      <div class="label">Telegram</div>
+    </div>
+
+    <div class="group">
+      <a class="fab" href="https://www.instagram.com/uritskaya_schkola/" target="_blank" aria-label="Instagram">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" width="26" height="26">
+          <path d="M7 2C4.24 2 2 4.24 2 7v10c0 2.76 2.24 5 5 5h10c2.76 0 5-2.24 5-5V7c0-2.76-2.24-5-5-5H7zm10 2c1.66 0 3 1.34 3 3v10c0 1.66-1.34 3-3 3H7c-1.66 0-3-1.34-3-3V7c0-1.66 1.34-3 3-3h10zm-5 3a5 5 0 1 0 0 10 5 5 0 0 0 0-10zm0 2a3 3 0 1 1 0 6 3 3 0 0 1 0-6zm4.5-.75a1.25 1.25 0 1 1 0 2.5 1.25 1.25 0 0 1 0-2.5z"/>
+        </svg>
+      </a>
+      <div class="label">Instagram</div>
+    </div>
   </div>
 
-  <!-- Instagram -->
-  <div class="group">
-    <a class="fab" href="https://www.instagram.com/uritskaya_schkola/" target="_blank" aria-label="Instagram">
-      <!-- SVG иконка Instagram -->
-      <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" width="26" height="26">
-        <path d="M7 2C4.24 2 2 4.24 2 7v10c0 2.76 2.24 5 5 5h10c2.76 0 5-2.24 5-5V7c0-2.76-2.24-5-5-5H7zm10 2c1.66 0 3 1.34 3 3v10c0 1.66-1.34 3-3 3H7c-1.66 0-3-1.34-3-3V7c0-1.66 1.34-3 3-3h10zm-5 3a5 5 0 1 0 0 10 5 5 0 0 0 0-10zm0 2a3 3 0 1 1 0 6 3 3 0 0 1 0-6zm4.5-.75a1.25 1.25 0 1 1 0 2.5 1.25 1.25 0 0 1 0-2.5z"/>
-      </svg>
-    </a>
-    <div class="label">Instagram</div>
-  </div>
-</div>
+  <script>
+    // плавные появления секций
+    const fades = document.querySelectorAll('.fade');
+    const io = new IntersectionObserver(es => {
+      es.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('show'); });
+    }, {threshold:.2});
+    fades.forEach(n=>io.observe(n));
 
-<script>
-  // плавные появления секций
-  const fades = document.querySelectorAll('.fade');
-  const io = new IntersectionObserver(es => {
-    es.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('show'); });
-  }, {threshold:.2});
-  fades.forEach(n=>io.observe(n));
-
-  // поддержка тач-устройств для док-панели
-  const groups = document.querySelectorAll('.group[data-mobile-toggle]');
-  groups.forEach(g=>{
-    const fab = g.querySelector('.fab');
-    fab.addEventListener('click', (ev)=>{
-      g.classList.toggle('open');
-      ev.preventDefault();
+    // раскрытие карточек по тапу (как было)
+    document.querySelectorAll('.card').forEach(card=>{
+     card.addEventListener('click', (e)=>{
+  if(e.target.closest('a')) return;   // <-- так сработает и по тексту/внутренним элементам
+  card.classList.toggle('open');
+});
+      document.addEventListener('click', (e)=>{
+        if(!card.contains(e.target)) card.classList.remove('open');
+      });
     });
-    document.addEventListener('click', (e)=>{
-      if(!g.contains(e.target)) g.classList.remove('open');
-    });
-  });
+  </script>
 
-  // раскрытие карточек по тапу (мобилки): чтобы подменю .submenu-card работало без hover
-  document.querySelectorAll('.card').forEach(card=>{
-    card.addEventListener('click', (e)=>{
-      if(e.target.tagName.toLowerCase()==='a') return; // переходам не мешаем
-      card.classList.toggle('open');
-    });
-    document.addEventListener('click', (e)=>{
-      if(!card.contains(e.target)) card.classList.remove('open');
-    });
-  });
-</script>
-<script>
-(function(){
-  const BOX = document.getElementById('latest-news');
-  const ERR = document.getElementById('latest-error');
+  <script>
+  (function(){
+    const BOX = document.getElementById('latest-news');
+    const ERR = document.getElementById('latest-error');
 
-  // твой репозиторий
-  const REPO_OWNER = "Lyrielochka";
-  const REPO_NAME  = "school-site";
-  const BRANCH     = "main";
+    const REPO_OWNER = "Lyrielochka";
+    const REPO_NAME  = "school-site";
+    const BRANCH     = "main";
+    const API_LIST = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/news?ref=${BRANCH}`;
+    const RAW_FILE = (name)=>`https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/${BRANCH}/news/${encodeURIComponent(name)}`;
 
-  const API_LIST = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/news?ref=${BRANCH}`;
-  const RAW_FILE = (name)=>`https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/${BRANCH}/news/${encodeURIComponent(name)}`;
-
-  function parseFrontMatter(md){
-    const m = md.match(/^---\s*([\s\S]*?)\s*---\s*([\s\S]*)$/);
-    if(!m) return {meta:{}, body:md};
-    const yaml = m[1], body = m[2];
-    const meta = {};
-    yaml.split(/\r?\n/).forEach(line=>{
-      const mm = line.match(/^(\w+):\s*(.*)$/);
-      if(mm){
-        const k=mm[1].trim(); let v=mm[2].trim();
-        if(/^".*"$/.test(v)||/^'.*'$/.test(v)) v=v.slice(1,-1);
-        meta[k]=v;
-      }
-    });
-    return {meta, body};
-  }
-  const fmtDate = s => {
-    try { return new Date(s).toLocaleDateString('ru-RU',{year:'numeric',month:'long',day:'2-digit'}); }
-    catch { return s; }
-  };
-
-  async function loadLatest(){
-    try{
-      const res = await fetch(API_LIST);
-      if(!res.ok) throw res;
-      const files = await res.json();
-      const mdFiles = files.filter(f=>/\.md$/i.test(f.name));
-      const raws = await Promise.all(mdFiles.map(f=>fetch(RAW_FILE(f.name)).then(r=>r.text().then(t=>({name:f.name, text:t})))));
-
-      let items = raws.map(({name,text})=>{
-        const {meta, body} = parseFrontMatter(text);
-        const firstLine = (body.split('\n').find(l=>l.trim())||"").trim();
-        return {
-          file: name,
-          title: meta.title || name.replace(/\.md$/,''),
-          date:  meta.date || "",
-          cover: meta.cover || "",
-          excerpt: meta.excerpt || (firstLine.length>140? firstLine.slice(0,140)+'…' : firstLine)
-        };
-      }).sort((a,b)=> new Date(b.date)-new Date(a.date))
-        .slice(0,3);
-
-      // верстаем под твой стиль «event»-карточек
-      BOX.innerHTML = items.map(it=>`
-        <article class="event" style="overflow:hidden">
-          ${it.cover ? `
-            <img src="${it.cover}" alt="" loading="lazy"
-                 style="width:100%;height:160px;object-fit:cover;border-radius:10px;border:1px solid var(--line);margin-bottom:10px">
-          ` : ``}
-          <h3 style="color:var(--accent);margin:0">${it.title}</h3>
-          ${it.date ? `<small>${fmtDate(it.date)}</small>` : ``}
-          ${it.excerpt ? `<p style="margin-top:6px">${it.excerpt}</p>` : ``}
-          <p style="margin-top:8px">
-            <a href="news.html?slug=${encodeURIComponent(it.file)}" style="color:var(--accent);text-decoration:none">Читать полностью →</a>
-          </p>
-        </article>
-      `).join('');
-    }catch(e){
-      console.error(e);
-      ERR.style.display = '';
+    function parseFrontMatter(md){
+      const m = md.match(/^---\s*([\s\S]*?)\s*---\s*([\s\S]*)$/);
+      if(!m) return {meta:{}, body:md};
+      const yaml = m[1], body = m[2];
+      const meta = {};
+      yaml.split(/\r?\n/).forEach(line=>{
+        const mm = line.match(/^(\w+):\s*(.*)$/);
+        if(mm){
+          const k=mm[1].trim(); let v=mm[2].trim();
+          if(/^".*"$/.test(v)||/^'.*'$/.test(v)) v=v.slice(1,-1);
+          meta[k]=v;
+        }
+      });
+      return {meta, body};
     }
-  }
+    const fmtDate = s => {
+      try { return new Date(s).toLocaleDateString('ru-RU',{year:'numeric',month:'long',day:'2-digit'}); }
+      catch { return s; }
+    };
 
-  loadLatest();
-})();
-</script>
+    async function loadLatest(){
+      try{
+        const res = await fetch(API_LIST);
+        if(!res.ok) throw res;
+        const files = await res.json();
+        const mdFiles = files.filter(f=>/\.md$/i.test(f.name));
+        const raws = await Promise.all(mdFiles.map(f=>fetch(RAW_FILE(f.name)).then(r=>r.text().then(t=>({name:f.name, text:t})))));
+
+        let items = raws.map(({name,text})=>{
+          const {meta, body} = parseFrontMatter(text);
+          const firstLine = (body.split('\n').find(l=>l.trim())||"").trim();
+          return {
+            file: name,
+            title: meta.title || name.replace(/\.md$/,''),
+            date:  meta.date || "",
+            cover: meta.cover || "",
+            excerpt: meta.excerpt || (firstLine.length>140? firstLine.slice(0,140)+'…' : firstLine)
+          };
+        }).sort((a,b)=> new Date(b.date)-new Date(a.date))
+          .slice(0,3);
+
+        BOX.innerHTML = items.map(it=>`
+          <article class="event" style="overflow:hidden">
+            ${it.cover ? `
+              <img src="${it.cover}" alt="" loading="lazy"
+                   style="width:100%;height:160px;object-fit:cover;border-radius:10px;border:1px solid var(--line);margin-bottom:10px">
+            ` : ``}
+            <h3 style="color:var(--accent);margin:0">${it.title}</h3>
+            ${it.date ? `<small>${fmtDate(it.date)}</small>` : ``}
+            ${it.excerpt ? `<p style="margin-top:6px">${it.excerpt}</p>` : ``}
+            <p style="margin-top:8px">
+              <a href="news.html?slug=${encodeURIComponent(it.file)}" style="color:var(--accent);text-decoration:none">Читать полностью →</a>
+            </p>
+          </article>
+        `).join('');
+      }catch(e){
+        console.error(e);
+        ERR.style.display = '';
+      }
+    }
+
+    loadLatest();
+  })();
+  </script>
 
 </body>
 </html>
