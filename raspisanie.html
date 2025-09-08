@@ -1,589 +1,331 @@
 <!doctype html>
 <html lang="ru">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>Расписание занятий</title>
 <style>
-  /* ========= ТЕМА ========= */
+  /* ================== ТЕМА / НАСТРОЙКИ ================== */
   :root{
-    --bg:#0f0f10;          /* фон */
-    --bg-2:#161618;        /* карточки/ячейки */
-    --bg-3:#1d1d20;        /* заголовок таблицы */
-    --ink:#e9c34c;         /* золотой */
-    --ink-2:#ffeea8;       /* светлее золото */
-    --text:#d9d9de;        /* обычный текст */
-    --muted:#9b9ba3;       /* вторичный */
-    --border:#2a2a31;
-    --shadow: 0 10px 30px rgba(0,0,0,.35);
+    --bg:#0e0f10;
+    --bg-2:#15161a;
+    --bg-3:#1b1c21;
+    --ink:#e9c34c;          /* золото */
+    --ink-2:#ffefad;        /* светлое золото для текста/hover */
+    --text:#e4e4ea;
+    --muted:#9da0aa;
+    --border:#2a2e36;
     --radius:14px;
+    --shadow:0 12px 28px rgba(0,0,0,.42);
+
+    /* <<< ПОДСТАВЬ СВОЙ ПУТЬ К КАРТИНКЕ >>> */
+    --hero-img: url('assets/hero.jpg');
+    /* либо абсолютный путь:
+       --hero-img: url('https://site.by/images/school-hero.webp'); */
   }
+
   *{box-sizing:border-box}
   html,body{height:100%}
   body{
-    margin:0; font:16px/1.45 Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
-    color:var(--text); background:var(--bg);
-    /* мягкий фон + лёгкий шум */
+    margin:0; color:var(--text);
+    font:16px/1.45 Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
     background:
-      radial-gradient(1200px 600px at 50% -10%, #1a1a1e 0%, transparent 60%),
-      radial-gradient(900px 300px at 10% 120%, #141417 0%, transparent 60%),
-      radial-gradient(900px 300px at 90% 120%, #141417 0%, transparent 60%),
+      radial-gradient(1200px 600px at 50% -10%, #18191e 0%, transparent 60%),
+      radial-gradient(900px 300px at 10% 120%, #131418 0%, transparent 60%),
+      radial-gradient(900px 300px at 90% 120%, #131418 0%, transparent 60%),
       var(--bg);
-    position:relative;
   }
-  body:after{
+  body:after{ /* едва заметный шум */
     content:""; position:fixed; inset:0; pointer-events:none; opacity:.06;
     background-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="140" height="140"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23n)" opacity="0.35"/></svg>');
     mix-blend-mode:soft-light;
   }
 
-  .wrap{max-width:1180px; margin:48px auto 140px; padding:0 20px}
-  h1{
-    text-align:center;
-    font-size:44px; line-height:1.05; letter-spacing:.5px;
-    color:var(--ink); text-shadow:0 2px 0 rgba(0,0,0,.4); margin:0 0 8px;
+  /* ================== HERO ================== */
+  .hero{
+    position:relative; height:min(56vh,520px); display:grid; place-items:center; overflow:hidden;
+    border-bottom:1px solid #2a2413;
   }
-  .hint{color:var(--muted); text-align:center; margin:0 0 22px}
+  .hero::before{
+    content:""; position:absolute; inset:0;
+    background:var(--bg) center/cover no-repeat;
+    background-image:var(--hero-img);
+    filter:brightness(.55) saturate(.95);
+    transform:scale(1.02);
+    transition:transform .6s ease;
+  }
+  .hero::after{
+    /* мягкая виньетка и золотой свечащийся акцент */
+    content:""; position:absolute; inset:0;
+    background:
+      radial-gradient(800px 250px at 50% 85%, rgba(233,195,76,.18), transparent 60%),
+      radial-gradient(1200px 600px at 50% -10%, rgba(0,0,0,.35), transparent 50%);
+  }
+  .hero:hover::before{transform:scale(1.03)}
+  .hero-inner{position:relative; z-index:1; text-align:center; padding:24px}
+  h1{
+    margin:0 0 10px; font-size:46px; line-height:1.06; letter-spacing:.5px;
+    color:var(--ink); text-shadow:0 2px 0 rgba(0,0,0,.45);
+  }
+  .hint{margin:0; color:#efe5c9; opacity:.95}
 
-  /* тонкая декоративная линия */
+  /* ================== ОБЩЕЕ ================== */
+  .wrap{max-width:1180px; margin:24px auto 120px; padding:0 20px}
   .divider{
-    height:1px; width:min(640px,90%); margin:14px auto 20px;
+    height:1px; width:min(700px,92%); margin:16px auto 22px;
     background:linear-gradient(90deg,transparent,rgba(233,195,76,.35),transparent);
     border-radius:999px;
   }
 
-  /* ========= HERO-КАРТИНКА ========= */
-  .hero{
-    display:flex; flex-direction:column; align-items:center; gap:12px;
-    margin:8px auto 22px; text-align:center;
-  }
-  .image-card{
-    width:min(780px,100%); border:1px solid var(--border); border-radius:16px; overflow:hidden;
-    background:linear-gradient(180deg,#141416,#0f0f10); box-shadow:var(--shadow);
-  }
-  .image-card img{display:block; width:100%; height:auto; object-fit:cover}
-  .img-controls{display:flex; gap:10px; flex-wrap:wrap; justify-content:center}
-  .file-input{
-    position:relative; overflow:hidden; display:inline-block;
-    border:1px solid #3a3013; background:linear-gradient(#2a2412,#201b0d);
-    color:var(--ink-2); padding:10px 14px; border-radius:10px; cursor:pointer;
-  }
-  .file-input input{position:absolute; inset:0; opacity:0; cursor:pointer}
-  .caption{font-size:13px; color:var(--muted)}
-
-  /* ========= ПАНЕЛЬ УПРАВЛЕНИЯ ========= */
-  .controls{display:flex; gap:10px; flex-wrap:wrap; align-items:center; justify-content:center; margin:12px 0 18px}
+  /* ================== ПАНЕЛЬ УПРАВЛЕНИЯ ================== */
+  .controls{display:flex; gap:12px; flex-wrap:wrap; align-items:center; justify-content:center; margin:10px 0 18px}
   .chip{
-    background:var(--bg-2); border:1px solid var(--border);
-    color:var(--text); padding:8px 14px; border-radius:999px;
+    background:linear-gradient(180deg,#17181c,#111216);
+    border:1px solid var(--border);
+    color:#d7d8df; padding:9px 14px; border-radius:999px;
     cursor:pointer; user-select:none; transition:.2s ease; box-shadow:var(--shadow);
   }
-  .chip[aria-pressed="true"], .chip.active{
-    background:linear-gradient(#2a2412,#201b0d);
-    border-color:#3a3013; color:var(--ink-2);
+  .chip.active{
+    border-color:#3a2f12;
+    background:
+      radial-gradient(100% 100% at 50% 0%, rgba(233,195,76,.18) 0%, transparent 60%),
+      linear-gradient(180deg,#2a2412,#1f1a0c);
+    color:var(--ink-2);
+    text-shadow:0 0 8px rgba(233,195,76,.25);
   }
-  .seg{display:flex; gap:8px}
-  .seg .chip{padding:9px 14px}
-
   .select{
-    appearance:none; background:var(--bg-2); color:var(--text);
-    border:1px solid var(--border); border-radius:10px; padding:10px 42px 10px 12px;
-    position:relative; font-weight:600; letter-spacing:.2px; box-shadow:var(--shadow);
+    appearance:none; background:linear-gradient(180deg,#181a20,#121419);
+    color:#e6e6ed; border:1px solid var(--border); border-radius:12px;
+    padding:10px 44px 10px 12px; font-weight:700; letter-spacing:.2px; box-shadow:var(--shadow)
   }
   .select-wrap{position:relative}
-  .select-wrap:after{
-    content:"▾"; position:absolute; right:12px; top:50%; transform:translateY(-50%);
-    color:var(--ink); pointer-events:none; font-size:14px;
+  .select-wrap:after{content:"▾"; position:absolute; right:12px; top:50%; transform:translateY(-50%); color:var(--ink)}
+
+  /* ================== КНОПКИ ДНЕЙ ================== */
+  .days{display:flex; gap:10px; flex-wrap:wrap; justify-content:center; margin:8px 0 14px}
+  .day{
+    position:relative; padding:10px 16px; border-radius:999px; cursor:pointer; font-weight:800;
+    letter-spacing:.2px; text-transform:lowercase;
+    background:linear-gradient(180deg,#181a1f,#111316);
+    border:1px solid #2b2f37; color:#d6d7dd;
+    transition:transform .15s ease, box-shadow .2s, border-color .2s, color .2s;
+    box-shadow:inset 0 0 0 1px rgba(255,255,255,.02), 0 6px 18px rgba(0,0,0,.35);
+  }
+  .day:hover{transform:translateY(-1px)}
+  .day.active{
+    border-color:#3a2f12; color:var(--ink-2);
+    background:
+      radial-gradient(120% 120% at 50% -20%, rgba(233,195,76,.23), transparent 60%),
+      linear-gradient(180deg,#282112,#1c170c);
+    box-shadow:0 6px 18px rgba(0,0,0,.45), 0 0 18px rgba(233,195,76,.15);
   }
 
-  /* ========= ДНИ НЕДЕЛИ ========= */
-  .days{display:flex; gap:10px; flex-wrap:wrap; margin:10px 0 10px; justify-content:center}
-  .day{padding:10px 14px; border-radius:10px; border:1px solid var(--border);
-       background:var(--bg-2); cursor:pointer; transition:.2s}
-  .day.active{background:linear-gradient(#2a2412,#201b0d); color:var(--ink-2); border-color:#3a3013}
-
-  /* ========= ТАБЛИЦА ========= */
+  /* ================== ТАБЛИЦА ================== */
   .table{
     width:100%; border-collapse:separate; border-spacing:0;
-    background:var(--bg-2); border:1px solid var(--border); border-radius:var(--radius);
+    background:linear-gradient(180deg,#16171b,#121318);
+    border:1px solid var(--border); border-radius:var(--radius);
     overflow:hidden; box-shadow:var(--shadow);
   }
-  .table th, .table td{padding:16px 14px; border-bottom:1px solid var(--border); vertical-align:top}
-  .table th{background:var(--bg-3); color:#b8b8bf; text-transform:uppercase; font-size:12px; letter-spacing:.7px}
+  .table th,.table td{padding:16px 14px; border-bottom:1px solid #242833; vertical-align:top}
+  .table th{background:var(--bg-3); color:#b8bcc8; text-transform:uppercase; font-size:12px; letter-spacing:.65px}
   .table tr:last-child td{border-bottom:0}
-
-  .subj{font-weight:700; color:var(--ink); position:relative; display:inline-block}
+  .time{color:#cfd3dd}
+  .subj{font-weight:800; color:var(--ink); position:relative; display:inline-block}
   .subj[data-room]:after{
     content:""; display:inline-block; width:6px; height:6px; border-radius:50%;
-    background:var(--ink); margin-left:8px; transform:translateY(-2px);
+    background:var(--ink); margin-left:8px; transform:translateY(-2px)
   }
   .tooltip{
     position:absolute; left:0; bottom:calc(100% + 10px);
-    background:#0c0c0e; color:#e8e8ee; border:1px solid #3a3013; padding:8px 10px;
-    font-size:13px; border-radius:8px; box-shadow:0 8px 20px rgba(0,0,0,.45);
+    background:#0c0d10; color:#ececf3; border:1px solid #3a3013; padding:8px 10px;
+    font-size:13px; border-radius:8px; box-shadow:0 12px 24px rgba(0,0,0,.45);
     white-space:nowrap; opacity:0; pointer-events:none; transform:translateY(6px); transition:.16s ease;
   }
   .subj:hover .tooltip{opacity:1; transform:translateY(0)}
-  .time{color:#c9c9cf}
+  tbody tr{opacity:0; transform:translateY(6px); animation:rowIn .35s ease forwards}
+  @keyframes rowIn{to{opacity:1; transform:none}}
 
-  /* ========= КНОПКА НАЗАД ========= */
-  .back-fab{
-    position:fixed; left:22px; bottom:22px; z-index:10;
-    display:inline-flex; align-items:center; gap:8px;
-    padding:10px 14px; border-radius:999px; cursor:pointer; user-select:none;
-    background:linear-gradient(#2a2412,#201b0d); color:var(--ink-2);
-    border:1px solid #3a3013; box-shadow:0 10px 24px rgba(0,0,0,.4);
+  /* ================== FAB НАЗАД ================== */
+  .back{
+    position:fixed; left:20px; bottom:22px; z-index:30;
+    display:inline-flex; gap:8px; align-items:center;
+    padding:10px 14px; border-radius:999px; cursor:pointer;
+    background:linear-gradient(#2a2412,#1f1a0c); color:var(--ink-2);
+    border:1px solid #3a3013; box-shadow:0 10px 24px rgba(0,0,0,.45);
     transition:transform .15s ease;
   }
-  .back-fab:hover{transform:translateY(-2px)}
-  .back-fab .ico{font-weight:700}
+  .back:hover{transform:translateY(-2px)}
 
-  /* ========= АДАПТИВ ========= */
-  @media (max-width:800px){
-    h1{font-size:34px}
-  }
+  /* адаптив */
+  @media (max-width:820px){ h1{font-size:36px} }
   @media (max-width:640px){
-    .controls{gap:8px}
-    .table td, .table th{padding:12px 10px}
-    .day{padding:8px 12px}
+    .table th,.table td{padding:12px 10px}
+    .day{padding:9px 14px}
   }
 </style>
 </head>
 <body>
+
+  <!-- HERO -->
+  <section class="hero" aria-label="Заголовок и фон">
+    <div class="hero-inner">
+      <h1>Расписание занятий</h1>
+      <p class="hint">Наведите курсор на предмет — появится кабинет. Клавиши <b>[</b>/<b>]</b> листают дни недели.</p>
+    </div>
+  </section>
+
   <div class="wrap">
-    <h1>Расписание занятий</h1>
-    <p class="hint">Наведите курсор на предмет — появится кабинет. Клавиши <b>[</b>/<b>]</b> листают дни недели.</p>
     <div class="divider"></div>
 
-    <!-- HERO: картинка + выбор файла -->
-    <section class="hero" aria-label="Иллюстрация">
-      <div class="image-card">
-        <!-- Можешь сразу заменить src на путь к своей картинке -->
-        <img id="heroImg" src="" alt="Иллюстрация расписания" />
-      </div>
-      <div class="img-controls">
-        <label class="file-input">
-          Выбрать картинку
-          <input id="heroInput" type="file" accept="image/*">
-        </label>
-        <span class="caption">Можно выбрать локальный файл — он отобразится сразу (ничего не загружается на сервер)</span>
-      </div>
-    </section>
-
-    <!-- СМЕНЫ, КЛАССЫ -->
+    <!-- ПАНЕЛЬ -->
     <div class="controls">
-      <div class="seg" id="shiftSeg">
-        <button class="chip" data-shift="1" aria-pressed="true">1&nbsp;смена</button>
-        <button class="chip" data-shift="2" aria-pressed="false">2&nbsp;смена</button>
+      <div id="shiftSeg">
+        <button class="chip" data-shift="1">1&nbsp;смена</button>
+        <button class="chip" data-shift="2">2&nbsp;смена</button>
       </div>
-
-      <div class="seg" id="classSeg">
-        <div class="select-wrap">
-          <select id="classSelect" class="select" title="Класс">
-            <!-- наполняется скриптом -->
-          </select>
-        </div>
+      <div class="select-wrap">
+        <select id="classSelect" class="select" title="Класс"></select>
       </div>
     </div>
 
-    <!-- ДНИ НЕДЕЛИ -->
+    <!-- ДНИ -->
     <div class="days" id="days"></div>
 
     <!-- ТАБЛИЦА -->
-    <table class="table" id="table">
+    <table class="table">
       <thead>
-        <tr>
-          <th style="width:160px">Время</th>
-          <th>Предмет</th>
-        </tr>
+        <tr><th style="width:160px">Время</th><th>Предмет</th></tr>
       </thead>
       <tbody id="tbody"></tbody>
     </table>
   </div>
 
-  <!-- КНОПКА НАЗАД -->
-  <button class="back-fab" onclick="history.back()" title="Назад">
-    <span class="ico">←</span> Назад
-  </button>
+  <!-- НАЗАД -->
+  <button class="back" onclick="history.back()" title="Назад">← Назад</button>
 
 <script>
-/* ================= ДАННЫЕ =================
-Структура:
-  data[КЛАСС].shift -> 1|2
-  data[КЛАСС].days[день] = массив уроков по порядку пар.
-  Каждый урок — { title: 'Математика', room: '26' }.
-  Если room отсутствует — подсказка не показывается.
-*/
+/* ================== ДАННЫЕ ================== */
 const data = {
-  "5А": {
-    shift: 1,
-    days: {
-      "пон.":[
-        {title:"Математика", room:"26"},
-        {title:"Белорусский язык", room:"38"},
-        {title:"История", room:"14"},
-        {title:"Белорусская литература", room:"38"},
-        {title:"Физическая культура и здоровье"}
-      ],
-      "вт.":[
-        {title:"Человек и мир", room:"26"},
-        {title:"Математика", room:"26"},
-        {title:"Иностранный язык"},
-        {title:"Русский язык", room:"25"},
-        {title:"Русская литература", room:"15"}
-      ],
-      "ср.":[
-        {title:"Белорусская литература", room:"38"},
-        {title:"Белорусский язык", room:"38"},
-        {title:"Физическая культура и здоровье"},
-        {title:"Математика", room:"26"},
-        {title:"Иностранный язык"}
-      ],
-      "чт.":[
-        {title:"Русская литература", room:"18"},
-        {title:"Русский язык", room:"18"},
-        {title:"Трудовое обучение", room:"19/17"},
-        {title:"Математика", room:"26"},
-        {title:"История", room:"14"},
-        {title:"Искусство", room:"32"}
-      ],
-      "пт.":[
-        {title:"ОБЖ", room:"32"},
-        {title:"Русский язык", room:"36"},
-        {title:"Иностранный язык"},
-        {title:"Белорусский язык"},
-        {title:"Математика", room:"26"},
-        {title:"Физическая культура и здоровье"}
-      ],
-      "сб.":[]
-    }
-  },
-
-  "5Б": {
-    shift: 1,
-    days: {
-      "пон.":[
-        {title:"Математика", room:"25"},
-        {title:"История", room:"31"},
-        {title:"Белорусский язык", room:"38"},
-        {title:"Физическая культура и здоровье"},
-        {title:"Белорусская литература", room:"38"}
-      ],
-      "вт.":[
-        {title:"Русская литература", room:"15"},
-        {title:"Русский язык", room:"15"},
-        {title:"Математика", room:"25"},
-        {title:"Иностранный язык"},
-        {title:"Человек и мир", room:"12"}
-      ],
-      "ср.":[
-        {title:"Иностранный язык"},
-        {title:"Физическая культура и здоровье"},
-        {title:"Математика", room:"25"},
-        {title:"Белорусскй язык", room:"38"},
-        {title:"Белорусская литература", room:"38"}
-      ],
-      "чт.":[
-        {title:"Русская литература", room:"15"},
-        {title:"Русский язык", room:"15"},
-        {title:"Искусство", room:"32"},
-        {title:"Математика", room:"24"},
-        {title:"Трудовое обучение", room:"19/17"},
-        {title:"История", room:"16"}
-      ],
-      "пт.":[
-        {title:"Русский язык", room:"15"},
-        {title:"Математика", room:"25"},
-        {title:"Белорусский язык", room:"26"},
-        {title:"Физическая культура и здоровье"},
-        {title:"Иностранный язык"},
-        {title:"ОБЖ", room:"32"}
-      ],
-      "сб.":[]
-    }
-  },
-
-  "5В": {
-    shift: 1,
-    days: {
-      "пон.":[
-        {title:"Физическая культура и здоровье"},
-        {title:"История", room:"14"},
-        {title:"Русский язык", room:"15"},
-        {title:"Русская литература", room:"15"},
-        {title:"Математика", room:"26"}
-      ],
-      "вт.":[
-        {title:"Белорусская литература", room:"36"},
-        {title:"Белорусский язык", room:"36"},
-        {title:"Математика", room:"26"},
-        {title:"Человек и мир", room:"32"},
-        {title:"Иностранный язык"}
-      ],
-      "ср.":[
-        {title:"Русския литература", room:"16"},
-        {title:"Русский язык", room:"16"},
-        {title:"Математика", room:"26"},
-        {title:"Иностранный язык"},
-        {title:"Физическая культура и здоровье"}
-      ],
-      "чт.":[
-        {title:"Искусство", room:"32"},
-        {title:"История", room:"14"},
-        {title:"Математика", room:"26"},
-        {title:"Трудовое обучиние", room:"19/17"},
-        {title:"Белорусский язык", room:"36"},
-        {title:"Белорусская литература", room:"36"}
-      ],
-      "пт.":[
-        {title:"Русский язык", room:"14"},
-        {title:"Иностранный язык"},
-        {title:"Математика", room:"26"},
-        {title:"Физическая культура и здоровье"},
-        {title:"ОБЖ", room:"32"},
-        {title:"Белорусский язык", room:"36"}
-      ],
-      "сб.":[]
-    }
-  },
-
-  "5Г": {
-    shift: 1,
-    days: {
-      "пон.":[
-        {title:"История", room:"14"},
-        {title:"Физическая культура и здоровье"},
-        {title:"Математика", room:"26"},
-        {title:"Русский язык", room:"15"},
-        {title:"Русская литература", room:"15"}
-      ],
-      "вт.":[
-        {title:"Человек и мир", room:"32"},
-        {title:"Белорусский язык", room:"38"},
-        {title:"Белорусская литература", room:"38"},
-        {title:"Математика", room:"26"},
-        {title:"Иностранный язык"}
-      ],
-      "ср.":[
-        {title:"Физическая культура и здоровье"},
-        {title:"Иностранный язык"},
-        {title:"Белорусская литература", room:"38"},
-        {title:"Белорусский язык", room:"24"},
-        {title:"Математика", room:"26"}
-      ],
-      "чт.":[
-        {title:"История", room:"14"},
-        {title:"Искусство", room:"32"},
-        {title:"Русский язык", room:"36"},
-        {title:"Русская литература", room:"35"},
-        {title:"Математика", room:"26"},
-        {title:"Трудовое обучение", room:"19/17"}
-      ],
-      "пт.":[
-        {title:"Русский язык", room:"36"},
-        {title:"Иностранный язык"},
-        {title:"Белорусский язык", room:"36"},
-        {title:"Математика", room:"26"},
-        {title:"Физическая культура и здоровье"},
-        {title:"ОБЖ", room:"11"}
-      ],
-      "сб.":[]
-    }
-  },
-
-  "6А": {
-    shift: 2,
-    days: {
-      "пон.":[
-        {title:"Математика", room:"25"},
-        {title:"Иностранный язык"},
-        {title:"Русская литература", room:"35"},
-        {title:"Русский язык", room:"35"},
-        {title:"География", room:"32"},
-        {title:"Физическая культура и здоровье"}
-      ],
-      "вт.":[
-        {title:"Искусство"},
-        {title:"Историия Беларуси", room:"31"},
-        {title:"Математика", room:"25"},
-        {title:"Белорусский язык", room:"36"},
-        {title:"Иностранный язык"},
-        {title:"Белорусская литература", room:"36"}
-      ],
-      "ср.":[
-        {title:"Биология", room:"12"},
-        {title:"Математика", room:"24"},
-        {title:"Трудовое обучение", room:"16/17"},
-        {title:"Трудовое обучение", room:"16/17"},
-        {title:"Русский язык", room:"35"},
-        {title:"Русская литература", room:"35"}
-      ],
-      "чт.":[
-        {title:"Информатика"},
-        {title:"Математика", room:"25"},
-        {title:"Физическая культура и здоровье"},
-        {title:"Белорусский язык", room:"35"},
-        {title:"Белорусская литература", room:"35"},
-        {title:"Иностранный язык"}
-      ],
-      "пт.":[
-        {title:"Физическая культура и здоровье"},
-        {title:"Русский язык", room:"35"},
-        {title:"Математика", room:"24"},
-        {title:"Белорусский язык", room:"36"},
-        {title:"Всемирная история", room:"31"}
-      ],
-      "сб.":[]
-    }
-  },
-
-  "6Б": {
-    shift: 2,
-    days: {
-      "пон.":[
-        {title:"Иностранный язык"},
-        {title:"Математика", room:"26"},
-        {title:"Физическая культура и здоровье"},
-        {title:"География", room:"32"},
-        {title:"Белорусский язык", room:"36"},
-        {title:"Белорусская литература"}
-      ],
-      "вт.":[
-        {title:"Русская литература", room:"15"},
-        {title:"Русский язык", room:"15"},
-        {title:"Математика", room:"26"},
-        {title:"Иностранный язык"},
-        {title:"Трудовое обучение", room:"16/17"},
-        {title:"Трудовое обучение", room:"16/17"}
-      ],
-      "ср.":[
-        {title:"Белорусская литература", room:"38"},
-        {title:"Белорусский язык", room:"38"},
-        {title:"История Беларуси", room:"14"},
-        {title:"Физическая культура и здоровье"},
-        {title:"Биология", room:"12"},
-        {title:"Искусство", room:"22"}
-      ],
-      "чт.":[
-        {title:"Искуство", room:"22"},
-        {title:"Математика", room:"26"},
-        {title:"Информатика"},
-        {title:"Иностраный язык"},
-        {title:"Русский язык", room:"15"},
-        {title:"Русская литература", room:"15"}
-      ],
-      "пт.":[
-        {title:"Русский язык", room:"14"},
-        {title:"Всемирная история", room:"14"},
-        {title:"Белорусский язык", room:"36"},
-        {title:"Математика", room:"26"},
-        {title:"Физическая культура и здоровье"}
-      ],
-      "сб.":[]
-    }
-  }
+  "5А":{shift:1,days:{
+    "пон.":[{title:"Математика",room:"26"},{title:"Белорусский язык",room:"38"},{title:"История",room:"14"},{title:"Белорусская литература",room:"38"},{title:"Физическая культура и здоровье"}],
+    "вт.":[{title:"Человек и мир",room:"26"},{title:"Математика",room:"26"},{title:"Иностранный язык"},{title:"Русский язык",room:"25"},{title:"Русская литература",room:"15"}],
+    "ср.":[{title:"Белорусская литература",room:"38"},{title:"Белорусский язык",room:"38"},{title:"Физическая культура и здоровье"},{title:"Математика",room:"26"},{title:"Иностранный язык"}],
+    "чт.":[{title:"Русская литература",room:"18"},{title:"Русский язык",room:"18"},{title:"Трудовое обучение",room:"19/17"},{title:"Математика",room:"26"},{title:"История",room:"14"},{title:"Искусство",room:"32"}],
+    "пт.":[{title:"ОБЖ",room:"32"},{title:"Русский язык",room:"36"},{title:"Иностранный язык"},{title:"Белорусский язык"},{title:"Математика",room:"26"},{title:"Физическая культура и здоровье"}],
+    "сб.":[]
+  }},
+  "5Б":{shift:1,days:{
+    "пон.":[{title:"Математика",room:"25"},{title:"История",room:"31"},{title:"Белорусский язык",room:"38"},{title:"Физическая культура и здоровье"},{title:"Белорусская литература",room:"38"}],
+    "вт.":[{title:"Русская литература",room:"15"},{title:"Русский язык",room:"15"},{title:"Математика",room:"25"},{title:"Иностранный язык"},{title:"Человек и мир",room:"12"}],
+    "ср.":[{title:"Иностранный язык"},{title:"Физическая культура и здоровье"},{title:"Математика",room:"25"},{title:"Белорусскй язык",room:"38"},{title:"Белорусская литература",room:"38"}],
+    "чт.":[{title:"Русская литература",room:"15"},{title:"Русский язык",room:"15"},{title:"Искусство",room:"32"},{title:"Математика",room:"24"},{title:"Трудовое обучение",room:"19/17"},{title:"История",room:"16"}],
+    "пт.":[{title:"Русский язык",room:"15"},{title:"Математика",room:"25"},{title:"Белорусский язык",room:"26"},{title:"Физическая культура и здоровье"},{title:"Иностранный язык"},{title:"ОБЖ",room:"32"}],
+    "сб.":[]
+  }},
+  "5В":{shift:1,days:{
+    "пон.":[{title:"Физическая культура и здоровье"},{title:"История",room:"14"},{title:"Русский язык",room:"15"},{title:"Русская литература",room:"15"},{title:"Математика",room:"26"}],
+    "вт.":[{title:"Белорусская литература",room:"36"},{title:"Белорусский язык",room:"36"},{title:"Математика",room:"26"},{title:"Человек и мир",room:"32"},{title:"Иностранный язык"}],
+    "ср.":[{title:"Русския литература",room:"16"},{title:"Русский язык",room:"16"},{title:"Математика",room:"26"},{title:"Иностранный язык"},{title:"Физическая культура и здоровье"}],
+    "чт.":[{title:"Искусство",room:"32"},{title:"История",room:"14"},{title:"Математика",room:"26"},{title:"Трудовое обучиние",room:"19/17"},{title:"Белорусский язык",room:"36"},{title:"Белорусская литература",room:"36"}],
+    "пт.":[{title:"Русский язык",room:"14"},{title:"Иностранный язык"},{title:"Математика",room:"26"},{title:"Физическая культура и здоровье"},{title:"ОБЖ",room:"32"},{title:"Белорусский язык",room:"36"}],
+    "сб.":[]
+  }},
+  "5Г":{shift:1,days:{
+    "пон.":[{title:"История",room:"14"},{title:"Физическая культура и здоровье"},{title:"Математика",room:"26"},{title:"Русский язык",room:"15"},{title:"Русская литература",room:"15"}],
+    "вт.":[{title:"Человек и мир",room:"32"},{title:"Белорусский язык",room:"38"},{title:"Белорусская литература",room:"38"},{title:"Математика",room:"26"},{title:"Иностранный язык"}],
+    "ср.":[{title:"Физическая культура и здоровье"},{title:"Иностранный язык"},{title:"Белорусская литература",room:"38"},{title:"Белорусский язык",room:"24"},{title:"Математика",room:"26"}],
+    "чт.":[{title:"История",room:"14"},{title:"Искусство",room:"32"},{title:"Русский язык",room:"36"},{title:"Русская литература",room:"35"},{title:"Математика",room:"26"},{title:"Трудовое обучение",room:"19/17"}],
+    "пт.":[{title:"Русский язык",room:"36"},{title:"Иностранный язык"},{title:"Белорусский язык",room:"36"},{title:"Математика",room:"26"},{title:"Физическая культура и здоровье"},{title:"ОБЖ",room:"11"}],
+    "сб.":[]
+  }},
+  "6А":{shift:2,days:{
+    "пон.":[{title:"Математика",room:"25"},{title:"Иностранный язык"},{title:"Русская литература",room:"35"},{title:"Русский язык",room:"35"},{title:"География",room:"32"},{title:"Физическая культура и здоровье"}],
+    "вт.":[{title:"Искусство"},{title:"Историия Беларуси",room:"31"},{title:"Математика",room:"25"},{title:"Белорусский язык",room:"36"},{title:"Иностранный язык"},{title:"Белорусская литература",room:"36"}],
+    "ср.":[{title:"Биология",room:"12"},{title:"Математика",room:"24"},{title:"Трудовое обучение",room:"16/17"},{title:"Трудовое обучение",room:"16/17"},{title:"Русский язык",room:"35"},{title:"Русская литература",room:"35"}],
+    "чт.":[{title:"Информатика"},{title:"Математика",room:"25"},{title:"Физическая культура и здоровье"},{title:"Белорусский язык",room:"35"},{title:"Белорусская литература",room:"35"},{title:"Иностранный язык"}],
+    "пт.":[{title:"Физическая культура и здоровье"},{title:"Русский язык",room:"35"},{title:"Математика",room:"24"},{title:"Белорусский язык",room:"36"},{title:"Всемирная история",room:"31"}],
+    "сб.":[]
+  }},
+  "6Б":{shift:2,days:{
+    "пон.":[{title:"Иностранный язык"},{title:"Математика",room:"26"},{title:"Физическая культура и здоровье"},{title:"География",room:"32"},{title:"Белорусский язык",room:"36"},{title:"Белорусская литература"}],
+    "вт.":[{title:"Русская литература",room:"15"},{title:"Русский язык",room:"15"},{title:"Математика",room:"26"},{title:"Иностранный язык"},{title:"Трудовое обучение",room:"16/17"},{title:"Трудовое обучение",room:"16/17"}],
+    "ср.":[{title:"Белорусская литература",room:"38"},{title:"Белорусский язык",room:"38"},{title:"История Беларуси",room:"14"},{title:"Физическая культура и здоровье"},{title:"Биология",room:"12"},{title:"Искусство",room:"22"}],
+    "чт.":[{title:"Искуство",room:"22"},{title:"Математика",room:"26"},{title:"Информатика"},{title:"Иностраный язык"},{title:"Русский язык",room:"15"},{title:"Русская литература",room:"15"}],
+    "пт.":[{title:"Русский язык",room:"14"},{title:"Всемирная история",room:"14"},{title:"Белорусский язык",room:"36"},{title:"Математика",room:"26"},{title:"Физическая культура и здоровье"}],
+    "сб.":[]
+  }}
 };
 
-/* Временные слоты по сменам */
-const timeSlots = {
-  1: ["08:00–08:45","08:55–09:40","09:55–10:40","10:55–11:40","11:50–12:35","12:45–13:30"],
-  2: ["13:50–14:35","14:50–15:35","15:50–16:35","16:45–17:30","17:40–18:25","18:35–19:20"]
-};
-/* Порядок дней */
-const dayOrder = ["пон.","вт.","ср.","чт.","пт.","сб."];
+/* время пар по сменам */
+const timeSlots={1:["08:00–08:45","08:55–09:40","09:55–10:40","10:55–11:40","11:50–12:35","12:45–13:30"],
+                 2:["13:50–14:35","14:50–15:35","15:50–16:35","16:45–17:30","17:40–18:25","18:35–19:20"]};
+const dayOrder=["пон.","вт.","ср.","чт.","пт.","сб."];
 
-/* ================= UI ЛОГИКА ================= */
-const tbody = document.getElementById('tbody');
-const daysEl = document.getElementById('days');
-const classSelect = document.getElementById('classSelect');
-const shiftSeg = document.getElementById('shiftSeg');
-const heroInput = document.getElementById('heroInput');
-const heroImg = document.getElementById('heroImg');
+/* элементы */
+const tbody=document.getElementById('tbody');
+const daysEl=document.getElementById('days');
+const classSelect=document.getElementById('classSelect');
+const shiftSeg=document.getElementById('shiftSeg');
 
-let state = {
-  shift: 1,
-  day: "пон.",
-  klass: "5А"
-};
+/* состояние */
+let state={shift:1, day:"пон.", klass:"5А"};
 
-/* наполняем селект классами */
-Object.keys(data).forEach(k => {
-  const opt = document.createElement('option');
-  opt.value = k; opt.textContent = k;
-  classSelect.appendChild(opt);
+/* наполнение селекта классами */
+Object.keys(data).forEach(k=>{
+  const o=document.createElement('option'); o.value=k; o.textContent=k; classSelect.appendChild(o);
 });
-state.klass = classSelect.value = Object.keys(data)[0];
+state.klass=classSelect.value=Object.keys(data)[0];
 
-/* картинка: локальный предпросмотр */
-heroInput.addEventListener('change', (e)=>{
-  const f = e.target.files[0];
-  if(!f) return;
-  const reader = new FileReader();
-  reader.onload = () => { heroImg.src = reader.result; };
-  reader.readAsDataURL(f);
-});
-
-/* табы дней */
+/* рисуем кнопки дней */
 function renderDayTabs(){
-  daysEl.innerHTML = "";
+  daysEl.innerHTML="";
   dayOrder.forEach(d=>{
-    const btn = document.createElement('button');
-    btn.className = 'day' + (d===state.day ? ' active':'');
-    btn.textContent = d;
-    btn.dataset.day = d;
-    btn.addEventListener('click', ()=>{ state.day = d; render(); });
-    daysEl.appendChild(btn);
+    const b=document.createElement('button');
+    b.className='day'+(d===state.day?' active':'');
+    b.textContent=d;
+    b.onclick=()=>{state.day=d; renderTable(); highlightDay()};
+    daysEl.appendChild(b);
   });
+}
+function highlightDay(){
+  [...daysEl.children].forEach(btn=>btn.classList.toggle('active', btn.textContent===state.day));
 }
 
 /* таблица */
 function renderTable(){
-  const cls = data[state.klass];
-  const items = (cls?.days?.[state.day] ?? []);
-  const times = timeSlots[state.shift];
-
-  tbody.innerHTML = "";
-  const rows = Math.max(items.length, times.length);
-
+  const cls=data[state.klass];
+  const items=cls?.days?.[state.day]??[];
+  const times=timeSlots[state.shift];
+  tbody.innerHTML="";
+  const rows=Math.max(items.length,times.length);
   for(let i=0;i<rows;i++){
-    const tr = document.createElement('tr');
+    const tr=document.createElement('tr');
 
-    const tdTime = document.createElement('td');
-    tdTime.className = "time";
-    tdTime.textContent = times[i] || "";
-    tr.appendChild(tdTime);
+    const tdT=document.createElement('td'); tdT.className='time'; tdT.textContent=times[i]||""; tr.appendChild(tdT);
 
-    const tdSubj = document.createElement('td');
-    const lesson = items[i];
+    const tdS=document.createElement('td');
+    const lesson=items[i];
     if(lesson){
-      const wrap = document.createElement('span');
-      wrap.className = 'subj';
-      wrap.textContent = lesson.title;
-      if(lesson.room) {
-        wrap.setAttribute('data-room', lesson.room);
-        const tip = document.createElement('span');
-        tip.className = 'tooltip';
-        tip.textContent = "Кабинет: " + lesson.room;
-        wrap.appendChild(tip);
-      }
-      tdSubj.appendChild(wrap);
+      const wrap=document.createElement('span'); wrap.className='subj'; wrap.textContent=lesson.title;
+      if(lesson.room){wrap.setAttribute('data-room',lesson.room); const tip=document.createElement('span'); tip.className='tooltip'; tip.textContent="Кабинет: "+lesson.room; wrap.appendChild(tip)}
+      tdS.appendChild(wrap);
     }
-    tr.appendChild(tdSubj);
-
+    tr.appendChild(tdS);
     tbody.appendChild(tr);
   }
 }
 
 /* общий рендер */
 function render(){
-  const classShift = data[state.klass]?.shift || 1;
-  state.shift = classShift;
+  // фиксируем смену по классу
+  const classShift=data[state.klass]?.shift||1; state.shift=classShift;
 
+  // визуал для смен
   [...shiftSeg.querySelectorAll('.chip')].forEach(b=>{
-    b.setAttribute('aria-pressed', String(Number(b.dataset.shift)===state.shift));
-    b.classList.toggle('active', Number(b.dataset.shift)===state.shift);
-    b.disabled = (Number(b.dataset.shift)!==classShift);
-    b.style.opacity = (Number(b.dataset.shift)===classShift) ? 1 : .5;
+    const on=Number(b.dataset.shift)===state.shift;
+    b.classList.toggle('active', on);
+    b.disabled=!on; b.style.opacity=on?1:.5;
   });
 
   renderDayTabs();
@@ -591,28 +333,16 @@ function render(){
 }
 
 /* события */
+classSelect.addEventListener('change', e=>{state.klass=e.target.value; render()});
 shiftSeg.addEventListener('click', e=>{
-  const btn = e.target.closest('[data-shift]');
-  if(!btn) return;
-  const next = Number(btn.dataset.shift);
-  if(next === (data[state.klass]?.shift || 1)){
-    state.shift = next;
-    render();
-  }
+  const btn=e.target.closest('[data-shift]'); if(!btn) return;
+  // по умолчанию смену руками не меняем — привязана к классу
 });
-classSelect.addEventListener('change', e=>{
-  state.klass = e.target.value;
-  render();
-});
-
-/* клавиши [ и ] — навигация по дням */
-window.addEventListener('keydown', (e)=>{
-  if(e.key === '[' || e.key === ']'){
-    const idx = dayOrder.indexOf(state.day);
-    const delta = (e.key === ']') ? 1 : -1;
-    const next = (idx + delta + dayOrder.length) % dayOrder.length;
-    state.day = dayOrder[next];
-    render();
+window.addEventListener('keydown', e=>{
+  if(e.key==='['||e.key===']'){
+    const i=dayOrder.indexOf(state.day);
+    state.day=dayOrder[(i+(e.key===']'?1:-1)+dayOrder.length)%dayOrder.length];
+    highlightDay(); renderTable();
   }
 });
 
