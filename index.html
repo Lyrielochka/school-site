@@ -1,61 +1,108 @@
 <!DOCTYPE html>
-<html lang="ru" data-theme="dark">
+<html lang="ru" data-theme="emerald">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Урицкая средняя школа</title>
+
+<!-- ШРИФТ -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
+
 <style>
   /* ========= базовые стили / переменные ========= */
   *{box-sizing:border-box;margin:0;padding:0}
   html,body{height:100%}
-  :root{
-    /* общий fallback + служебные */
-    --radius:14px;
-    --hero-img:url("assets/images/school.jpg");
-  }
+  :root{ --radius:14px; --hero-img:url("assets/images/school.jpg"); }
 
   /* ===== ТЕМА: ТЁМНАЯ (чёрно-золотая) ===== */
   :root[data-theme="dark"]{
     --bg:#121212; --bg-2:#1a1a1a; --bg-3:#1f1f1f;
     --fg:#eeeeee; --muted:#aaaaaa; --line:#2b2b2b;
-    --accent:#f5c542; /* золото как основной акцент */
+    --accent:#f5c542;
     --accent-08: rgba(245,197,66,.08);
     --accent-12: rgba(245,197,66,.12);
     --accent-18: rgba(245,197,66,.18);
     --accent-28: rgba(245,197,66,.28);
     --shadow:0 10px 30px rgba(0,0,0,.6);
+    --title-bright: #ffd766;
+    --title-bright-2:#fff3b3;
   }
 
-  /* ===== ТЕМА: ОФИЦИАЛЬНАЯ (светлая Emerald Mist) =====
-     Изумруд как основной акцент. Мягкие светлые поверхности. */
+  /* ===== ТЕМА: ОФИЦИАЛЬНАЯ (Emerald AURORA — на 1 шаг темнее) ===== */
   :root[data-theme="emerald"]{
-    --bg:#F6FBF7;         /* общий фон — очень светлый, с едва зелёным оттенком */
-    --bg-2:#FFFFFF;       /* карточки/поверхности */
-    --bg-3:#EEF6F1;       /* шапки таблиц/вторичный фон */
-    --fg:#0F1A14;         /* текст */
-    --muted:#5B6B63;      /* вторичный текст */
-    --line:#DFE7E2;       /* бордеры */
-    --accent:#22A06B;     /* изумруд */
-    --accent-08: rgba(34,160,107,.08);
-    --accent-12: rgba(34,160,107,.12);
-    --accent-18: rgba(34,160,107,.18);
-    --accent-28: rgba(34,160,107,.28);
-    --shadow:0 10px 30px rgba(28,86,58,.10);
+    /* фон чуть темнее и насыщеннее */
+    --bg:#E3F0EA;         /* было #ECF8F2 → затемнил и добавил зелёный тон */
+    --bg-2:#FFFFFF;       /* поверхности */
+    --bg-3:#DFF0E7;       /* вторичные панели */
+    --fg:#0F1E18;         /* текст */
+    --muted:#56685F;
+    --line:#D3E5DC;
+    /* изумруды — чуть ярче */
+    --accent:#1FA36D;
+    --accent-2:#36D092;
+    --accent-08: rgba(31,163,109,.08);
+    --accent-12: rgba(31,163,109,.12);
+    --accent-18: rgba(31,163,109,.18);
+    --accent-28: rgba(31,163,109,.28);
+    --shadow:0 16px 40px rgba(39,112,84,.18);
+
+    /* супер-яркость для названия/слогана */
+    --title-bright:#1fd18a;
+    --title-bright-2:#6fe6bc;
   }
 
   body{
-    font-family:Segoe UI,Arial,sans-serif; color:var(--fg); line-height:1.6; overflow-x:hidden;
-    background:
-      radial-gradient(1200px 600px at 60% -10%, color-mix(in oklab, var(--bg) 70%, #000 0%) 0%, transparent 60%),
-      radial-gradient(900px 300px at 8% 120%, color-mix(in oklab, var(--bg) 80%, #000 0%) 0%, transparent 60%),
-      radial-gradient(900px 300px at 92% 120%, color-mix(in oklab, var(--bg) 80%, #000 0%) 0%, transparent 60%),
-      var(--bg);
+    font-family:Manrope, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+    color:var(--fg); line-height:1.6; overflow-x:hidden; background: var(--bg);
   }
-  /* лёгкий шум */
-  body:after{
-    content:""; position:fixed; inset:0; pointer-events:none; opacity:.05;
+
+  /* ===== AURORA фон (для emerald) + шум ===== */
+  .bg-canvas{position:fixed; inset:0; z-index:-2; pointer-events:none}
+  :root[data-theme="emerald"] .bg-canvas::before,
+  :root[data-theme="emerald"] .bg-canvas::after{
+    content:""; position:absolute; inset:-20%; filter:blur(70px);
+    background:
+      radial-gradient(560px 400px at 16% 18%, rgba(31,163,109,.42), transparent 65%),
+      radial-gradient(520px 360px at 84% 12%, rgba(87,207,153,.35), transparent 60%),
+      radial-gradient(620px 440px at 18% 88%, rgba(105,196,157,.35), transparent 65%),
+      radial-gradient(600px 420px at 88% 82%, rgba(26,133,90,.35), transparent 65%);
+    opacity:.75; animation:drift 28s linear infinite;
+  }
+  :root[data-theme="emerald"] .bg-canvas::after{
+    filter:blur(100px); opacity:.55; animation-direction:reverse;
+  }
+  @keyframes drift{ 0%{transform:translate3d(0,0,0)} 50%{transform:translate3d(2%,-1%,0)} 100%{transform:none} }
+
+  .bg-pattern, .bg-noise{position:fixed; inset:0; z-index:-1; pointer-events:none}
+  :root[data-theme="emerald"] .bg-pattern{
+    opacity:.2; /* было .16 */
+    background-image:url('data:image/svg+xml;utf8,\
+      <svg xmlns="http://www.w3.org/2000/svg" width="180" height="180" viewBox="0 0 180 180">\
+        <g fill="none" stroke="%2336b487" stroke-opacity=".35">\
+          <path d="M0 90 Q45 45 90 90 T180 90" />\
+          <path d="M0 135 Q45 90 90 135 T180 135" />\
+          <path d="M0 45 Q45 0 90 45 T180 45" />\
+        </g>\
+        <g fill="%2336b487" fill-opacity=".10">\
+          <circle cx="30" cy="30" r="2"/><circle cx="150" cy="56" r="2"/><circle cx="120" cy="142" r="2"/>\
+        </g>\
+      </svg>');
+    background-size:180px 180px;
+  }
+  .bg-noise{
+    opacity:.08;
     background-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="140" height="140"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23n)" opacity="0.35"/></svg>');
     mix-blend-mode:soft-light;
+  }
+
+  :root[data-theme="dark"] body{
+    background:
+      radial-gradient(1200px 600px at 60% -10%, #1a1a1a 0%, transparent 60%),
+      radial-gradient(900px 300px at 8% 120%, #151515 0%, transparent 60%),
+      radial-gradient(900px 300px at 92% 120%, #151515 0%, transparent 60%),
+      #121212;
   }
 
   /* ========= HERO ========= */
@@ -65,33 +112,41 @@
     background-image:var(--hero-img);
     border-bottom:none;
   }
-  /* мягкая линия под картинкой — под цвет акцента */
   header.hero::before{
     content:""; position:absolute; left:50%; bottom:-1px; transform:translateX(-50%);
-    width:min(780px,92vw); height:2px; border-radius:999px;
+    width:min(820px,92vw); height:2px; border-radius:999px;
     background:linear-gradient(90deg, transparent, color-mix(in oklab, var(--accent) 85%, white 15%), transparent);
     box-shadow:0 0 14px color-mix(in oklab, var(--accent) 25%, transparent);
   }
-  header.hero::after{
+  /* затемнили оверлей ~на 20% */
+  :root[data-theme="emerald"] header.hero::after{
     content:""; position:absolute; inset:0;
     background:
-      linear-gradient(180deg, rgba(0,0,0,.55), rgba(0,0,0,.78)),
+      linear-gradient(180deg, rgba(0,0,0,.32), rgba(0,0,0,.52)), /* было .22 → .32 и .36 → .52 */
       radial-gradient(900px 260px at 50% 86%, var(--accent-12), transparent 60%);
   }
-  /* в светлой теме затемнение делаем деликатнее */
-  :root[data-theme="emerald"] header.hero::after{
+  :root[data-theme="dark"] header.hero::after{
+    content:""; position:absolute; inset:0;
     background:
-      linear-gradient(180deg, rgba(0,0,0,.20), rgba(0,0,0,.36)),
+      linear-gradient(180deg, rgba(0,0,0,.60), rgba(0,0,0,.85)),
       radial-gradient(900px 260px at 50% 86%, var(--accent-12), transparent 60%);
   }
   header .inner{position:relative; z-index:1; max-width:1100px; margin:0 auto}
+
+  /* яркое название и слоган */
   .title{
-    font-size:clamp(2rem,5vw,3.2rem);
-    color:var(--accent);
+    font-size:clamp(2.2rem,5.2vw,3.4rem);
+    font-weight:800;
+    background:linear-gradient(180deg, var(--title-bright-2), var(--title-bright));
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+    text-shadow:0 2px 0 rgba(0,0,0,.25), 0 0 24px color-mix(in oklab, var(--title-bright) 35%, transparent);
     letter-spacing:.3px;
-    text-shadow:0 2px 0 rgba(0,0,0,.5), 0 0 24px var(--accent-28);
   }
-  .subtitle{margin-top:14px;color:color-mix(in oklab, var(--fg) 80%, #fff 20%);font-size:1.1rem;opacity:.95}
+  .subtitle{
+    margin-top:14px; font-weight:600; font-size:1.2rem;
+    color:color-mix(in oklab, var(--title-bright) 70%, #ffffff 30%);
+    text-shadow:0 1px 0 rgba(0,0,0,.2), 0 0 18px color-mix(in oklab, var(--title-bright) 25%, transparent);
+  }
 
   /* ========= верхнее меню-пилюли ========= */
   .topnav{margin-top:28px;display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
@@ -99,8 +154,8 @@
     display:inline-block; padding:10px 18px; border-radius:30px;
     color:var(--accent); text-decoration:none; font-weight:700; letter-spacing:.2px;
     border:1px solid color-mix(in oklab, var(--accent) 35%, var(--line));
-    background:linear-gradient(180deg, color-mix(in oklab, var(--bg-2) 100%, #000 0%), color-mix(in oklab, var(--bg-2) 92%, #000 8%));
-    box-shadow:inset 0 0 0 1px rgba(255,255,255,.03), 0 10px 24px rgba(0,0,0,.18);
+    background:linear-gradient(180deg, var(--bg-2), color-mix(in oklab, var(--bg-2) 88%, #000 12%));
+    box-shadow:inset 0 0 0 1px rgba(255,255,255,.03), 0 10px 24px rgba(0,0,0,.12);
     position:relative; transition:.25s;
   }
   .topnav a::after{
@@ -109,7 +164,7 @@
     opacity:0; transition:.25s;
   }
   .topnav a:hover{
-    color:#121212; background:var(--accent);
+    color:#0e1512; background:linear-gradient(180deg, var(--accent-2), var(--accent));
     box-shadow:0 10px 24px var(--accent-28), 0 0 0 1px color-mix(in oklab, var(--accent) 60%, #000) inset;
   }
   .topnav a:hover::after{opacity:1}
@@ -120,24 +175,26 @@
     position:fixed; right:16px; top:16px; z-index:60;
     display:inline-flex; align-items:center; gap:8px;
     padding:10px 14px; border-radius:999px; cursor:pointer; user-select:none;
-    background:linear-gradient(180deg, color-mix(in oklab, var(--bg-2) 92%, #000 8%), color-mix(in oklab, var(--bg-2) 86%, #000 14%));
+    background:linear-gradient(180deg, var(--bg-2), color-mix(in oklab, var(--bg-2) 86%, #000 14%));
     color:var(--accent);
     border:1px solid color-mix(in oklab, var(--accent) 35%, var(--line));
-    box-shadow:0 10px 24px rgba(0,0,0,.25), inset 0 0 0 1px rgba(255,255,255,.03);
+    box-shadow:0 10px 24px rgba(0,0,0,.15), inset 0 0 0 1px rgba(255,255,255,.03);
     transition:.25s;
   }
-  .theme-toggle:hover{ transform:translateY(-1px); box-shadow:0 14px 28px rgba(0,0,0,.28) }
-  .theme-toggle .dot{
-    width:8px; height:8px; border-radius:50%;
-    background:var(--accent); box-shadow:0 0 10px var(--accent-28);
-  }
+  .theme-toggle:hover{ transform:translateY(-1px); box-shadow:0 14px 28px rgba(0,0,0,.18) }
+  .theme-toggle .dot{ width:8px; height:8px; border-radius:50%; background:var(--accent); box-shadow:0 0 10px var(--accent-28) }
 
   /* ========= секции ========= */
   section{padding:64px 20px}
   .container{max-width:1100px;margin:0 auto}
   .section-title{
     display:block; text-align:center; margin:0 auto 26px;
-    font-size:1.9rem; color:var(--accent); letter-spacing:.2px; position:relative;
+    font-size:1.9rem; color:var(--accent); letter-spacing:.2px; position:relative; font-weight:800;
+  }
+  .section-title::before{
+    content:""; position:absolute; left:50%; transform:translateX(-50%); top:-14px;
+    width:72px; height:6px; border-radius:999px;
+    background:linear-gradient(90deg, transparent, var(--accent-2), transparent);
   }
   .section-title::after{
     content:""; display:block; height:1px; width:min(680px,86vw); margin:12px auto 0;
@@ -146,36 +203,38 @@
   }
 
   /* ========= карточки ========= */
-  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:24px}
   .card{
     position:relative; text-align:center; overflow:hidden;
-    background:linear-gradient(180deg, color-mix(in oklab, var(--bg-2) 90%, #000 10%), color-mix(in oklab, var(--bg-2) 80%, #000 20%));
-    border:1px solid var(--line); border-radius:var(--radius); padding:22px;
+    background:linear-gradient(180deg, var(--bg-2), color-mix(in oklab, var(--bg-2) 88%, #000 12%));
+    border:1px solid var(--line); border-radius:var(--radius); padding:24px;
     box-shadow:var(--shadow);
     transition:transform .25s, background .25s, box-shadow .25s, border-color .25s;
   }
-  .card::before{ /* декоративное свечение контура */
+  .card::before{
     content:""; position:absolute; inset:-1px; border-radius:calc(var(--radius) + 2px); z-index:0;
     background: conic-gradient(from 180deg at 50% 50%, transparent 0 55%, var(--accent-18) 60%, transparent 70% 100%);
-    filter: blur(14px); opacity:0; transition:.3s; pointer-events:none; /* важное: не перекрывать ссылки */
+    filter: blur(14px); opacity:0; transition:.3s; pointer-events:none;
   }
-  .card::after{ /* глянец-луч */
+  .card::after{
     content:""; position:absolute; left:-40%; top:-140%; width:80%; height:300%;
     transform: rotate(18deg); pointer-events:none;
-    background:linear-gradient(90deg, transparent, rgba(255,255,255,.12), transparent);
+    background:linear-gradient(90deg, transparent, rgba(255,255,255,.14), transparent);
     opacity:0; transition:.35s;
   }
   .card:hover{
     transform:translateY(-6px);
-    background:linear-gradient(180deg, color-mix(in oklab, var(--bg-2) 100%, #000 0%), color-mix(in oklab, var(--bg-2) 86%, #000 14%));
+    background:linear-gradient(180deg, var(--bg-2), color-mix(in oklab, var(--bg-2) 84%, #000 16%));
     border-color:color-mix(in oklab, var(--accent) 28%, var(--line));
-    box-shadow:0 16px 32px rgba(0,0,0,.18), 0 0 0 1px color-mix(in oklab, var(--accent) 15%, #000) inset;
+    box-shadow:0 20px 44px rgba(39,112,84,.22), 0 0 0 1px color-mix(in oklab, var(--accent) 15%, #000) inset;
   }
   .card:hover::before{opacity:1}
   .card:hover::after{opacity:1; left:120%}
-  .card h3{margin-bottom:8px}
+
+  /* ВАЖНО: цвет заголовков карточек — одинаковый для всех */
+  .card h3{margin-bottom:8px; color:var(--accent); font-weight:800}
   .card h3 .link-title{
-    color:var(--accent); text-decoration:none; display:inline-block; position:relative; padding:2px 0;
+    color:inherit; text-decoration:none; display:inline-block; position:relative; padding:2px 0;
   }
   .card h3 .link-title::after{
     content:""; position:absolute; left:0; right:0; bottom:-4px; height:2px;
@@ -184,9 +243,8 @@
   }
   .card h3 .link-title:hover::after{ transform:scaleX(1) }
 
-  /* подменю в карточке */
   .submenu-card{
-    margin-top:10px; background:color-mix(in oklab, var(--bg-3) 88%, #000 12%); border-top:1px solid var(--line); padding:10px 12px;
+    margin-top:12px; background:color-mix(in oklab, var(--bg-3) 92%, #000 8%); border-top:1px solid var(--line); padding:10px 12px;
     display:grid; grid-template-columns:repeat(auto-fit, minmax(160px, 1fr)); gap:10px;
     max-height:0; opacity:0; overflow:hidden;
     transition:max-height .35s ease, opacity .35s ease, filter .35s ease;
@@ -197,21 +255,21 @@
   .submenu-card a{
     color:var(--accent); text-decoration:none; font-size:.92rem; padding:6px 10px; border-radius:8px;
     border:1px solid transparent; white-space:nowrap; transition:.2s;
-    background:linear-gradient(180deg, color-mix(in oklab, var(--bg-2) 94%, #000 6%), color-mix(in oklab, var(--bg-2) 86%, #000 14%));
+    background:linear-gradient(180deg, var(--bg-2), color-mix(in oklab, var(--bg-2) 88%, #000 12%));
   }
-  .submenu-card a:hover{ background:color-mix(in oklab, var(--bg-2) 100%, #000 0%); border-color:#3a3a3a; box-shadow:0 0 0 1px var(--accent-18) inset }
+  .submenu-card a:hover{ background:var(--bg-2); border-color:#cfe2d9; box-shadow:0 0 0 1px var(--accent-12) inset }
 
   /* ========= события ========= */
   .event{
-    background:linear-gradient(180deg, color-mix(in oklab, var(--bg-2) 92%, #000 8%), color-mix(in oklab, var(--bg-2) 84%, #000 16%));
+    background:linear-gradient(180deg, var(--bg-2), color-mix(in oklab, var(--bg-2) 90%, #000 10%));
     border:1px solid var(--line); border-radius:12px; padding:18px;
     transition:background .25s, border-color .25s, box-shadow .25s;
-    box-shadow:0 10px 24px rgba(0,0,0,.18);
+    box-shadow:0 10px 24px rgba(39,112,84,.12);
   }
   .event:hover{
-    background:linear-gradient(180deg, color-mix(in oklab, var(--bg-2) 100%, #000 0%), color-mix(in oklab, var(--bg-2) 88%, #000 12%));
+    background:linear-gradient(180deg, var(--bg-2), color-mix(in oklab, var(--bg-2) 84%, #000 16%));
     border-color:var(--accent-28);
-    box-shadow:0 14px 28px rgba(0,0,0,.22), 0 0 0 1px var(--accent-12) inset;
+    box-shadow:0 14px 28px rgba(39,112,84,.18), 0 0 0 1px var(--accent-12) inset;
   }
   .event small{display:block;color:var(--muted);margin:.15rem 0 .5rem}
 
@@ -219,8 +277,8 @@
   .about-list{
     list-style:none; max-width:680px; margin:0 auto;
     border:1px solid var(--line); border-radius:12px; overflow:hidden;
-    background:linear-gradient(180deg, color-mix(in oklab, var(--bg-2) 92%, #000 8%), color-mix(in oklab, var(--bg-2) 84%, #000 16%));
-    box-shadow:0 12px 24px rgba(0,0,0,.18);
+    background:linear-gradient(180deg, var(--bg-2), color-mix(in oklab, var(--bg-2) 90%, #000 10%));
+    box-shadow:0 12px 24px rgba(39,112,84,.12);
   }
   .about-list li{
     display:flex; gap:12px; justify-content:space-between; padding:14px 16px; background:transparent; position:relative;
@@ -235,8 +293,8 @@
   .btn{
     display:inline-block; padding:10px 16px; border-radius:12px;
     font-weight:800; letter-spacing:.2px; text-decoration:none;
-    color:#121212; background:var(--accent);
-    border:1px solid color-mix(in oklab, var(--accent) 50%, #000);
+    color:#0e1512; background:linear-gradient(180deg, var(--accent-2), var(--accent));
+    border:1px solid color-mix(in oklab, var(--accent) 50%, #0a0a0a);
     box-shadow:0 10px 24px var(--accent-18), inset 0 0 0 1px rgba(255,255,255,.15);
     transition:.25s;
   }
@@ -244,13 +302,9 @@
 
   /* ========= футер ========= */
   footer{
-    background:linear-gradient(180deg,#0f0f0f,#0b0b0b);
-    color:#8a8a8a; text-align:center; padding:32px 20px 36px; position:relative;
-    border-top:1px solid var(--accent-28);
-  }
-  :root[data-theme="emerald"] footer{
-    background:linear-gradient(180deg, #FFFFFF, #F6FBF7);
+    background:linear-gradient(180deg, #FFFFFF, #E3F0EA);
     color:color-mix(in oklab, var(--fg) 70%, #000);
+    text-align:center; padding:32px 20px 36px; position:relative;
     border-top:1px solid var(--line);
   }
   footer::before{
@@ -269,52 +323,44 @@
   /* ========= док-панель ========= */
   .dock{position:fixed;right:22px;bottom:22px;display:flex;flex-direction:column;gap:14px;z-index:50}
   .dock .group{position:relative}
-  .fab, .sub{
-    display:grid; place-items:center; cursor:pointer; border:none;
-    width:58px; height:58px; border-radius:50%; color:var(--accent); outline:none;
-    background:linear-gradient(180deg, color-mix(in oklab, var(--bg-2) 90%, #000 10%), color-mix(in oklab, var(--bg-2) 80%, #000 20%));
-    border:1px solid var(--line); box-shadow:var(--shadow); position:relative;
-    transition:transform .2s, background .2s, opacity .2s, box-shadow .2s, border-color .2s;
+  .fab{
+    display:grid; place-items:center; width:58px; height:58px; border-radius:50%; color:var(--accent);
+    background:linear-gradient(180deg, var(--bg-2), color-mix(in oklab, var(--bg-2) 86%, #000 14%));
+    border:1px solid var(--line); box-shadow:0 16px 40px rgba(39,112,84,.18);
+    transition:.2s;
   }
-  .fab::after, .sub::after{
-    content:""; position:absolute; inset:-3px; border-radius:50%;
-    background:radial-gradient(100% 100% at 50% 0%, var(--accent-18), transparent 70%);
-    opacity:.0; transition:.25s;
-  }
-  .fab:hover, .sub:hover{
-    transform:translateY(-2px); background:color-mix(in oklab, var(--bg-2) 100%, #000 0%); border-color:var(--accent-28);
-    box-shadow:0 14px 28px rgba(0,0,0,.22), 0 0 0 1px var(--accent-12) inset;
-  }
-  .fab:hover::after, .sub:hover::after{ opacity:1 }
-
-  .fab span{font-size:24px;line-height:1}
-
+  .fab:hover{ transform:translateY(-2px); border-color:var(--accent-28); box-shadow:0 20px 46px rgba(39,112,84,.22) }
   .label{
     position:absolute; right:70px; bottom:8px; background:#000000b3; color:#fff;
     padding:6px 10px; border-radius:10px; font-size:.85rem; border:1px solid #222;
     opacity:0; transform:translateX(10px); pointer-events:none; white-space:nowrap; transition:.2s
   }
   .group:hover .label{opacity:1;transform:translateX(0)}
-
   @media (max-width:520px){ .label{display:none} }
+
   @media (prefers-reduced-motion: reduce){
-    .fade{transition:none} .card, .topnav a, .fab, .sub, .btn, .theme-toggle{transition:none}
-    .card::after, .card::before{display:none}
+    .fade{transition:none}
+    .bg-canvas, .bg-pattern{display:none}
   }
 </style>
 </head>
 <body>
 
+  <!-- AURORA фон -->
+  <div class="bg-canvas"></div>
+  <div class="bg-pattern"></div>
+  <div class="bg-noise"></div>
+
   <!-- ПЕРЕКЛЮЧАТЕЛЬ ТЕМЫ -->
   <button id="themeToggle" class="theme-toggle" aria-pressed="false" title="Переключить тему">
-    <span class="dot" aria-hidden="true"></span><span id="themeLabel">Тёмная тема</span>
+    <span class="dot" aria-hidden="true"></span><span id="themeLabel">Официальная тема</span>
   </button>
 
   <!-- HERO -->
   <header class="hero">
     <div class="inner fade">
-      <h1 class="title">Вот это мне заняться нечем</h1>
-      <p class="subtitle">Тут работы года на 4.</p>
+      <h1 class="title">Урицкая средняя школа</h1>
+      <p class="subtitle">Что-то,где-то,почему-то.</p>
       <nav class="topnav">
         <a href="news.html">События</a>
         <a href="#about">О школе</a>
@@ -386,7 +432,7 @@
       <div id="latest-news" class="grid fade"></div>
 
       <p style="text-align:center;margin-top:14px">
-        <a href="news.html" class="btn" style="background:var(--bg-2);color:var(--fg);border:1px solid var(--line)">Показать все события</a>
+        <a href="news.html" class="btn">Показать все события</a>
       </p>
 
       <p id="latest-error" style="color:var(--muted);display:none;margin-top:8px">Не удалось загрузить новости.</p>
@@ -449,8 +495,6 @@
       const KEY = 'site-theme';
       const saved = localStorage.getItem(KEY);
       const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-
-      // начальная тема
       const initial = saved || (prefersDark ? 'dark' : 'emerald');
       el.setAttribute('data-theme', initial);
       updateBtn(initial);
@@ -464,9 +508,8 @@
       });
 
       function updateBtn(theme){
-        const isDark = theme === 'dark';
-        btn.setAttribute('aria-pressed', String(!isDark));
-        label.textContent = isDark ? 'Тёмная тема' : 'Официальная тема';
+        label.textContent = theme === 'dark' ? 'Тёмная тема' : 'Официальная тема';
+        btn.setAttribute('aria-pressed', theme !== 'dark');
       }
     })();
 
@@ -487,76 +530,71 @@
         if(!card.contains(e.target)) card.classList.remove('open');
       });
     });
-  </script>
 
-  <!-- ===== Загрузка последних новостей из GitHub (как было) ===== -->
-  <script>
-  (function(){
-    const BOX = document.getElementById('latest-news');
-    const ERR = document.getElementById('latest-error');
+    // последние новости из GitHub (как раньше)
+    (function(){
+      const BOX = document.getElementById('latest-news');
+      const ERR = document.getElementById('latest-error');
+      const REPO_OWNER = "Lyrielochka";
+      const REPO_NAME  = "school-site";
+      const BRANCH     = "main";
+      const API_LIST = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/news?ref=${BRANCH}`;
+      const RAW_FILE  = (name)=>`https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/${BRANCH}/news/${encodeURIComponent(name)}`;
 
-    const REPO_OWNER = "Lyrielochka";
-    const REPO_NAME  = "school-site";
-    const BRANCH     = "main";
-    const API_LIST = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/news?ref=${BRANCH}`;
-    const RAW_FILE  = (name)=>`https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/${BRANCH}/news/${encodeURIComponent(name)}`;
-
-    function parseFrontMatter(md){
-      const m = md.match(/^---\s*([\s\S]*?)\s*---\s*([\s\S]*)$/);
-      if(!m) return {meta:{}, body:md};
-      const yaml = m[1], body = m[2], meta = {};
-      yaml.split(/\r?\n/).forEach(line=>{
-        const mm = line.match(/^(\w+):\s*(.*)$/);
-        if(mm){
-          const k=mm[1].trim(); let v=mm[2].trim();
-          if(/^".*"$/.test(v)||/^'.*'$/.test(v)) v=v.slice(1,-1);
-          meta[k]=v;
-        }
-      });
-      return {meta, body};
-    }
-    const fmtDate = s => { try { return new Date(s).toLocaleDateString('ru-RU',{year:'numeric',month:'long',day:'2-digit'}); } catch { return s; } };
-
-    async function loadLatest(){
-      try{
-        const res = await fetch(API_LIST);
-        if(!res.ok) throw res;
-        const files = await res.json();
-        const mdFiles = files.filter(f=>/\.md$/i.test(f.name));
-        const raws = await Promise.all(mdFiles.map(f=>fetch(RAW_FILE(f.name)).then(r=>r.text().then(t=>({name:f.name, text:t})))));
-
-        let items = raws.map(({name,text})=>{
-          const {meta, body} = parseFrontMatter(text);
-          const firstLine = (body.split('\n').find(l=>l.trim())||"").trim();
-          return {
-            file: name,
-            title: meta.title || name.replace(/\.md$/,''),
-            date:  meta.date || "",
-            cover: meta.cover || "",
-            excerpt: meta.excerpt || (firstLine.length>140? firstLine.slice(0,140)+'…' : firstLine)
-          };
-        }).sort((a,b)=> new Date(b.date)-new Date(a.date))
-          .slice(0,3);
-
-        BOX.innerHTML = items.map(it=>`
-          <article class="event" style="overflow:hidden">
-            ${it.cover ? `
-              <img src="${it.cover}" alt="" loading="lazy"
-                   style="width:100%;height:160px;object-fit:cover;border-radius:10px;border:1px solid var(--line);margin-bottom:10px">
-            ` : ``}
-            <h3 style="color:var(--accent);margin:0">${it.title}</h3>
-            ${it.date ? `<small>${fmtDate(it.date)}</small>` : ``}
-            ${it.excerpt ? `<p style="margin-top:6px">${it.excerpt}</p>` : ``}
-            <p style="margin-top:8px"><a href="news.html?slug=${encodeURIComponent(it.file)}" style="color:var(--accent);text-decoration:none">Читать полностью →</a></p>
-          </article>
-        `).join('');
-      }catch(e){
-        console.error(e); ERR.style.display = '';
+      function parseFrontMatter(md){
+        const m = md.match(/^---\s*([\s\S]*?)\s*---\s*([\s\S]*)$/);
+        if(!m) return {meta:{}, body:md};
+        const yaml = m[1], body = m[2], meta = {};
+        yaml.split(/\r?\n/).forEach(line=>{
+          const mm = line.match(/^(\w+):\s*(.*)$/);
+          if(mm){
+            const k=mm[1].trim(); let v=mm[2].trim();
+            if(/^".*"$/.test(v)||/^'.*'$/.test(v)) v=v.slice(1,-1);
+            meta[k]=v;
+          }
+        });
+        return {meta, body};
       }
-    }
-    loadLatest();
-  })();
-  </script>
+      const fmtDate = s => { try { return new Date(s).toLocaleDateString('ru-RU',{year:'numeric',month:'long',day:'2-digit'}); } catch { return s; } };
 
+      async function loadLatest(){
+        try{
+          const res = await fetch(API_LIST);
+          if(!res.ok) throw res;
+          const files = await res.json();
+          const mdFiles = files.filter(f=>/\.md$/i.test(f.name));
+          const raws = await Promise.all(mdFiles.map(f=>fetch(RAW_FILE(f.name)).then(r=>r.text().then(t=>({name:f.name, text:t})))));
+
+          let items = raws.map(({name,text})=>{
+            const {meta, body} = parseFrontMatter(text);
+            const firstLine = (body.split('\n').find(l=>l.trim())||"").trim();
+            return {
+              file: name,
+              title: meta.title || name.replace(/\.md$/,''),
+              date:  meta.date || "",
+              cover: meta.cover || "",
+              excerpt: meta.excerpt || (firstLine.length>140? firstLine.slice(0,140)+'…' : firstLine)
+            };
+          }).sort((a,b)=> new Date(b.date)-new Date(a.date)).slice(0,3);
+
+          BOX.innerHTML = items.map(it=>`
+            <article class="event" style="overflow:hidden">
+              ${it.cover ? `
+                <img src="${it.cover}" alt="" loading="lazy"
+                     style="width:100%;height:160px;object-fit:cover;border-radius:10px;border:1px solid var(--line);margin-bottom:10px">
+              ` : ``}
+              <h3 style="color:var(--accent);margin:0">${it.title}</h3>
+              ${it.date ? `<small>${fmtDate(it.date)}</small>` : ``}
+              ${it.excerpt ? `<p style="margin-top:6px">${it.excerpt}</p>` : ``}
+              <p style="margin-top:8px"><a href="news.html?slug=${encodeURIComponent(it.file)}" style="color:var(--accent);text-decoration:none">Читать полностью →</a></p>
+            </article>
+          `).join('');
+        }catch(e){
+          console.error(e); ERR.style.display = '';
+        }
+      }
+      loadLatest();
+    })();
+  </script>
 </body>
 </html>
