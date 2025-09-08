@@ -374,6 +374,52 @@
 </style>
 </head>
 <body>
+/* ==== FIX: контраст активных элементов в ТЁМНОЙ теме ==== */
+:root[data-theme="dark"] .chip,
+:root[data-theme="dark"] .day{
+  color: #d9d9df;
+  border-color: #2f2f2f;
+  background: linear-gradient(180deg,#181818,#121212);
+}
+
+:root[data-theme="dark"] .chip.active,
+:root[data-theme="dark"] .day.active{
+  /* более светлое «золото» и тёмный читаемый текст */
+  background: linear-gradient(180deg, #ffd86a, #f5c542);
+  color: #111;                /* текст не чёрный, но очень тёмный для контраста */
+  text-shadow: none;
+  border-color: rgba(245,197,66,.6);
+  box-shadow: 0 10px 24px rgba(245,197,66,.22),
+              0 0 0 1px rgba(245,197,66,.35) inset;
+}
+
+/* неактивные табы дней чуть светлее, чтобы было видно подписи */
+:root[data-theme="dark"] .day{
+  color: #c9c9cf;
+  border-color: #2b2b2b;
+}
+
+/* время и «подсказки» в тёмной теме — чуть светлее */
+:root[data-theme="dark"] .time{ color:#d0d0d6 }
+:root[data-theme="dark"] .tooltip{
+  background: #121212;
+  color: #eee;
+  border-color: rgba(245,197,66,.35);
+  box-shadow: 0 12px 24px rgba(0,0,0,.6);
+}
+
+/* ==== SIMPLIFY: заголовок сайта попроще (Inter вместо Russo One) ==== */
+/* Можно не убирать Russo One из <link>, но мы его больше не используем */
+.title{
+  font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif !important;
+  font-weight: 900;
+  letter-spacing: .2px;
+  /* оставляем лёгкий градиент текста, но без агрессивного свечения */
+  background: linear-gradient(180deg, var(--title-bright-2), var(--title-bright));
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+  text-shadow: 0 1px 0 rgba(0,0,0,.18), 0 0 18px color-mix(in oklab, var(--title-bright) 20%, transparent);
+  font-size: clamp(2.1rem, 5vw, 3.1rem);  /* чуть спокойнее размер */
+}
 
   <!-- AURORA фон -->
   <div class="bg-canvas"></div>
