@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ru" data-theme="emerald">
+<html lang="ру" data-theme="emerald">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -30,14 +30,13 @@
 
   /* ===== ОФИЦИАЛЬНАЯ (Emerald – темнее ~15%) ===== */
   :root[data-theme="emerald"]{
-    /* фон и поверхности чуть темнее и насыщеннее */
-    --bg:#D9E8E1;        /* было #E3F0EA → темнее ~15% */
+    --bg:#D9E8E1;
     --bg-2:#FFFFFF;
-    --bg-3:#D3E3DB;      /* панели/хедер-таблица */
+    --bg-3:#D3E3DB;
     --fg:#0E1C16;
     --muted:#50635A;
     --line:#C9DDD4;
-    /* изумруд */
+
     --accent:#1FA36D;
     --accent-2:#38D497;
     --accent-08: rgba(31,163,109,.08);
@@ -46,7 +45,6 @@
     --accent-28: rgba(31,163,109,.28);
     --shadow:0 18px 44px rgba(39,112,84,.2);
 
-    /* супер-яркость для названия/слогана */
     --title-bright:#22e39c;
     --title-bright-2:#79f1c5;
   }
@@ -111,11 +109,10 @@
     background-image:var(--hero-img);
     border-bottom:none;
   }
-  /* затемняем картинку в hero (emerald) ещё сильнее */
   :root[data-theme="emerald"] header.hero::after{
     content:""; position:absolute; inset:0;
     background:
-      linear-gradient(180deg, rgba(0,0,0,.38), rgba(0,0,0,.56)), /* стало темнее на ~20% */
+      linear-gradient(180deg, rgba(0,0,0,.38), rgba(0,0,0,.56)),
       radial-gradient(900px 260px at 50% 86%, var(--accent-12), transparent 60%);
   }
   :root[data-theme="dark"] header.hero::after{
@@ -130,50 +127,45 @@
     background:linear-gradient(90deg, transparent, color-mix(in oklab, var(--accent) 85%, white 15%), transparent);
     box-shadow:0 0 14px color-mix(in oklab, var(--accent) 25%, transparent);
   }
-
   header .inner{position:relative; z-index:1; max-width:1100px; margin:0 auto}
 
-  //* размер можно «растянуть» как нужно */
-/* было: width: clamp(120px, 15vw, 200px); */
-
-/* стало (в 2.5 раза меньше): */
-/* было: width: clamp(120px, 15vw, 200px); */
-
-/* стало (в 2.5 раза меньше): */
-/* было: width: clamp(120px, 15vw, 200px); */
-
-/* стало (в 2.5 раза меньше): */
-/* Базовый размер (мобилки/планшеты) — как было, круг и центрирование */
+  /* ====== ГЕРБ ====== */
+  /* базовый (мобилки/планшеты): круг, центрирование */
+  /* === ГЕРБ (PNG, без круга) === */
 .hero-logo{
   display:block;
-  margin:0 auto 18px;
-  width:clamp(110px, 18vw, 140px);
-  aspect-ratio:1 / 1;
-  border-radius:50%;
-  object-fit:cover;
-  object-position:center;
-  background:#fff;
-  box-shadow:
-    0 0 0 4px rgba(255,255,255,.9),
-    0 8px 26px rgba(31,163,109,.35);
-  filter:brightness(1.12) saturate(1.06);
+  margin:0 auto 18px;   /* строго по центру */
+  width:399px;          /* десктоп: как в исходнике */
+  height:auto;          /* сохраняет исходные пропорции PNG */
+  image-rendering:auto; /* сглаживание */
 }
 
-/* ↓ Десктоп: делаем заметно меньше (≈ в 2–2.5 раза) */
-@media (min-width: 1024px){
-  .hero-logo{ width:72px; }          /* при желании 72px или 64px */
+/* ↓ ноутбуки/планшеты (можешь подстроить при желании) */
+@media (max-width: 1024px){
+  .hero-logo{ width:280px; }
 }
 
-/* Очень широкие экраны — ещё компактнее */
-@media (min-width: 1440px){
-  .hero-logo{ width:240px; }
-  
-@media (max-width: 480px){ .hero-logo{ width:72px; } 
-}  /* ← ЭТА width уменьшает герб на мобильных */
+/* ↓ планшеты вертикально */
+@media (max-width: 768px){
+  .hero-logo{ width:220px; }
+}
 
-/* опционально — идеально «вырезать» круг, если у PNG торчат ленты */
+/* ↓ телефоны */
+@media (max-width: 480px){
+  .hero-logo{ width:160px; }
+}
 
-  /* заголовок и слоган — акцентный шрифт Russo One + градиент */
+  /* Десктоп: как было у тебя */
+  @media (min-width: 1024px){
+    .hero-logo{ width:72px; }
+  }
+  /* Очень широкие экраны — как в исходнике */
+  @media (min-width: 1440px){
+    .hero-logo{ width:240px; }
+  }
+  /* круглая «маска», если у PNG есть выступающие элементы */
+
+  /* заголовок и слоган */
   .title{
     font-family:'Russo One', Inter, sans-serif;
     font-size:clamp(2.3rem,5.4vw,3.6rem);
@@ -342,7 +334,7 @@
   }
   :root[data-theme="dark"] footer{
     background:linear-gradient(180deg,#0f0f0f,#0b0b0b);
-    color:#8a8a8a; border-top:1px solid rgba(245,197,66,.25);
+    color:#8a8aa; border-top:1px solid rgba(245,197,66,.25);
   }
   footer::before{
     content:""; position:absolute; left:50%; transform:translateX(-50%); top:0;
@@ -396,11 +388,10 @@
   <!-- HERO -->
   <header class="hero">
     <div class="inner fade">
-      <!-- ГЕРБ СВЕРХУ (путь: assets/images/gerb.png) -->
-      <!-- убираем width/height -->
-<img class="hero-logo logo-circle" src="assets/images/gerb.png" alt="Герб Республики Беларусь">
+      <!-- ГЕРБ СВЕРХУ -->
+      <img class="hero-logo logo-circle" src="assets/images/gerb.png" alt="Герб Республики Беларусь">
       <h1 class="title">Урицкая средняя школа</h1>
-      <p class="subtitle">Что-то,где-то,.</p>
+      <p class="subtitle">Что-то,где-то, зачем-то.</p>
       <nav class="topnav">
         <a href="news.html">События</a>
         <a href="#about">О школе</a>
