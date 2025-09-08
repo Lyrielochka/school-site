@@ -19,7 +19,7 @@
     --shadow:0 12px 28px rgba(0,0,0,.42);
 
     /* <<< ПОДСТАВЬ СВОЙ ПУТЬ К КАРТИНКЕ ДЛЯ ШАПКИ >>> */
-    --hero-img: url('/assets/images/school.jpg');
+    --hero-img: url('assets/hero.jpg');
   }
 
   *{box-sizing:border-box}
@@ -52,7 +52,7 @@
     background:var(--bg) center/cover no-repeat;
     background-image:var(--hero-img);
     filter:brightness(.55) saturate(.95);
-    transform:scale(1.02); transition:transform .6s ease;
+    /* УБРАНЫ: transform и transition, чтобы картинка не двигалась */
   }
   .hero::after{
     /* мягкая виньетка + золотой акцент */
@@ -61,7 +61,7 @@
       radial-gradient(800px 250px at 50% 85%, rgba(233,195,76,.18), transparent 60%),
       radial-gradient(1200px 600px at 50% -10%, rgba(0,0,0,.35), transparent 50%);
   }
-  .hero:hover::before{transform:scale(1.03)}
+  /* УДАЛЕНО: .hero:hover::before{ transform:scale(1.03) } */
   .hero-inner{position:relative; z-index:1; text-align:center; padding:24px}
   h1{
     margin:0 0 10px; font-size:46px; line-height:1.06; letter-spacing:.5px;
@@ -211,7 +211,7 @@
     <section class="hero" aria-label="Заголовок и фон">
       <div class="hero-inner">
         <h1>Расписание занятий</h1>
-        <p class="hint">Наведите курсор на предмет — увидите кабинет. На телефонах — тап по предмету.</p>
+        <p class="hint">Наведите курсор на предмет — увидите кабинет. На телефонах — тап по предмету. Клавиши <b>[</b>/<b>]</b> листают дни.</p>
       </div>
     </section>
 
@@ -242,7 +242,7 @@
     </div>
   </main>
 
-  <!-- ФУТЕР (из твоего кода) -->
+  <!-- ФУТЕР -->
   <footer id="contacts">
     <p class="credit">
       <a href="https://reklama322228.netlify.app/" target="_blank" rel="noopener">
