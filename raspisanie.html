@@ -11,17 +11,15 @@
     --bg-2:#15161a;
     --bg-3:#1b1c21;
     --ink:#e9c34c;          /* золото */
-    --ink-2:#ffefad;        /* светлое золото для текста/hover */
+    --ink-2:#ffefad;        /* светлое золото */
     --text:#e4e4ea;
     --muted:#9da0aa;
     --border:#2a2e36;
     --radius:14px;
     --shadow:0 12px 28px rgba(0,0,0,.42);
 
-    /* <<< ПОДСТАВЬ СВОЙ ПУТЬ К КАРТИНКЕ >>> */
-    --hero-img: url('/assets/images/school.jpg');
-    /* либо абсолютный путь:
-       --hero-img: url('https://site.by/images/school-hero.webp'); */
+    /* <<< ПОДСТАВЬ СВОЙ ПУТЬ К КАРТИНКЕ ДЛЯ ХЕДЕРА >>> */
+    --hero-img: url('assets/hero.jpg');
   }
 
   *{box-sizing:border-box}
@@ -55,7 +53,7 @@
     transition:transform .6s ease;
   }
   .hero::after{
-    /* мягкая виньетка и золотой свечащийся акцент */
+    /* мягкая виньетка + золотой акцент */
     content:""; position:absolute; inset:0;
     background:
       radial-gradient(800px 250px at 50% 85%, rgba(233,195,76,.18), transparent 60%),
@@ -67,7 +65,7 @@
     margin:0 0 10px; font-size:46px; line-height:1.06; letter-spacing:.5px;
     color:var(--ink); text-shadow:0 2px 0 rgba(0,0,0,.45);
   }
-  .hint{margin:0; color:#efe5c9; opacity:.95}
+  .hint{margin:0; color:#efe5c9; opacity:.95; text-align:center}
 
   /* ================== ОБЩЕЕ ================== */
   .wrap{max-width:1180px; margin:24px auto 120px; padding:0 20px}
@@ -131,7 +129,9 @@
   .table th{background:var(--bg-3); color:#b8bcc8; text-transform:uppercase; font-size:12px; letter-spacing:.65px}
   .table tr:last-child td{border-bottom:0}
   .time{color:#cfd3dd}
-  .subj{font-weight:800; color:var(--ink); position:relative; display:inline-block}
+
+  /* Предмет + тултип-кабинет */
+  .subj{font-weight:800; color:var(--ink); position:relative; display:inline-block; outline:none}
   .subj[data-room]:after{
     content:""; display:inline-block; width:6px; height:6px; border-radius:50%;
     background:var(--ink); margin-left:8px; transform:translateY(-2px)
@@ -142,7 +142,16 @@
     font-size:13px; border-radius:8px; box-shadow:0 12px 24px rgba(0,0,0,.45);
     white-space:nowrap; opacity:0; pointer-events:none; transform:translateY(6px); transition:.16s ease;
   }
-  .subj:hover .tooltip{opacity:1; transform:translateY(0)}
+  /* Показывать по фокусу (клавиатура/тап) или когда JS добавил класс tip-on */
+  .subj:focus .tooltip,
+  .subj.tip-on .tooltip{
+    opacity:1; transform:translateY(0);
+  }
+  /* На устройствах без hover — рендерить подсказку ниже предмета */
+  @media (hover: none) and (pointer: coarse){
+    .tooltip{ top:calc(100% + 8px); bottom:auto; }
+  }
+
   tbody tr{opacity:0; transform:translateY(6px); animation:rowIn .35s ease forwards}
   @keyframes rowIn{to{opacity:1; transform:none}}
 
@@ -171,7 +180,7 @@
   <section class="hero" aria-label="Заголовок и фон">
     <div class="hero-inner">
       <h1>Расписание занятий</h1>
-      <p class="hint">Наведите курсор на предмет — появится кабинет.</p>
+      <p class="hint">Наведите курсор на предмет — увидите кабинет. На телефонах — тап по предмету. Клавиши <b>[</b>/<b>]</b> листают дни.</p>
     </div>
   </section>
 
@@ -292,6 +301,23 @@ function highlightDay(){
   [...daysEl.children].forEach(btn=>btn.classList.toggle('active', btn.textContent===state.day));
 }
 
+/* тултипы: вкл/выкл на мобилке по тапу/клавиатуре */
+function toggleTooltip(el){
+  document.querySelectorAll('.subj.tip-on').forEach(s=>{
+    if(s!==el){ s.classList.remove('tip-on'); s.setAttribute('aria-expanded','false'); }
+  });
+  const on=el.classList.toggle('tip-on');
+  el.setAttribute('aria-expanded', on ? 'true' : 'false');
+}
+/* закрытие по тапу мимо */
+document.addEventListener('click', (e)=>{
+  if(!e.target.closest('.subj')){
+    document.querySelectorAll('.subj.tip-on').forEach(s=>{
+      s.classList.remove('tip-on'); s.setAttribute('aria-expanded','false');
+    });
+  }
+}, true);
+
 /* таблица */
 function renderTable(){
   const cls=data[state.klass];
@@ -307,8 +333,24 @@ function renderTable(){
     const tdS=document.createElement('td');
     const lesson=items[i];
     if(lesson){
-      const wrap=document.createElement('span'); wrap.className='subj'; wrap.textContent=lesson.title;
-      if(lesson.room){wrap.setAttribute('data-room',lesson.room); const tip=document.createElement('span'); tip.className='tooltip'; tip.textContent="Кабинет: "+lesson.room; wrap.appendChild(tip)}
+      const wrap=document.createElement('span');
+      wrap.className='subj';
+      wrap.textContent=lesson.title;
+      wrap.tabIndex=0;                    // чтобы работал :focus
+      wrap.setAttribute('role','button');
+      wrap.setAttribute('aria-expanded','false');
+      wrap.addEventListener('click', ()=>toggleTooltip(wrap));
+      wrap.addEventListener('keydown', (e)=>{
+        if(e.key==='Enter' || e.key===' '){ e.preventDefault(); toggleTooltip(wrap); }
+      });
+
+      if(lesson.room){
+        wrap.setAttribute('data-room',lesson.room);
+        const tip=document.createElement('span');
+        tip.className='tooltip';
+        tip.textContent="Кабинет: "+lesson.room;
+        wrap.appendChild(tip);
+      }
       tdS.appendChild(wrap);
     }
     tr.appendChild(tdS);
@@ -336,7 +378,7 @@ function render(){
 classSelect.addEventListener('change', e=>{state.klass=e.target.value; render()});
 shiftSeg.addEventListener('click', e=>{
   const btn=e.target.closest('[data-shift]'); if(!btn) return;
-  // по умолчанию смену руками не меняем — привязана к классу
+  // смена привязана к классу (кнопки отображают актуальную)
 });
 window.addEventListener('keydown', e=>{
   if(e.key==='['||e.key===']'){
@@ -346,7 +388,11 @@ window.addEventListener('keydown', e=>{
   }
 });
 
-/* старт */
+/* старт (день по умолчанию — текущий будний; если вск/суб — понедельник) */
+(function initDay(){
+  const map={1:"пон.",2:"вт.",3:"ср.",4:"чт.",5:"пт.",6:"сб."};
+  const d=(new Date()).getDay(); state.day=map[d]||"пон.";
+})();
 render();
 </script>
 </body>
