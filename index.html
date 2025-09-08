@@ -5,18 +5,17 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Урицкая средняя школа</title>
 
-<!-- ШРИФТ -->
+<!-- ШРИФТЫ -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Russo+One&display=swap" rel="stylesheet">
 
 <style>
-  /* ========= базовые стили / переменные ========= */
   *{box-sizing:border-box;margin:0;padding:0}
   html,body{height:100%}
   :root{ --radius:14px; --hero-img:url("assets/images/school.jpg"); }
 
-  /* ===== ТЕМА: ТЁМНАЯ (чёрно-золотая) ===== */
+  /* ===== ТЁМНАЯ (чёрно-золотая) ===== */
   :root[data-theme="dark"]{
     --bg:#121212; --bg-2:#1a1a1a; --bg-3:#1f1f1f;
     --fg:#eeeeee; --muted:#aaaaaa; --line:#2b2b2b;
@@ -26,77 +25,77 @@
     --accent-18: rgba(245,197,66,.18);
     --accent-28: rgba(245,197,66,.28);
     --shadow:0 10px 30px rgba(0,0,0,.6);
-    --title-bright: #ffd766;
-    --title-bright-2:#fff3b3;
+    --title-bright:#ffd766; --title-bright-2:#fff3b3;
   }
 
-  /* ===== ТЕМА: ОФИЦИАЛЬНАЯ (Emerald AURORA — на 1 шаг темнее) ===== */
+  /* ===== ОФИЦИАЛЬНАЯ (Emerald – темнее ~15%) ===== */
   :root[data-theme="emerald"]{
-    /* фон чуть темнее и насыщеннее */
-    --bg:#E3F0EA;         /* было #ECF8F2 → затемнил и добавил зелёный тон */
-    --bg-2:#FFFFFF;       /* поверхности */
-    --bg-3:#DFF0E7;       /* вторичные панели */
-    --fg:#0F1E18;         /* текст */
-    --muted:#56685F;
-    --line:#D3E5DC;
-    /* изумруды — чуть ярче */
+    /* фон и поверхности чуть темнее и насыщеннее */
+    --bg:#D9E8E1;        /* было #E3F0EA → темнее ~15% */
+    --bg-2:#FFFFFF;
+    --bg-3:#D3E3DB;      /* панели/хедер-таблица */
+    --fg:#0E1C16;
+    --muted:#50635A;
+    --line:#C9DDD4;
+    /* изумруд */
     --accent:#1FA36D;
-    --accent-2:#36D092;
+    --accent-2:#38D497;
     --accent-08: rgba(31,163,109,.08);
     --accent-12: rgba(31,163,109,.12);
     --accent-18: rgba(31,163,109,.18);
     --accent-28: rgba(31,163,109,.28);
-    --shadow:0 16px 40px rgba(39,112,84,.18);
+    --shadow:0 18px 44px rgba(39,112,84,.2);
 
     /* супер-яркость для названия/слогана */
-    --title-bright:#1fd18a;
-    --title-bright-2:#6fe6bc;
+    --title-bright:#22e39c;
+    --title-bright-2:#79f1c5;
   }
 
   body{
-    font-family:Manrope, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+    font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
     color:var(--fg); line-height:1.6; overflow-x:hidden; background: var(--bg);
   }
 
-  /* ===== AURORA фон (для emerald) + шум ===== */
-  .bg-canvas{position:fixed; inset:0; z-index:-2; pointer-events:none}
+  /* ===== AURORA фон (emerald) + узор + шум ===== */
+  .bg-canvas{position:fixed; inset:0; z-index:-3; pointer-events:none}
   :root[data-theme="emerald"] .bg-canvas::before,
   :root[data-theme="emerald"] .bg-canvas::after{
-    content:""; position:absolute; inset:-20%; filter:blur(70px);
+    content:""; position:absolute; inset:-20%; filter:blur(80px);
     background:
-      radial-gradient(560px 400px at 16% 18%, rgba(31,163,109,.42), transparent 65%),
-      radial-gradient(520px 360px at 84% 12%, rgba(87,207,153,.35), transparent 60%),
-      radial-gradient(620px 440px at 18% 88%, rgba(105,196,157,.35), transparent 65%),
-      radial-gradient(600px 420px at 88% 82%, rgba(26,133,90,.35), transparent 65%);
-    opacity:.75; animation:drift 28s linear infinite;
+      radial-gradient(560px 420px at 16% 18%, rgba(31,163,109,.48), transparent 65%),
+      radial-gradient(560px 380px at 84% 12%, rgba(87,207,153,.40), transparent 60%),
+      radial-gradient(680px 460px at 20% 88%, rgba(105,196,157,.40), transparent 65%),
+      radial-gradient(640px 440px at 88% 82%, rgba(26,133,90,.40), transparent 65%);
+    opacity:.78; animation:drift 28s linear infinite;
   }
   :root[data-theme="emerald"] .bg-canvas::after{
-    filter:blur(100px); opacity:.55; animation-direction:reverse;
+    filter:blur(110px); opacity:.58; animation-direction:reverse;
   }
   @keyframes drift{ 0%{transform:translate3d(0,0,0)} 50%{transform:translate3d(2%,-1%,0)} 100%{transform:none} }
 
-  .bg-pattern, .bg-noise{position:fixed; inset:0; z-index:-1; pointer-events:none}
+  .bg-pattern, .bg-noise{position:fixed; inset:0; z-index:-2; pointer-events:none}
   :root[data-theme="emerald"] .bg-pattern{
-    opacity:.2; /* было .16 */
+    opacity:.22;
     background-image:url('data:image/svg+xml;utf8,\
       <svg xmlns="http://www.w3.org/2000/svg" width="180" height="180" viewBox="0 0 180 180">\
-        <g fill="none" stroke="%2336b487" stroke-opacity=".35">\
+        <g fill="none" stroke="%2333b184" stroke-opacity=".4" stroke-width="1.1">\
           <path d="M0 90 Q45 45 90 90 T180 90" />\
           <path d="M0 135 Q45 90 90 135 T180 135" />\
           <path d="M0 45 Q45 0 90 45 T180 45" />\
         </g>\
-        <g fill="%2336b487" fill-opacity=".10">\
+        <g fill="%2333b184" fill-opacity=".12">\
           <circle cx="30" cy="30" r="2"/><circle cx="150" cy="56" r="2"/><circle cx="120" cy="142" r="2"/>\
         </g>\
       </svg>');
     background-size:180px 180px;
   }
   .bg-noise{
-    opacity:.08;
+    z-index:-1; opacity:.08;
     background-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="140" height="140"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23n)" opacity="0.35"/></svg>');
     mix-blend-mode:soft-light;
   }
 
+  /* фон для тёмной темы */
   :root[data-theme="dark"] body{
     background:
       radial-gradient(1200px 600px at 60% -10%, #1a1a1a 0%, transparent 60%),
@@ -107,22 +106,16 @@
 
   /* ========= HERO ========= */
   header.hero{
-    position:relative; text-align:center; padding:140px 20px;
+    position:relative; text-align:center; padding:136px 20px 120px;
     background:var(--bg) center/cover no-repeat;
     background-image:var(--hero-img);
     border-bottom:none;
   }
-  header.hero::before{
-    content:""; position:absolute; left:50%; bottom:-1px; transform:translateX(-50%);
-    width:min(820px,92vw); height:2px; border-radius:999px;
-    background:linear-gradient(90deg, transparent, color-mix(in oklab, var(--accent) 85%, white 15%), transparent);
-    box-shadow:0 0 14px color-mix(in oklab, var(--accent) 25%, transparent);
-  }
-  /* затемнили оверлей ~на 20% */
+  /* затемняем картинку в hero (emerald) ещё сильнее */
   :root[data-theme="emerald"] header.hero::after{
     content:""; position:absolute; inset:0;
     background:
-      linear-gradient(180deg, rgba(0,0,0,.32), rgba(0,0,0,.52)), /* было .22 → .32 и .36 → .52 */
+      linear-gradient(180deg, rgba(0,0,0,.38), rgba(0,0,0,.56)), /* стало темнее на ~20% */
       radial-gradient(900px 260px at 50% 86%, var(--accent-12), transparent 60%);
   }
   :root[data-theme="dark"] header.hero::after{
@@ -131,25 +124,72 @@
       linear-gradient(180deg, rgba(0,0,0,.60), rgba(0,0,0,.85)),
       radial-gradient(900px 260px at 50% 86%, var(--accent-12), transparent 60%);
   }
+  header.hero::before{
+    content:""; position:absolute; left:50%; bottom:-1px; transform:translateX(-50%);
+    width:min(840px,92vw); height:2px; border-radius:999px;
+    background:linear-gradient(90deg, transparent, color-mix(in oklab, var(--accent) 85%, white 15%), transparent);
+    box-shadow:0 0 14px color-mix(in oklab, var(--accent) 25%, transparent);
+  }
+
   header .inner{position:relative; z-index:1; max-width:1100px; margin:0 auto}
 
-  /* яркое название и слоган */
+  //* размер можно «растянуть» как нужно */
+/* было: width: clamp(120px, 15vw, 200px); */
+
+/* стало (в 2.5 раза меньше): */
+/* было: width: clamp(120px, 15vw, 200px); */
+
+/* стало (в 2.5 раза меньше): */
+/* было: width: clamp(120px, 15vw, 200px); */
+
+/* стало (в 2.5 раза меньше): */
+/* Базовый размер (мобилки/планшеты) — как было, круг и центрирование */
+.hero-logo{
+  display:block;
+  margin:0 auto 18px;
+  width:clamp(110px, 18vw, 140px);
+  aspect-ratio:1 / 1;
+  border-radius:50%;
+  object-fit:cover;
+  object-position:center;
+  background:#fff;
+  box-shadow:
+    0 0 0 4px rgba(255,255,255,.9),
+    0 8px 26px rgba(31,163,109,.35);
+  filter:brightness(1.12) saturate(1.06);
+}
+
+/* ↓ Десктоп: делаем заметно меньше (≈ в 2–2.5 раза) */
+@media (min-width: 1024px){
+  .hero-logo{ width:72px; }          /* при желании 72px или 64px */
+}
+
+/* Очень широкие экраны — ещё компактнее */
+@media (min-width: 1440px){
+  .hero-logo{ width:240px; }
+}
+
+/* опционально — идеально «вырезать» круг, если у PNG торчат ленты */
+
+  /* заголовок и слоган — акцентный шрифт Russo One + градиент */
   .title{
-    font-size:clamp(2.2rem,5.2vw,3.4rem);
-    font-weight:800;
+    font-family:'Russo One', Inter, sans-serif;
+    font-size:clamp(2.3rem,5.4vw,3.6rem);
     background:linear-gradient(180deg, var(--title-bright-2), var(--title-bright));
     -webkit-background-clip:text; background-clip:text; color:transparent;
-    text-shadow:0 2px 0 rgba(0,0,0,.25), 0 0 24px color-mix(in oklab, var(--title-bright) 35%, transparent);
-    letter-spacing:.3px;
+    text-shadow:0 2px 0 rgba(0,0,0,.28), 0 0 26px color-mix(in oklab, var(--title-bright) 38%, transparent);
+    letter-spacing:.4px;
   }
   .subtitle{
-    margin-top:14px; font-weight:600; font-size:1.2rem;
-    color:color-mix(in oklab, var(--title-bright) 70%, #ffffff 30%);
-    text-shadow:0 1px 0 rgba(0,0,0,.2), 0 0 18px color-mix(in oklab, var(--title-bright) 25%, transparent);
+    margin-top:14px;
+    font-family:'Russo One', Inter, sans-serif;
+    font-weight:400; letter-spacing:.2px; font-size:clamp(1.05rem,2.1vw,1.35rem);
+    color:color-mix(in oklab, var(--title-bright) 72%, #ffffff 28%);
+    text-shadow:0 1px 0 rgba(0,0,0,.25), 0 0 20px color-mix(in oklab, var(--title-bright) 28%, transparent);
   }
 
   /* ========= верхнее меню-пилюли ========= */
-  .topnav{margin-top:28px;display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+  .topnav{margin-top:26px;display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
   .topnav a{
     display:inline-block; padding:10px 18px; border-radius:30px;
     color:var(--accent); text-decoration:none; font-weight:700; letter-spacing:.2px;
@@ -158,17 +198,10 @@
     box-shadow:inset 0 0 0 1px rgba(255,255,255,.03), 0 10px 24px rgba(0,0,0,.12);
     position:relative; transition:.25s;
   }
-  .topnav a::after{
-    content:""; position:absolute; inset:-2px; border-radius:36px; pointer-events:none;
-    background: radial-gradient(100% 100% at 50% 0%, var(--accent-18), transparent 60%);
-    opacity:0; transition:.25s;
-  }
   .topnav a:hover{
     color:#0e1512; background:linear-gradient(180deg, var(--accent-2), var(--accent));
     box-shadow:0 10px 24px var(--accent-28), 0 0 0 1px color-mix(in oklab, var(--accent) 60%, #000) inset;
   }
-  .topnav a:hover::after{opacity:1}
-  .topnav a:focus-visible{outline:2px solid var(--accent); outline-offset:2px; border-color:transparent}
 
   /* ========= переключатель темы ========= */
   .theme-toggle{
@@ -181,7 +214,6 @@
     box-shadow:0 10px 24px rgba(0,0,0,.15), inset 0 0 0 1px rgba(255,255,255,.03);
     transition:.25s;
   }
-  .theme-toggle:hover{ transform:translateY(-1px); box-shadow:0 14px 28px rgba(0,0,0,.18) }
   .theme-toggle .dot{ width:8px; height:8px; border-radius:50%; background:var(--accent); box-shadow:0 0 10px var(--accent-28) }
 
   /* ========= секции ========= */
@@ -231,7 +263,6 @@
   .card:hover::before{opacity:1}
   .card:hover::after{opacity:1; left:120%}
 
-  /* ВАЖНО: цвет заголовков карточек — одинаковый для всех */
   .card h3{margin-bottom:8px; color:var(--accent); font-weight:800}
   .card h3 .link-title{
     color:inherit; text-decoration:none; display:inline-block; position:relative; padding:2px 0;
@@ -302,10 +333,14 @@
 
   /* ========= футер ========= */
   footer{
-    background:linear-gradient(180deg, #FFFFFF, #E3F0EA);
+    background:linear-gradient(180deg, #FFFFFF, var(--bg));
     color:color-mix(in oklab, var(--fg) 70%, #000);
     text-align:center; padding:32px 20px 36px; position:relative;
     border-top:1px solid var(--line);
+  }
+  :root[data-theme="dark"] footer{
+    background:linear-gradient(180deg,#0f0f0f,#0b0b0b);
+    color:#8a8a8a; border-top:1px solid rgba(245,197,66,.25);
   }
   footer::before{
     content:""; position:absolute; left:50%; transform:translateX(-50%); top:0;
@@ -313,14 +348,14 @@
   }
   footer a{color:var(--accent);text-decoration:none}
   footer a:hover{text-decoration:underline}
-  .credit img{ filter: drop-shadow(0 0 0 rgba(0,0,0,0)); transition:.25s; border-radius:12px }
+  .credit img{ border-radius:12px; transition:.25s }
   .credit:hover img{ filter: drop-shadow(0 0 10px var(--accent-28)) }
 
   /* ========= плавные появления ========= */
   .fade{opacity:0;transform:translateY(36px);transition:all .8s ease}
   .fade.show{opacity:1;transform:translateY(0)}
 
-  /* ========= док-панель ========= */
+  /* ========= плавающие иконки ========= */
   .dock{position:fixed;right:22px;bottom:22px;display:flex;flex-direction:column;gap:14px;z-index:50}
   .dock .group{position:relative}
   .fab{
@@ -359,8 +394,11 @@
   <!-- HERO -->
   <header class="hero">
     <div class="inner fade">
-      <h1 class="title">Урицкая средняя школа</h1>
-      <p class="subtitle">Что-то,где-то,почему-то.</p>
+      <!-- ГЕРБ СВЕРХУ (путь: assets/images/gerb.png) -->
+      <!-- убираем width/height -->
+<img class="hero-logo logo-circle" src="assets/images/gerb.png" alt="Герб Республики Беларусь">
+      <h1 class="title">Вот это мне заняться нечем</h1>
+      <p class="subtitle">Тут работы года на 4.</p>
       <nav class="topnav">
         <a href="news.html">События</a>
         <a href="#about">О школе</a>
@@ -465,7 +503,7 @@
     </p>
   </footer>
 
-  <!-- ========= ПАНЕЛЬ С СОЦСЕТЯМИ ========= -->
+  <!-- ПЛАВАЮЩИЕ ИКОНКИ -->
   <div class="dock" aria-label="Соцсети">
     <div class="group">
       <a class="fab" href="https://t.me/uritskoe_school" target="_blank" aria-label="Telegram">
@@ -506,7 +544,6 @@
         localStorage.setItem(KEY, next);
         updateBtn(next);
       });
-
       function updateBtn(theme){
         label.textContent = theme === 'dark' ? 'Тёмная тема' : 'Официальная тема';
         btn.setAttribute('aria-pressed', theme !== 'dark');
@@ -520,7 +557,7 @@
     }, {threshold:.2});
     fades.forEach(n=>io.observe(n));
 
-    // раскрытие карточек по тапу, но не ломаем клики по ссылкам
+    // раскрытие карточек по тапу, не ломаем ссылки
     document.querySelectorAll('.card').forEach(card=>{
       card.addEventListener('click', (e)=>{
         if(e.target.closest('a')) return;
@@ -531,7 +568,7 @@
       });
     });
 
-    // последние новости из GitHub (как раньше)
+    // последние новости из GitHub
     (function(){
       const BOX = document.getElementById('latest-news');
       const ERR = document.getElementById('latest-error');
@@ -598,4 +635,3 @@
   </script>
 </body>
 </html>
-павпвап
