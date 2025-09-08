@@ -11,15 +11,15 @@
     --bg-2:#15161a;
     --bg-3:#1b1c21;
     --ink:#e9c34c;          /* золото */
-    --ink-2:#ffefad;        /* светлое золото */
+    --ink-2:#ffefad;        /* светлее золото */
     --text:#e4e4ea;
     --muted:#9da0aa;
     --border:#2a2e36;
     --radius:14px;
     --shadow:0 12px 28px rgba(0,0,0,.42);
 
-    /* <<< ПОДСТАВЬ СВОЙ ПУТЬ К КАРТИНКЕ ДЛЯ ХЕДЕРА >>> */
-    --hero-img: url('/assets/images/school.jpg');
+    /* <<< ПОДСТАВЬ СВОЙ ПУТЬ К КАРТИНКЕ ДЛЯ ШАПКИ >>> */
+    --hero-img: url('assets/hero.jpg');
   }
 
   *{box-sizing:border-box}
@@ -32,6 +32,9 @@
       radial-gradient(900px 300px at 10% 120%, #131418 0%, transparent 60%),
       radial-gradient(900px 300px at 90% 120%, #131418 0%, transparent 60%),
       var(--bg);
+
+    /* делаем «липкий» футер: */
+    display:flex; flex-direction:column; min-height:100vh;
   }
   body:after{ /* едва заметный шум */
     content:""; position:fixed; inset:0; pointer-events:none; opacity:.06;
@@ -49,8 +52,7 @@
     background:var(--bg) center/cover no-repeat;
     background-image:var(--hero-img);
     filter:brightness(.55) saturate(.95);
-    transform:scale(1.02);
-    transition:transform .6s ease;
+    transform:scale(1.02); transition:transform .6s ease;
   }
   .hero::after{
     /* мягкая виньетка + золотой акцент */
@@ -68,6 +70,7 @@
   .hint{margin:0; color:#efe5c9; opacity:.95; text-align:center}
 
   /* ================== ОБЩЕЕ ================== */
+  .content{flex:1 0 auto;} /* пространство контента, чтобы футер прижался вниз */
   .wrap{max-width:1180px; margin:24px auto 120px; padding:0 20px}
   .divider{
     height:1px; width:min(700px,92%); margin:16px auto 22px;
@@ -155,7 +158,7 @@
   tbody tr{opacity:0; transform:translateY(6px); animation:rowIn .35s ease forwards}
   @keyframes rowIn{to{opacity:1; transform:none}}
 
-  /* ================== FAB НАЗАД ================== */
+  /* ================== КНОПКА НАЗАД ================== */
   .back{
     position:fixed; left:20px; bottom:22px; z-index:30;
     display:inline-flex; gap:8px; align-items:center;
@@ -165,6 +168,33 @@
     transition:transform .15s ease;
   }
   .back:hover{transform:translateY(-2px)}
+
+  /* ================== ФУТЕР ================== */
+  #contacts{
+    margin-top: 28px;
+    padding: 22px 16px 28px;
+    text-align: center;
+    color: var(--text);
+    background: linear-gradient(180deg, #141417, #0f0f10);
+    border-top: 1px solid #3a3013;        /* тонкая «золотая» граница сверху */
+    box-shadow: 0 -12px 28px rgba(0,0,0,.35) inset;
+  }
+  #contacts .credit{
+    margin: 0 0 8px;
+    display: flex; justify-content: center; align-items: center; gap: 8px;
+  }
+  #contacts img{
+    border-radius: 12px;
+    box-shadow: 0 4px 18px rgba(0,0,0,.35);
+    transition: transform .15s ease, filter .2s ease;
+  }
+  #contacts .credit a:hover img{
+    transform: translateY(-1px);
+    filter: drop-shadow(0 0 12px rgba(233,195,76,.35));
+  }
+  #contacts a{ color: var(--ink); text-decoration: none; }
+  #contacts a:hover{ color: var(--ink-2); }
+  #contacts p{ margin: 6px 0; }
 
   /* адаптив */
   @media (max-width:820px){ h1{font-size:36px} }
@@ -176,41 +206,56 @@
 </head>
 <body>
 
-  <!-- HERO -->
-  <section class="hero" aria-label="Заголовок и фон">
-    <div class="hero-inner">
-      <h1>Расписание занятий</h1>
-      <p class="hint">Наведите курсор на предмет — увидите кабинет. На телефонах — тап по предмету.</p>
-    </div>
-  </section>
-
-  <div class="wrap">
-    <div class="divider"></div>
-
-    <!-- ПАНЕЛЬ -->
-    <div class="controls">
-      <div id="shiftSeg">
-        <button class="chip" data-shift="1">1&nbsp;смена</button>
-        <button class="chip" data-shift="2">2&nbsp;смена</button>
+  <main class="content">
+    <!-- HERO -->
+    <section class="hero" aria-label="Заголовок и фон">
+      <div class="hero-inner">
+        <h1>Расписание занятий</h1>
+        <p class="hint">Наведите курсор на предмет — увидите кабинет. На телефонах — тап по предмету. Клавиши <b>[</b>/<b>]</b> листают дни.</p>
       </div>
-      <div class="select-wrap">
-        <select id="classSelect" class="select" title="Класс"></select>
+    </section>
+
+    <div class="wrap">
+      <div class="divider"></div>
+
+      <!-- ПАНЕЛЬ -->
+      <div class="controls">
+        <div id="shiftSeg">
+          <button class="chip" data-shift="1">1&nbsp;смена</button>
+          <button class="chip" data-shift="2">2&nbsp;смена</button>
+        </div>
+        <div class="select-wrap">
+          <select id="classSelect" class="select" title="Класс"></select>
+        </div>
       </div>
+
+      <!-- ДНИ -->
+      <div class="days" id="days"></div>
+
+      <!-- ТАБЛИЦА -->
+      <table class="table">
+        <thead>
+          <tr><th style="width:160px">Время</th><th>Предмет</th></tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+      </table>
     </div>
+  </main>
 
-    <!-- ДНИ -->
-    <div class="days" id="days"></div>
+  <!-- ФУТЕР (из твоего кода) -->
+  <footer id="contacts">
+    <p class="credit">
+      <a href="https://reklama322228.netlify.app/" target="_blank" rel="noopener">
+        <img src="assets/icons/logo 4.png" alt="ЕТ" width="80" height="80" style="vertical-align:-3px;margin-right:6px;">
+      </a>
+    </p>
+    <p>
+      Адрес: Тенистая ул., 10, агрогородок Урицкое ·
+      Тел.: <a href="tel:+375232985102">+375 23 298-51-02</a>
+    </p>
+  </footer>
 
-    <!-- ТАБЛИЦА -->
-    <table class="table">
-      <thead>
-        <tr><th style="width:160px">Время</th><th>Предмет</th></tr>
-      </thead>
-      <tbody id="tbody"></tbody>
-    </table>
-  </div>
-
-  <!-- НАЗАД -->
+  <!-- КНОПКА НАЗАД -->
   <button class="back" onclick="history.back()" title="Назад">← Назад</button>
 
 <script>
@@ -378,7 +423,7 @@ function render(){
 classSelect.addEventListener('change', e=>{state.klass=e.target.value; render()});
 shiftSeg.addEventListener('click', e=>{
   const btn=e.target.closest('[data-shift]'); if(!btn) return;
-  // смена привязана к классу (кнопки отображают актуальную)
+  // смена привязана к классу (кнопки только отображают актуальную)
 });
 window.addEventListener('keydown', e=>{
   if(e.key==='['||e.key===']'){
