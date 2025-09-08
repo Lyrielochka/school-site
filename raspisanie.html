@@ -1,246 +1,336 @@
-<!doctype html>
-<html lang="ru">
+<!DOCTYPE html>
+<html lang="ru" data-theme="emerald">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Расписание занятий</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Расписание занятий — Урицкая средняя школа</title>
+
+<!-- ШРИФТЫ -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Russo+One&display=swap" rel="stylesheet">
+
 <style>
-  /* ================== ТЕМА / НАСТРОЙКИ ================== */
-  :root{
-    --bg:#0e0f10;
-    --bg-2:#15161a;
-    --bg-3:#1b1c21;
-    --ink:#e9c34c;          /* золото */
-    --ink-2:#ffefad;        /* светлее золото */
-    --text:#e4e4ea;
-    --muted:#9da0aa;
-    --border:#2a2e36;
-    --radius:14px;
-    --shadow:0 12px 28px rgba(0,0,0,.42);
-
-    /* <<< ПОДСТАВЬ СВОЙ ПУТЬ К КАРТИНКЕ ДЛЯ ШАПКИ >>> */
-    --hero-img: url('/assets/images/school.jpg');
-  }
-
-  *{box-sizing:border-box}
+  *{box-sizing:border-box;margin:0;padding:0}
   html,body{height:100%}
-  body{
-    margin:0; color:var(--text);
-    font:16px/1.45 Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
-    background:
-      radial-gradient(1200px 600px at 50% -10%, #18191e 0%, transparent 60%),
-      radial-gradient(900px 300px at 10% 120%, #131418 0%, transparent 60%),
-      radial-gradient(900px 300px at 90% 120%, #131418 0%, transparent 60%),
-      var(--bg);
+  :root{ --radius:14px; --hero-img:url("assets/images/school.jpg"); }
 
-    /* делаем «липкий» футер: */
-    display:flex; flex-direction:column; min-height:100vh;
+  /* ===== ТЁМНАЯ (чёрно-золотая) ===== */
+  :root[data-theme="dark"]{
+    --bg:#121212; --bg-2:#1a1a1a; --bg-3:#1f1f1f;
+    --fg:#eeeeee; --muted:#aaaaaa; --line:#2b2b2b;
+    --accent:#f5c542;
+    --accent-08: rgba(245,197,66,.08);
+    --accent-12: rgba(245,197,66,.12);
+    --accent-18: rgba(245,197,66,.18);
+    --accent-28: rgba(245,197,66,.28);
+    --shadow:0 10px 30px rgba(0,0,0,.6);
+    --title-bright:#ffd766; --title-bright-2:#fff3b3;
   }
-  body:after{ /* едва заметный шум */
-    content:""; position:fixed; inset:0; pointer-events:none; opacity:.06;
+
+  /* ===== ОФИЦИАЛЬНАЯ (Emerald) ===== */
+  :root[data-theme="emerald"]{
+    --bg:#D9E8E1;
+    --bg-2:#FFFFFF;
+    --bg-3:#D3E3DB;
+    --fg:#0E1C16;
+    --muted:#50635A;
+    --line:#C9DDD4;
+
+    --accent:#1FA36D;
+    --accent-2:#38D497;
+    --accent-08: rgba(31,163,109,.08);
+    --accent-12: rgba(31,163,109,.12);
+    --accent-18: rgba(31,163,109,.18);
+    --accent-28: rgba(31,163,109,.28);
+    --shadow:0 18px 44px rgba(39,112,84,.2);
+
+    --title-bright:#22e39c;
+    --title-bright-2:#79f1c5;
+  }
+
+  body{
+    font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+    color:var(--fg); line-height:1.6; overflow-x:hidden; background: var(--bg);
+  }
+
+  /* ===== AURORA фон (emerald) + узор + шум ===== */
+  .bg-canvas{position:fixed; inset:0; z-index:-3; pointer-events:none}
+  :root[data-theme="emerald"] .bg-canvas::before,
+  :root[data-theme="emerald"] .bg-canvas::after{
+    content:""; position:absolute; inset:-20%; filter:blur(80px);
+    background:
+      radial-gradient(560px 420px at 16% 18%, rgba(31,163,109,.48), transparent 65%),
+      radial-gradient(560px 380px at 84% 12%, rgba(87,207,153,.40), transparent 60%),
+      radial-gradient(680px 460px at 20% 88%, rgba(105,196,157,.40), transparent 65%),
+      radial-gradient(640px 440px at 88% 82%, rgba(26,133,90,.40), transparent 65%);
+    opacity:.78; animation:drift 28s linear infinite;
+  }
+  :root[data-theme="emerald"] .bg-canvas::after{
+    filter:blur(110px); opacity:.58; animation-direction:reverse;
+  }
+  @keyframes drift{ 0%{transform:translate3d(0,0,0)} 50%{transform:translate3d(2%,-1%,0)} 100%{transform:none} }
+
+  .bg-pattern, .bg-noise{position:fixed; inset:0; z-index:-2; pointer-events:none}
+  :root[data-theme="emerald"] .bg-pattern{
+    opacity:.22;
+    background-image:url('data:image/svg+xml;utf8,\
+      <svg xmlns="http://www.w3.org/2000/svg" width="180" height="180" viewBox="0 0 180 180">\
+        <g fill="none" stroke="%2333b184" stroke-opacity=".4" stroke-width="1.1">\
+          <path d="M0 90 Q45 45 90 90 T180 90" />\
+          <path d="M0 135 Q45 90 90 135 T180 135" />\
+          <path d="M0 45 Q45 0 90 45 T180 45" />\
+        </g>\
+        <g fill="%2333b184" fill-opacity=".12">\
+          <circle cx="30" cy="30" r="2"/><circle cx="150" cy="56" r="2"/><circle cx="120" cy="142" r="2"/>\
+        </g>\
+      </svg>');
+    background-size:180px 180px;
+  }
+  .bg-noise{
+    z-index:-1; opacity:.08;
     background-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="140" height="140"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23n)" opacity="0.35"/></svg>');
     mix-blend-mode:soft-light;
   }
 
-  /* ================== HERO ================== */
-  .hero{
-    position:relative; height:min(56vh,520px); display:grid; place-items:center; overflow:hidden;
-    border-bottom:1px solid #2a2413;
+  :root[data-theme="dark"] body{
+    background:
+      radial-gradient(1200px 600px at 60% -10%, #1a1a1a 0%, transparent 60%),
+      radial-gradient(900px 300px at 8% 120%, #151515 0%, transparent 60%),
+      radial-gradient(900px 300px at 92% 120%, #151515 0%, transparent 60%),
+      #121212;
   }
-  .hero::before{
-    content:""; position:absolute; inset:0;
+
+  /* ========= HERO ========= */
+  header.hero{
+    position:relative; text-align:center; padding:136px 20px 120px;
     background:var(--bg) center/cover no-repeat;
     background-image:var(--hero-img);
-    filter:brightness(.55) saturate(.95);
-    /* УБРАНЫ: transform и transition, чтобы картинка не двигалась */
+    border-bottom:none;
   }
-  .hero::after{
-    /* мягкая виньетка + золотой акцент */
+  :root[data-theme="emerald"] header.hero::after{
     content:""; position:absolute; inset:0;
     background:
-      radial-gradient(800px 250px at 50% 85%, rgba(233,195,76,.18), transparent 60%),
-      radial-gradient(1200px 600px at 50% -10%, rgba(0,0,0,.35), transparent 50%);
+      linear-gradient(180deg, rgba(0,0,0,.38), rgba(0,0,0,.56)),
+      radial-gradient(900px 260px at 50% 86%, var(--accent-12), transparent 60%);
   }
-  /* УДАЛЕНО: .hero:hover::before{ transform:scale(1.03) } */
-  .hero-inner{position:relative; z-index:1; text-align:center; padding:24px}
-  h1{
-    margin:0 0 10px; font-size:46px; line-height:1.06; letter-spacing:.5px;
-    color:var(--ink); text-shadow:0 2px 0 rgba(0,0,0,.45);
+  :root[data-theme="dark"] header.hero::after{
+    content:""; position:absolute; inset:0;
+    background:
+      linear-gradient(180deg, rgba(0,0,0,.60), rgba(0,0,0,.85)),
+      radial-gradient(900px 260px at 50% 86%, var(--accent-12), transparent 60%);
   }
-  .hint{margin:0; color:#efe5c9; opacity:.95; text-align:center}
+  header.hero::before{
+    content:""; position:absolute; left:50%; bottom:-1px; transform:translateX(-50%);
+    width:min(840px,92vw); height:2px; border-radius:999px;
+    background:linear-gradient(90deg, transparent, color-mix(in oklab, var(--accent) 85%, white 15%), transparent);
+    box-shadow:0 0 14px color-mix(in oklab, var(--accent) 25%, transparent);
+  }
+  header .inner{position:relative; z-index:1; max-width:1100px; margin:0 auto}
 
-  /* ================== ОБЩЕЕ ================== */
-  .content{flex:1 0 auto;} /* пространство контента, чтобы футер прижался вниз */
-  .wrap{max-width:1180px; margin:24px auto 120px; padding:0 20px}
-  .divider{
-    height:1px; width:min(700px,92%); margin:16px auto 22px;
-    background:linear-gradient(90deg,transparent,rgba(233,195,76,.35),transparent);
+  /* === ГЕРБ (PNG, без круга) === */
+  .hero-logo{
+    display:block;
+    margin:0 auto 18px;
+    width:399px; height:auto; image-rendering:auto;
+  }
+  @media (max-width:1024px){ .hero-logo{ width:280px } }
+  @media (max-width:768px){ .hero-logo{ width:220px } }
+  @media (max-width:480px){ .hero-logo{ width:160px } }
+  @media (min-width:1024px){ .hero-logo{ width:72px } }
+  @media (min-width:1440px){ .hero-logo{ width:240px } }
+
+  .title{
+    font-family:'Russo One', Inter, sans-serif;
+    font-size:clamp(2.2rem,5.2vw,3.3rem);
+    background:linear-gradient(180deg, var(--title-bright-2), var(--title-bright));
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+    text-shadow:0 2px 0 rgba(0,0,0,.28), 0 0 26px color-mix(in oklab, var(--title-bright) 38%, transparent);
+    letter-spacing:.4px;
+  }
+  .subtitle{
+    margin-top:14px;
+    font-family:'Russo One', Inter, sans-serif;
+    font-weight:400; letter-spacing:.2px; font-size:clamp(1.05rem,2.1vw,1.3rem);
+    color:color-mix(in oklab, var(--title-bright) 72%, #ffffff 28%);
+    text-shadow:0 1px 0 rgba(0,0,0,.25), 0 0 20px color-mix(in oklab, var(--title-bright) 28%, transparent);
+  }
+
+  /* ========= переключатель темы ========= */
+  .theme-toggle{
+    position:fixed; right:16px; top:16px; z-index:60;
+    display:inline-flex; align-items:center; gap:8px;
+    padding:10px 14px; border-radius:999px; cursor:pointer; user-select:none;
+    background:linear-gradient(180deg, var(--bg-2), color-mix(in oklab, var(--bg-2) 86%, #000 14%));
+    color:var(--accent);
+    border:1px solid color-mix(in oklab, var(--accent) 35%, var(--line));
+    box-shadow:0 10px 24px rgba(0,0,0,.15), inset 0 0 0 1px rgba(255,255,255,.03);
+    transition:.25s;
+  }
+  .theme-toggle .dot{ width:8px; height:8px; border-radius:50%; background:var(--accent); box-shadow:0 0 10px var(--accent-28) }
+
+  /* ========= секции ========= */
+  section{padding:64px 20px}
+  .container{max-width:1100px;margin:0 auto}
+  .section-title{
+    display:block; text-align:center; margin:0 auto 26px;
+    font-size:1.9rem; color:var(--accent); letter-spacing:.2px; position:relative; font-weight:800;
+  }
+  .section-title::before{
+    content:""; position:absolute; left:50%; transform:translateX(-50%); top:-14px;
+    width:72px; height:6px; border-radius:999px;
+    background:linear-gradient(90deg, transparent, var(--accent-2), transparent);
+  }
+  .section-title::after{
+    content:""; display:block; height:1px; width:min(680px,86vw); margin:12px auto 0;
+    background:linear-gradient(90deg, transparent, color-mix(in oklab, var(--accent) 45%, white), transparent);
     border-radius:999px;
   }
 
-  /* ================== ПАНЕЛЬ УПРАВЛЕНИЯ ================== */
-  .controls{display:flex; gap:12px; flex-wrap:wrap; align-items:center; justify-content:center; margin:10px 0 18px}
+  /* ========= блок управления расписанием ========= */
+  .controls{display:flex; gap:14px; flex-wrap:wrap; align-items:center; justify-content:center; margin:6px 0 18px}
   .chip{
-    background:linear-gradient(180deg,#17181c,#111216);
-    border:1px solid var(--border);
-    color:#d7d8df; padding:9px 14px; border-radius:999px;
-    cursor:pointer; user-select:none; transition:.2s ease; box-shadow:var(--shadow);
+    display:inline-block; padding:10px 16px; border-radius:30px; font-weight:800; letter-spacing:.2px;
+    color:var(--accent); border:1px solid color-mix(in oklab, var(--accent) 35%, var(--line));
+    background:linear-gradient(180deg, var(--bg-2), color-mix(in oklab, var(--bg-2) 88%, #000 12%));
+    box-shadow:inset 0 0 0 1px rgba(255,255,255,.03), 0 10px 24px rgba(0,0,0,.12);
+    transition:.25s; cursor:pointer;
   }
   .chip.active{
-    border-color:#3a2f12;
-    background:
-      radial-gradient(100% 100% at 50% 0%, rgba(233,195,76,.18) 0%, transparent 60%),
-      linear-gradient(180deg,#2a2412,#1f1a0c);
-    color:var(--ink-2);
-    text-shadow:0 0 8px rgba(233,195,76,.25);
+    color:#0e1512; background:linear-gradient(180deg, var(--accent-2), var(--accent));
+    box-shadow:0 10px 24px var(--accent-28), 0 0 0 1px color-mix(in oklab, var(--accent) 60%, #000) inset;
   }
   .select{
-    appearance:none; background:linear-gradient(180deg,#181a20,#121419);
-    color:#e6e6ed; border:1px solid var(--border); border-radius:12px;
+    appearance:none; background:linear-gradient(180deg, var(--bg-2), color-mix(in oklab, var(--bg-2) 88%, #000 12%));
+    color:var(--fg); border:1px solid var(--line); border-radius:12px;
     padding:10px 44px 10px 12px; font-weight:700; letter-spacing:.2px; box-shadow:var(--shadow)
   }
   .select-wrap{position:relative}
-  .select-wrap:after{content:"▾"; position:absolute; right:12px; top:50%; transform:translateY(-50%); color:var(--ink)}
+  .select-wrap:after{content:"▾"; position:absolute; right:12px; top:50%; transform:translateY(-50%); color:var(--accent)}
 
-  /* ================== КНОПКИ ДНЕЙ ================== */
+  /* ========= дни недели ========= */
   .days{display:flex; gap:10px; flex-wrap:wrap; justify-content:center; margin:8px 0 14px}
   .day{
     position:relative; padding:10px 16px; border-radius:999px; cursor:pointer; font-weight:800;
     letter-spacing:.2px; text-transform:lowercase;
-    background:linear-gradient(180deg,#181a1f,#111316);
-    border:1px solid #2b2f37; color:#d6d7dd;
+    background:linear-gradient(180deg, var(--bg-2), color-mix(in oklab, var(--bg-2) 90%, #000 10%));
+    border:1px solid var(--line); color:color-mix(in oklab, var(--fg) 80%, #000 20%);
     transition:transform .15s ease, box-shadow .2s, border-color .2s, color .2s;
-    box-shadow:inset 0 0 0 1px rgba(255,255,255,.02), 0 6px 18px rgba(0,0,0,.35);
+    box-shadow:0 6px 18px rgba(0,0,0,.08);
   }
   .day:hover{transform:translateY(-1px)}
   .day.active{
-    border-color:#3a2f12; color:var(--ink-2);
-    background:
-      radial-gradient(120% 120% at 50% -20%, rgba(233,195,76,.23), transparent 60%),
-      linear-gradient(180deg,#282112,#1c170c);
-    box-shadow:0 6px 18px rgba(0,0,0,.45), 0 0 18px rgba(233,195,76,.15);
+    color:#0e1512; border-color:color-mix(in oklab, var(--accent) 35%, var(--line));
+    background:linear-gradient(180deg, var(--accent-2), var(--accent));
+    box-shadow:0 6px 18px var(--accent-18), 0 0 18px var(--accent-12);
   }
 
-  /* ================== ТАБЛИЦА ================== */
+  /* ========= таблица ========= */
   .table{
     width:100%; border-collapse:separate; border-spacing:0;
-    background:linear-gradient(180deg,#16171b,#121318);
-    border:1px solid var(--border); border-radius:var(--radius);
+    background:linear-gradient(180deg, var(--bg-2), color-mix(in oklab, var(--bg-2) 88%, #000 12%));
+    border:1px solid var(--line); border-radius:var(--radius);
     overflow:hidden; box-shadow:var(--shadow);
   }
-  .table th,.table td{padding:16px 14px; border-bottom:1px solid #242833; vertical-align:top}
-  .table th{background:var(--bg-3); color:#b8bcc8; text-transform:uppercase; font-size:12px; letter-spacing:.65px}
+  .table th,.table td{padding:16px 14px; border-bottom:1px solid var(--line); vertical-align:top}
+  .table th{
+    background:color-mix(in oklab, var(--bg-3) 92%, #000 8%);
+    color:var(--muted); text-transform:uppercase; font-size:12px; letter-spacing:.65px;
+  }
   .table tr:last-child td{border-bottom:0}
-  .time{color:#cfd3dd}
+  .time{color:color-mix(in oklab, var(--fg) 75%, #000 25%)}
 
-  /* Предмет + тултип-кабинет */
-  .subj{font-weight:800; color:var(--ink); position:relative; display:inline-block; outline:none}
+  /* предмет + тултип */
+  .subj{font-weight:800; color:var(--accent); position:relative; display:inline-block; outline:none}
   .subj[data-room]:after{
     content:""; display:inline-block; width:6px; height:6px; border-radius:50%;
-    background:var(--ink); margin-left:8px; transform:translateY(-2px)
+    background:var(--accent); margin-left:8px; transform:translateY(-2px)
   }
   .tooltip{
     position:absolute; left:0; bottom:calc(100% + 10px);
-    background:#0c0d10; color:#ececf3; border:1px solid #3a3013; padding:8px 10px;
-    font-size:13px; border-radius:8px; box-shadow:0 12px 24px rgba(0,0,0,.45);
+    background:color-mix(in oklab, var(--bg-2) 80%, #000 20%); color:var(--fg);
+    border:1px solid color-mix(in oklab, var(--accent) 25%, var(--line));
+    padding:8px 10px; font-size:13px; border-radius:8px;
+    box-shadow:0 12px 24px rgba(0,0,0,.12);
     white-space:nowrap; opacity:0; pointer-events:none; transform:translateY(6px); transition:.16s ease;
   }
-  /* Показывать по фокусу (клавиатура/тап) или когда JS добавил класс tip-on */
-  .subj:focus .tooltip,
-  .subj.tip-on .tooltip{
-    opacity:1; transform:translateY(0);
-  }
-  /* На устройствах без hover — рендерить подсказку ниже предмета */
-  @media (hover: none) and (pointer: coarse){
-    .tooltip{ top:calc(100% + 8px); bottom:auto; }
-  }
+  .subj:focus .tooltip, .subj.tip-on .tooltip{ opacity:1; transform:translateY(0) }
+  @media (hover:none) and (pointer:coarse){ .tooltip{ top:calc(100% + 8px); bottom:auto } }
 
   tbody tr{opacity:0; transform:translateY(6px); animation:rowIn .35s ease forwards}
   @keyframes rowIn{to{opacity:1; transform:none}}
 
-  /* ================== КНОПКА НАЗАД ================== */
-  .back{
-    position:fixed; left:20px; bottom:22px; z-index:30;
-    display:inline-flex; gap:8px; align-items:center;
-    padding:10px 14px; border-radius:999px; cursor:pointer;
-    background:linear-gradient(#2a2412,#1f1a0c); color:var(--ink-2);
-    border:1px solid #3a3013; box-shadow:0 10px 24px rgba(0,0,0,.45);
-    transition:transform .15s ease;
+  /* ========= футер ========= */
+  footer{
+    background:linear-gradient(180deg, #FFFFFF, var(--bg));
+    color:color-mix(in oklab, var(--fg) 70%, #000);
+    text-align:center; padding:32px 20px 36px; position:relative;
+    border-top:1px solid var(--line);
   }
-  .back:hover{transform:translateY(-2px)}
+  :root[data-theme="dark"] footer{
+    background:linear-gradient(180deg,#0f0f0f,#0b0b0b);
+    color:#8a8aa; border-top:1px solid rgba(245,197,66,.25);
+  }
+  footer::before{
+    content:""; position:absolute; left:50%; transform:translateX(-50%); top:0;
+    width:min(740px,92vw); height:1px; background:linear-gradient(90deg,transparent,color-mix(in oklab, var(--accent) 55%, white),transparent);
+  }
+  footer a{color:var(--accent);text-decoration:none}
+  footer a:hover{text-decoration:underline}
+  .credit img{ border-radius:12px; transition:.25s }
+  .credit:hover img{ filter: drop-shadow(0 0 10px var(--accent-28)) }
 
-  /* ================== ФУТЕР ================== */
-  #contacts{
-    margin-top: 28px;
-    padding: 22px 16px 28px;
-    text-align: center;
-    color: var(--text);
-    background: linear-gradient(180deg, #141417, #0f0f10);
-    border-top: 1px solid #3a3013;        /* тонкая «золотая» граница сверху */
-    box-shadow: 0 -12px 28px rgba(0,0,0,.35) inset;
-  }
-  #contacts .credit{
-    margin: 0 0 8px;
-    display: flex; justify-content: center; align-items: center; gap: 8px;
-  }
-  #contacts img{
-    border-radius: 12px;
-    box-shadow: 0 4px 18px rgba(0,0,0,.35);
-    transition: transform .15s ease, filter .2s ease;
-  }
-  #contacts .credit a:hover img{
-    transform: translateY(-1px);
-    filter: drop-shadow(0 0 12px rgba(233,195,76,.35));
-  }
-  #contacts a{ color: var(--ink); text-decoration: none; }
-  #contacts a:hover{ color: var(--ink-2); }
-  #contacts p{ margin: 6px 0; }
-
-  /* адаптив */
-  @media (max-width:820px){ h1{font-size:36px} }
-  @media (max-width:640px){
-    .table th,.table td{padding:12px 10px}
-    .day{padding:9px 14px}
-  }
+  /* ========= плавные появления ========= */
+  .fade{opacity:0;transform:translateY(36px);transition:all .8s ease}
+  .fade.show{opacity:1;transform:translateY(0)}
 </style>
 </head>
 <body>
 
-  <main class="content">
-    <!-- HERO -->
-    <section class="hero" aria-label="Заголовок и фон">
-      <div class="hero-inner">
-        <h1>Расписание занятий</h1>
-        <p class="hint">Наведите курсор на предмет — увидите кабинет. На телефонах — тап по предмету.</p>
-      </div>
-    </section>
+  <!-- AURORA фон -->
+  <div class="bg-canvas"></div>
+  <div class="bg-pattern"></div>
+  <div class="bg-noise"></div>
 
-    <div class="wrap">
-      <div class="divider"></div>
+  <!-- ПЕРЕКЛЮЧАТЕЛЬ ТЕМЫ -->
+  <button id="themeToggle" class="theme-toggle" aria-pressed="false" title="Переключить тему">
+    <span class="dot" aria-hidden="true"></span><span id="themeLabel">Официальная тема</span>
+  </button>
 
-      <!-- ПАНЕЛЬ -->
-      <div class="controls">
-        <div id="shiftSeg">
-          <button class="chip" data-shift="1">1&nbsp;смена</button>
-          <button class="chip" data-shift="2">2&nbsp;смена</button>
+  <!-- HERO -->
+  <header class="hero">
+    <div class="inner fade">
+      <img class="hero-logo" src="assets/images/gerb.png" alt="Герб Республики Беларусь">
+      <h1 class="title">Расписание занятий</h1>
+      <p class="subtitle">Наведите на предмет — увидите кабинет. На телефонах — тап по предмету.</p>
+    </div>
+  </header>
+
+  <!-- БЛОК РАСПИСАНИЯ -->
+  <section>
+    <div class="container">
+      <h2 class="section-title fade">Выбор класса и дня</h2>
+
+      <div class="controls fade">
+        <div id="shiftSeg" aria-label="Смена">
+          <button class="chip" data-shift="1" type="button">1&nbsp;смена</button>
+          <button class="chip" data-shift="2" type="button">2&nbsp;смена</button>
         </div>
         <div class="select-wrap">
-          <select id="classSelect" class="select" title="Класс"></select>
+          <select id="classSelect" class="select" title="Класс" aria-label="Класс"></select>
         </div>
       </div>
 
-      <!-- ДНИ -->
-      <div class="days" id="days"></div>
+      <div class="days fade" id="days" aria-label="Дни недели"></div>
 
-      <!-- ТАБЛИЦА -->
-      <table class="table">
+      <table class="table fade" aria-label="Таблица расписания">
         <thead>
           <tr><th style="width:160px">Время</th><th>Предмет</th></tr>
         </thead>
         <tbody id="tbody"></tbody>
       </table>
     </div>
-  </main>
+  </section>
 
   <!-- ФУТЕР -->
   <footer id="contacts">
@@ -250,16 +340,45 @@
       </a>
     </p>
     <p>
-      Адрес: Тенистая ул., 10, агрогородок Урицкое ·
+      Адрес: Тенистая ул., 10, агрогородок Урицкое · 
       Тел.: <a href="tel:+375232985102">+375 23 298-51-02</a>
     </p>
   </footer>
 
-  <!-- КНОПКА НАЗАД -->
-  <button class="back" onclick="history.back()" title="Назад">← Назад</button>
-
 <script>
-/* ================== ДАННЫЕ ================== */
+/* ====== ТЕМА: загрузка/переключение/сохранение (как на index) ====== */
+(function(){
+  const el = document.documentElement;
+  const btn = document.getElementById('themeToggle');
+  const label = document.getElementById('themeLabel');
+  const KEY = 'site-theme';
+  const saved = localStorage.getItem(KEY);
+  const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const initial = saved || (prefersDark ? 'dark' : 'emerald');
+  el.setAttribute('data-theme', initial);
+  updateBtn(initial);
+
+  btn.addEventListener('click', ()=>{
+    const curr = el.getAttribute('data-theme');
+    const next = (curr === 'dark') ? 'emerald' : 'dark';
+    el.setAttribute('data-theme', next);
+    localStorage.setItem(KEY, next);
+    updateBtn(next);
+  });
+  function updateBtn(theme){
+    label.textContent = theme === 'dark' ? 'Тёмная тема' : 'Официальная тема';
+    btn.setAttribute('aria-pressed', theme !== 'dark');
+  }
+})();
+
+/* плавные появления секций */
+const fades = document.querySelectorAll('.fade');
+const io = new IntersectionObserver(es => {
+  es.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('show'); });
+}, {threshold:.2});
+fades.forEach(n=>io.observe(n));
+
+/* ================== ДАННЫЕ (как в твоём файле) ================== */
 const data = {
   "5А":{shift:1,days:{
     "пон.":[{title:"Математика",room:"26"},{title:"Белорусский язык",room:"38"},{title:"История",room:"14"},{title:"Белорусская литература",room:"38"},{title:"Физическая культура и здоровье"}],
@@ -336,8 +455,9 @@ function renderDayTabs(){
   daysEl.innerHTML="";
   dayOrder.forEach(d=>{
     const b=document.createElement('button');
-    b.className='day'+(d===state.day?' active':'');
+    b.className='day'+(d===state.day?' active':'' );
     b.textContent=d;
+    b.type='button';
     b.onclick=()=>{state.day=d; renderTable(); highlightDay()};
     daysEl.appendChild(b);
   });
@@ -433,7 +553,7 @@ window.addEventListener('keydown', e=>{
   }
 });
 
-/* старт (день по умолчанию — текущий будний; если вск/суб — понедельник) */
+/* старт: текущий будний; если вс — понедельник */
 (function initDay(){
   const map={1:"пон.",2:"вт.",3:"ср.",4:"чт.",5:"пт.",6:"сб."};
   const d=(new Date()).getDay(); state.day=map[d]||"пон.";
