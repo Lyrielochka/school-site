@@ -1,68 +1,21 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>События — Урицкая средняя школа</title>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>События — Урицкая средняя школа</title>
 
-<!-- Тема в стиле сайта -->
-<style>
-  :root{--bg:#121212;--bg2:#1a1a1a;--bg3:#1f1f1f;--fg:#eee;--muted:#aaa;--line:#2b2b2b;--accent:#f5c542;--shadow:0 10px 30px rgba(0,0,0,.6)}
-  *{box-sizing:border-box;margin:0;padding:0}
-  body{font-family:Segoe UI,Arial,sans-serif;background:linear-gradient(135deg,#0d0d0d,#1a0f1f);color:var(--fg);line-height:1.7}
-  header{position:relative;text-align:center;padding:84px 20px;background:#0f0f0f url("assets/images/hero-news.jpg") center/cover no-repeat}
-  header::after{content:"";position:absolute;inset:0;background:rgba(0,0,0,.6)}
-  header .inner{position:relative;z-index:1;max-width:1100px;margin:0 auto}
-  .title{font-size:clamp(2rem,4.8vw,3rem);color:var(--accent);text-shadow:0 0 16px rgba(245,197,66,.7)}
-  .subtitle{margin-top:6px;color:#e7e7e7}
-  .back-btn{display:inline-block;margin-top:16px;padding:10px 18px;background:var(--accent);color:#121212;font-weight:600;text-decoration:none;border-radius:8px;transition:.2s}
-  .back-btn:hover{background:#d4a52a;color:#fff}
+  <!-- Внешние стили -->
+  <link rel="stylesheet" href="assets/css/news.css">
 
-  main{max-width:1100px;margin:0 auto;padding:26px 20px}
-
-  /* список */
-  .toolbar{display:flex;gap:10px;justify-content:space-between;align-items:center;margin-bottom:14px}
-  .search{flex:1}
-  .search input{width:100%;background:#1b1b1b;border:1px solid var(--line);border-radius:10px;color:#eee;padding:10px 12px;outline:none}
-  .btn{background:#222;border:1px solid var(--line);color:#eee;border-radius:8px;padding:8px 10px;text-decoration:none}
-  .btn:hover{background:#2a2a2a}
-
-  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px}
-  .card{background:var(--bg3);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);overflow:hidden;display:flex;flex-direction:column}
-  .card img{width:100%;height:160px;object-fit:cover;border-bottom:1px solid var(--line)}
-  .card .body{padding:14px}
-  .card h3{color:#fff;font-size:1.1rem;margin-bottom:4px}
-  .card small{display:block;color:var(--muted);margin:.1rem 0 .5rem}
-  .card a{color:var(--accent);text-decoration:none}
-  .card a:hover{text-decoration:underline}
-
-  /* статья */
-  .article{max-width:900px;margin:0 auto;background:var(--bg3);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);overflow:hidden}
-  .article .cover{width:100%;height:320px;object-fit:cover;border-bottom:1px solid var(--line)}
-  .article .pad{padding:18px}
-  .article h1{color:#fff;font-size:1.7rem;margin-bottom:6px}
-  .article time{color:var(--muted);font-size:.95rem}
-  .article .content{margin-top:10px}
-  .article .content p{margin:.6rem 0}
-  .article .content img{max-width:100%;border-radius:10px;border:1px solid var(--line)}
-  .article .content h2,.article .content h3{margin-top:1rem;color:#fff}
-
-  /* скелет/сообщения */
-  .skeleton{background:linear-gradient(90deg,#1a1a1a,#202020,#1a1a1a);background-size:400% 100%;animation:s 1.5s infinite}
-  @keyframes s{0%{background-position:0% 0}100%{background-position:100% 0}}
-  .empty,.error{color:#bbb;margin-top:10px}
-
-  footer{background:#0d0d0d;color:#8a8a8a;text-align:center;padding:22px 20px;margin-top:26px}
-</style>
-
-<!-- Netlify Identity (для скрытой админ-кнопки; безопасно) -->
-<script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
-<!-- Markdown парсер -->
-<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <!-- Netlify Identity (для скрытой админ-кнопки; безопасно) -->
+  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+  <!-- Markdown парсер -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
 <body>
 
-<header>
+<header class="hero">
   <div class="inner">
     <h1 class="title">События</h1>
     <p class="subtitle">Новости школы</p>
@@ -70,7 +23,7 @@
   </div>
 </header>
 
-<main id="app">
+<main id="app" class="container">
   <!-- СПИСОК -->
   <section id="list-view">
     <div class="toolbar">
@@ -86,11 +39,11 @@
   <section id="article-view" style="display:none">
     <a class="btn" href="news.html">← К списку</a>
     <article class="article" id="article">
-      <div class="cover skeleton" style="height:220px"></div>
+      <div class="cover skeleton"></div>
       <div class="pad">
-        <div class="skeleton" style="height:24px;width:60%"></div>
-        <div class="skeleton" style="height:14px;width:30%;margin-top:10px"></div>
-        <div class="skeleton" style="height:12px;width:100%;margin-top:14px"></div>
+        <div class="skeleton line-lg"></div>
+        <div class="skeleton line-md"></div>
+        <div class="skeleton line-sm"></div>
       </div>
     </article>
   </section>
@@ -99,7 +52,7 @@
 <footer>© 2025 Урицкая средняя школа</footer>
 
 <script>
-/* ====== НАСТРОЙКИ РЕПОЗИТОРИЯ (подставлены твои) ====== */
+/* ====== НАСТРОЙКИ РЕПОЗИТОРИЯ ====== */
 const REPO_OWNER = "Lyrielochka";
 const REPO_NAME  = "school-site";
 const BRANCH     = "main";
@@ -130,7 +83,6 @@ function parseFrontMatter(md){
 }
 
 /* ====== ИСТОЧНИКИ ДАННЫХ ====== */
-/* Public-репозиторий: читаем напрямую из GitHub */
 const API_LIST = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/news?ref=${BRANCH}`;
 const RAW_FILE = name => `https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/${BRANCH}/news/${encodeURIComponent(name)}`;
 
@@ -139,14 +91,14 @@ async function renderList(){
   $('#article-view').style.display='none';
   $('#list-view').style.display='';
 
-  // скелеты на время загрузки
+  // скелеты
   $('#news-grid').innerHTML = Array.from({length:6}).map(()=>`
     <article class="card">
-      <div class="skeleton" style="width:100%;height:160px"></div>
+      <div class="skeleton cover ph"></div>
       <div class="body">
-        <div class="skeleton" style="height:20px;width:80%"></div>
-        <div class="skeleton" style="height:12px;width:40%;margin-top:8px"></div>
-        <div class="skeleton" style="height:12px;width:100%;margin-top:14px"></div>
+        <div class="skeleton line-lg"></div>
+        <div class="skeleton line-sm mt8"></div>
+        <div class="skeleton line-sm mt14"></div>
       </div>
     </article>
   `).join('');
@@ -159,12 +111,10 @@ async function renderList(){
     const files = await res.json();
     const mdFiles = files.filter(f=>/\.md$/i.test(f.name));
 
-    // грузим содержимое .md
     const raws = await Promise.all(mdFiles.map(f=>
       fetch(RAW_FILE(f.name)).then(r=>r.ok?r.text():Promise.reject(r)).then(text=>({name:f.name, text}))
     ));
 
-    // парсим мету/аннотацию
     let items = raws.map(({name,text})=>{
       const {meta, body} = parseFrontMatter(text);
       const firstLine = (body.split('\n').find(l=>l.trim())||"").trim();
@@ -177,7 +127,6 @@ async function renderList(){
       };
     }).sort((a,b)=> new Date(b.date) - new Date(a.date));
 
-    // фильтр поиска
     const q = ($('#q').value||'').trim().toLowerCase();
     if(q){
       items = items.filter(it =>
@@ -186,7 +135,6 @@ async function renderList(){
       );
     }
 
-    // вывод
     $('#news-grid').innerHTML = items.map(it=> `
       <article class="card">
         ${it.cover ? `<img src="${it.cover}" loading="lazy" alt="">` : ``}
@@ -213,11 +161,11 @@ async function renderArticle(file){
 
   const box = $('#article');
   box.innerHTML = `
-    <div class="cover skeleton" style="height:220px"></div>
+    <div class="cover skeleton"></div>
     <div class="pad">
-      <div class="skeleton" style="height:24px;width:60%"></div>
-      <div class="skeleton" style="height:14px;width:30%;margin-top:10px"></div>
-      <div class="skeleton" style="height:12px;width:100%;margin-top:14px"></div>
+      <div class="skeleton line-lg"></div>
+      <div class="skeleton line-md"></div>
+      <div class="skeleton line-sm"></div>
     </div>
   `;
 
@@ -242,7 +190,7 @@ async function renderArticle(file){
 /* ====== ПОИСК ====== */
 $('#q').addEventListener('input', ()=>renderList());
 
-/* ====== БЕЗОПАСНОЕ ПОКАЗЫВАНИЕ КНОПКИ «ДОБАВИТЬ (АДМИН)» ====== */
+/* ====== КНОПКА «ДОБАВИТЬ (АДМИН)» ====== */
 (function(){
   const btn = document.getElementById('add-news-btn');
   function update(){
@@ -250,7 +198,7 @@ $('#q').addEventListener('input', ()=>renderList());
     const id = window.netlifyIdentity;
     const user = id && id.currentUser ? id.currentUser() : null;
     btn.style.display = user ? 'inline-block' : 'none';
-    // если нужно только для роли admin, раскомментируй:
+    // если нужно только для роли admin:
     // const roles = (user && user.app_metadata && user.app_metadata.roles) || [];
     // btn.style.display = roles.includes('admin') ? 'inline-block' : 'none';
   }
