@@ -3,7 +3,7 @@
 html,body{height:100%}
 :root{
   --radius:14px;
-  --hero-img:url("assets/images/school.jpg");
+  --hero-img:url("/assets/images/school.jpg");
 
   /* темпы анимаций */
   --anim-slow: 36s;
