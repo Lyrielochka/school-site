@@ -274,3 +274,24 @@ main.grid{
   html::before, html::after, body::before, body::after{ display:none }
   header.page::after{ animation:none }
 }
+/* ================== TEXT CENTER OVERRIDES ================== */
+header.page,
+header.page h1,
+header.page .sub,
+header.page .kicker,
+.searchbar,
+.sidebar,
+#results,
+.group .title,
+.teachers,
+.teacher,
+.teacher .name,
+.teacher .note {
+  text-align: center;
+}
+
+.teacher {
+  flex-direction: column; /* чтобы имя и примечание шли вертикально */
+  align-items: center;
+  justify-content: center;
+}
