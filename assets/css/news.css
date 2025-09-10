@@ -1,45 +1,25 @@
-/* ================== RESET / TOKENS ================== */
+/* ========== RESET & TOKENS ========== */
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%}
 :root{
   --radius:14px;
+  --hero-img:url("assets/images/school.jpg"); /* картинка как на главной */
 
-  /* скорость анимаций */
-  --anim-slow:36s;
-  --anim-mid:18s;
-  --anim-fast:8s;
+  --anim-slow:36s; --anim-mid:18s; --anim-fast:8s;
 
-  /* ===== ОФИЦИАЛЬНАЯ (emerald) — по умолчанию ===== */
-  --bg:#D3E3DB;
-  --bg-2:#FFFFFF;
-  --bg-3:#CFE0D7;
-  --fg:#0E1C16;
-  --muted:#4B6158;
-  --line:#BFD6CB;
-
-  --accent:#1FA36D;
-  --accent-2:#38D497;
-  --accent-08: rgba(31,163,109,.08);
-  --accent-12: rgba(31,163,109,.12);
-  --accent-18: rgba(31,163,109,.18);
-  --accent-28: rgba(31,163,109,.28);
+  /* Официальная (emerald) по умолчанию */
+  --bg:#D3E3DB; --bg-2:#FFFFFF; --bg-3:#CFE0D7; --fg:#0E1C16; --muted:#4B6158; --line:#BFD6CB;
+  --accent:#1FA36D; --accent-2:#38D497;
+  --accent-08: rgba(31,163,109,.08); --accent-12: rgba(31,163,109,.12);
+  --accent-18: rgba(31,163,109,.18); --accent-28: rgba(31,163,109,.28);
   --shadow:0 18px 44px rgba(39,112,84,.20);
-
-  --title-bright:#22e39c;
-  --title-bright-2:#79f1c5;
+  --title-bright:#22e39c; --title-bright-2:#79f1c5;
 }
-
-/* ===== DARK ===== */
 :root[data-theme="dark"]{
-  --bg:#121212; --bg-2:#1a1a1a; --bg-3:#1f1f1f;
-  --fg:#eeeeee; --muted:#aaaaaa; --line:#2b2b2b;
-  --accent:#f5c542;
-  --accent-08: rgba(245,197,66,.08);
-  --accent-12: rgba(245,197,66,.12);
-  --accent-18: rgba(245,197,66,.18);
-  --accent-28: rgba(245,197,66,.28);
-  --shadow:0 10px 30px rgba(0,0,0,.6);
-  --title-bright:#ffd766; --title-bright-2:#fff3b3;
+  --bg:#121212; --bg-2:#1a1a1a; --bg-3:#1f1f1f; --fg:#eeeeee; --muted:#aaaaaa; --line:#2b2b2b;
+  --accent:#f5c542; --accent-08: rgba(245,197,66,.08); --accent-12: rgba(245,197,66,.12);
+  --accent-18: rgba(245,197,66,.18); --accent-28: rgba(245,197,66,.28);
+  --shadow:0 10px 30px rgba(0,0,0,.6); --title-bright:#ffd766; --title-bright-2:#fff3b3;
 }
 
 body{
@@ -51,52 +31,51 @@ a{color:var(--accent);text-decoration:none}
 a:hover{text-decoration:underline}
 .container{max-width:1100px;margin:0 auto;padding:26px 20px}
 
-/* ================== ANIMATED BACKGROUND (как на прошлых страницах) ================== */
+/* ========== АНИМИРОВАННЫЙ ФОН ========== */
 html::before, html::after{
   content:""; position:fixed; inset:-26%; z-index:-3; pointer-events:none;
   filter: blur(110px) saturate(1.05); opacity:.85;
   background:
-    conic-gradient(from 220deg at 28% 38%,
-      transparent 0 10%, rgba(31,163,109,.32) 18%, rgba(56,212,151,.22) 28%, rgba(26,133,90,.30) 40%, transparent 54%),
-    conic-gradient(from -10deg at 72% 62%,
-      transparent 0 12%, rgba(56,212,151,.26) 22%, rgba(31,163,109,.20) 34%, transparent 48%),
+    conic-gradient(from 220deg at 28% 38%, transparent 0 10%, rgba(31,163,109,.32) 18%, rgba(56,212,151,.22) 28%, rgba(26,133,90,.30) 40%, transparent 54%),
+    conic-gradient(from -10deg at 72% 62%, transparent 0 12%, rgba(56,212,151,.26) 22%, rgba(31,163,109,.20) 34%, transparent 48%),
     radial-gradient(720px 520px at 18% 20%, rgba(31,163,109,.28), transparent 62%),
     radial-gradient(760px 560px at 84% 18%, rgba(56,212,151,.20), transparent 64%),
     radial-gradient(820px 600px at 20% 86%, rgba(26,133,90,.24), transparent 66%),
     radial-gradient(820px 580px at 86% 84%, rgba(31,163,109,.18), transparent 66%),
     linear-gradient(135deg, rgba(31,163,109,.06) 0 25%, transparent 25% 50%, rgba(31,163,109,.06) 50% 75%, transparent 75% 100%);
   background-size:auto,auto,auto,auto,auto,auto,32px 32px;
-  animation:
-    aurora-rot var(--anim-slow) linear infinite,
-    aurora-pan var(--anim-mid) ease-in-out infinite,
-    emerald-stripes var(--anim-slow) linear infinite;
+  animation: aurora-rot var(--anim-slow) linear infinite, aurora-pan var(--anim-mid) ease-in-out infinite, emerald-stripes var(--anim-slow) linear infinite;
 }
 html::after{
-  opacity:.55; animation:
-    aurora-rot-rev calc(var(--anim-slow)*1.1) linear infinite,
-    aurora-pan-rev calc(var(--anim-mid)*1.05) ease-in-out infinite,
-    emerald-stripes-rev calc(var(--anim-slow)*1.02) linear infinite;
+  opacity:.55; animation: aurora-rot-rev calc(var(--anim-slow)*1.1) linear infinite, aurora-pan-rev calc(var(--anim-mid)*1.05) ease-in-out infinite, emerald-stripes-rev calc(var(--anim-slow)*1.02) linear infinite;
 }
-/* DARK фон — без изумрудных переливов */
-:root[data-theme="dark"] html::before,
-:root[data-theme="dark"] html::after{
-  background:
-    radial-gradient(1200px 600px at 60% -10%, #1a1a1a 0%, transparent 60%),
-    radial-gradient(900px 300px at 8% 120%, #151515 0%, transparent 60%),
-    radial-gradient(900px 300px at 92% 120%, #151515 0%, transparent 60%),
-    #121212;
+:root[data-theme="dark"] html::before, :root[data-theme="dark"] html::after{
+  background: radial-gradient(1200px 600px at 60% -10%, #1a1a1a 0%, transparent 60%), radial-gradient(900px 300px at 8% 120%, #151515 0%, transparent 60%), radial-gradient(900px 300px at 92% 120%, #151515 0%, transparent 60%), #121212;
   filter:none; opacity:1; inset:0; animation:none;
 }
 
-/* ================== HERO ================== */
+/* ========== HERO как на главной (с фото и подсветкой) ========== */
 .hero{
   position:relative; text-align:center; padding:84px 20px;
   background:var(--bg) center/cover no-repeat;
-  /* при желании: можно поставить фото фоном через инлайн-стиль у .hero */
+  background-image:var(--hero-img); /* та же переменная, что и на главной */
 }
-.hero::after{
+:root[data-theme="emerald"] .hero::after,
+:root:not([data-theme]) .hero::after{
   content:""; position:absolute; inset:0;
-  background: linear-gradient(180deg, rgba(0,0,0,.08), rgba(0,0,0,.14));
+  background: linear-gradient(180deg, rgba(0,0,0,.34), rgba(0,0,0,.54)), radial-gradient(900px 260px at 50% 86%, var(--accent-12), transparent 60%);
+  animation: subtle-glow var(--anim-mid) ease-in-out infinite;
+}
+:root[data-theme="dark"] .hero::after{
+  content:""; position:absolute; inset:0;
+  background: linear-gradient(180deg, rgba(0,0,0,.60), rgba(0,0,0,.85)), radial-gradient(900px 260px at 50% 86%, var(--accent-12), transparent 60%);
+  animation: subtle-glow var(--anim-mid) ease-in-out infinite;
+}
+.hero::before{
+  content:""; position:absolute; left:50%; bottom:-1px; transform:translateX(-50%);
+  width:min(840px,92vw); height:2px; border-radius:999px;
+  background:linear-gradient(90deg, transparent, color-mix(in oklab, var(--accent) 85%, white 15%), transparent);
+  box-shadow:0 0 14px color-mix(in oklab, var(--accent) 25%, transparent);
 }
 .hero .inner{position:relative; z-index:1; max-width:1100px; margin:0 auto}
 .title{
@@ -119,7 +98,7 @@ html::after{
 .back-btn:hover{ transform:translateY(-1px); box-shadow:0 14px 28px var(--accent-28), 0 0 0 1px color-mix(in oklab, var(--accent) 35%, #000) inset }
 .back-btn:active{ transform:translateY(0) }
 
-/* ================== TOOLBAR / SEARCH ================== */
+/* ========== TOOLBAR / SEARCH ========== */
 .toolbar{display:flex;gap:10px;justify-content:space-between;align-items:center;margin-bottom:14px}
 .search{flex:1}
 .search input{
@@ -133,7 +112,7 @@ html::after{
 }
 .btn:hover{ border-color:color-mix(in oklab, var(--accent) 24%, var(--line)) }
 
-/* ================== LIST GRID / CARDS ================== */
+/* ========== GRID / CARDS ========== */
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px}
 .card{
   background:linear-gradient(180deg, var(--bg-2), color-mix(in oklab, var(--bg-2) 90%, #000 10%));
@@ -148,7 +127,7 @@ html::after{
 .card a{color:var(--accent)}
 .card a:hover{text-decoration:underline}
 
-/* ================== ARTICLE ================== */
+/* ========== ARTICLE ========== */
 .article{
   max-width:900px; margin:0 auto;
   background:linear-gradient(180deg, var(--bg-2), color-mix(in oklab, var(--bg-2) 90%, #000 10%));
@@ -156,24 +135,19 @@ html::after{
 }
 .article .cover{width:100%;height:320px;object-fit:cover;border-bottom:1px solid var(--line)}
 .article .pad{padding:18px}
-.article h1{
-  font-size:clamp(1.5rem,2.6vw,1.9rem);
-  color:var(--fg); margin-bottom:6px
-}
+.article h1{font-size:clamp(1.5rem,2.6vw,1.9rem); color:var(--fg); margin-bottom:6px}
 .article time{color:var(--muted);font-size:.95rem}
 .article .content{margin-top:10px}
 .article .content p{margin:.6rem 0}
 .article .content img{max-width:100%;border-radius:10px;border:1px solid var(--line)}
-.article .content h2,
-.article .content h3{margin-top:1rem;color:var(--fg)}
+.article .content h2,.article .content h3{margin-top:1rem;color:var(--fg)}
 
-/* ================== SKELETONS / STATES ================== */
+/* ========== SKELETONS ========== */
 .skeleton{
   --sk1: color-mix(in oklab, var(--bg-3) 80%, #000 20%);
   --sk2: color-mix(in oklab, var(--bg-3) 86%, #000 14%);
   background:linear-gradient(90deg,var(--sk1),var(--sk2),var(--sk1));
-  background-size:400% 100%; animation:s 1.5s infinite;
-  border-radius:10px;
+  background-size:400% 100%; animation:s 1.5s infinite; border-radius:10px;
 }
 .skeleton.cover{height:220px}
 .skeleton.line-lg{height:24px;width:60%}
@@ -184,18 +158,29 @@ html::after{
 
 .empty,.error{color:var(--muted);margin-top:10px}
 
-/* ================== FOOTER ================== */
+/* ========== FOOTER — как на главной ========== */
 footer{
-  background:linear-gradient(180deg, var(--bg-2), var(--bg));
+  background:linear-gradient(180deg, #FFFFFF, var(--bg));
   color:color-mix(in oklab, var(--fg) 70%, #000);
-  text-align:center; padding:22px 20px; margin-top:26px; border-top:1px solid var(--line)
+  text-align:center; padding:32px 20px 36px; position:relative;
+  border-top:1px solid var(--line);
 }
 :root[data-theme="dark"] footer{
   background:linear-gradient(180deg,#0f0f0f,#0b0b0b);
-  color:#8a8a8a; border-top-color:rgba(245,197,66,.25)
+  color:#8a8a8a;
+  border-top:1px solid rgba(245,197,66,.25);
 }
+footer::before{
+  content:""; position:absolute; left:50%; transform:translateX(-50%); top:0;
+  width:min(740px,92vw); height:1px; background:linear-gradient(90deg,transparent,color-mix(in oklab, var(--accent) 55%, white),transparent);
+}
+footer a{color:var(--accent);text-decoration:none}
+footer a:hover{text-decoration:underline}
+.credit img{ border-radius:12px; transition:.25s }
+.credit:hover img{ filter: drop-shadow(0 0 10px var(--accent-28)) }
 
-/* ================== KEYFRAMES (фон) ================== */
+/* ========== KEYFRAMES (фон hero/страницы) ========== */
+@keyframes subtle-glow{ 0%,100%{opacity:.95} 50%{opacity:1} }
 @keyframes aurora-rot{ 0%{transform:rotate(0)} 100%{transform:rotate(360deg)} }
 @keyframes aurora-rot-rev{ 0%{transform:rotate(0)} 100%{transform:rotate(-360deg)} }
 @keyframes aurora-pan{ 0%,100%{ transform: translate3d(0,0,0) } 50%{ transform: translate3d(2%, -1%, 0) } }
@@ -203,8 +188,9 @@ footer{
 @keyframes emerald-stripes{ 0%{ background-position:center,center,center,center,center,center, 0 0 } 100%{ background-position:center,center,center,center,center,center, 64px 64px } }
 @keyframes emerald-stripes-rev{ 0%{ background-position:center,center,center,center,center,center, 0 0 } 100%{ background-position:center,center,center,center,center,center, -64px -64px } }
 
-/* ================== REDUCED MOTION ================== */
+/* ========== REDUCED MOTION ========== */
 @media (prefers-reduced-motion: reduce){
   html::before, html::after{ display:none }
   .skeleton{ animation:none }
+  .hero::after{ animation:none }
 }

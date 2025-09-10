@@ -5,12 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>События — Урицкая средняя школа</title>
 
-  <!-- Внешние стили -->
   <link rel="stylesheet" href="assets/css/news.css">
 
-  <!-- Netlify Identity (для скрытой админ-кнопки; безопасно) -->
+  <!-- Netlify Identity -->
   <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
-  <!-- Markdown парсер -->
+  <!-- Markdown -->
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
 <body>
@@ -49,10 +48,21 @@
   </section>
 </main>
 
-<footer>© 2025 Урицкая средняя школа</footer>
+<!-- ФУТЕР как на главной -->
+<footer id="contacts">
+  <p class="credit">
+    <a href="https://reklama322228.netlify.app/" target="_blank" rel="noopener">
+      <img src="assets/icons/logo 4.png" alt="ЕТ" width="80" height="80" style="vertical-align:-3px;margin-right:6px;">
+    </a>
+  </p>
+  <p>
+    Адрес: Тенистая ул., 10, агрогородок Урицкое ·
+    Тел.: <a href="tel:+375232985102">+375 23 298-51-02</a>
+  </p>
+</footer>
 
 <script>
-/* ====== НАСТРОЙКИ РЕПОЗИТОРИЯ ====== */
+/* ====== РЕПО ====== */
 const REPO_OWNER = "Lyrielochka";
 const REPO_NAME  = "school-site";
 const BRANCH     = "main";
@@ -60,7 +70,7 @@ const BRANCH     = "main";
 /* ====== УТИЛИТЫ ====== */
 const $ = s => document.querySelector(s);
 const params = new URLSearchParams(location.search);
-const slug = params.get('slug'); // имя .md файла
+const slug = params.get('slug');
 
 function fmtDate(s){
   try{ return new Date(s).toLocaleDateString('ru-RU',{year:'numeric',month:'long',day:'2-digit'}); }
@@ -69,29 +79,27 @@ function fmtDate(s){
 function parseFrontMatter(md){
   const m = md.match(/^---\s*([\s\S]*?)\s*---\s*([\s\S]*)$/);
   if(!m) return {meta:{}, body:md};
-  const yaml = m[1], body = m[2];
-  const meta = {};
+  const yaml = m[1], body = m[2]; const meta = {};
   yaml.split(/\r?\n/).forEach(line=>{
     const mm = line.match(/^(\w+):\s*(.*)$/);
     if(mm){
-      const key=mm[1].trim(); let val=mm[2].trim();
-      if(/^".*"$/.test(val)||/^'.*'$/.test(val)) val = val.slice(1,-1);
-      meta[key]=val;
+      const k=mm[1].trim(); let v=mm[2].trim();
+      if(/^".*"$/.test(v)||/^'.*'$/.test(v)) v=v.slice(1,-1);
+      meta[k]=v;
     }
   });
   return {meta, body};
 }
 
-/* ====== ИСТОЧНИКИ ДАННЫХ ====== */
+/* ====== ДАННЫЕ ====== */
 const API_LIST = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/news?ref=${BRANCH}`;
 const RAW_FILE = name => `https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/${BRANCH}/news/${encodeURIComponent(name)}`;
 
-/* ====== РЕНДЕР СПИСКА ====== */
+/* ====== СПИСОК ====== */
 async function renderList(){
   $('#article-view').style.display='none';
   $('#list-view').style.display='';
 
-  // скелеты
   $('#news-grid').innerHTML = Array.from({length:6}).map(()=>`
     <article class="card">
       <div class="skeleton cover ph"></div>
@@ -154,7 +162,7 @@ async function renderList(){
   }
 }
 
-/* ====== РЕНДЕР ОДНОЙ СТАТЬИ ====== */
+/* ====== СТАТЬЯ ====== */
 async function renderArticle(file){
   $('#list-view').style.display='none';
   $('#article-view').style.display='';
@@ -190,7 +198,7 @@ async function renderArticle(file){
 /* ====== ПОИСК ====== */
 $('#q').addEventListener('input', ()=>renderList());
 
-/* ====== КНОПКА «ДОБАВИТЬ (АДМИН)» ====== */
+/* ====== АДМИН-КНОПКА ====== */
 (function(){
   const btn = document.getElementById('add-news-btn');
   function update(){
@@ -198,9 +206,6 @@ $('#q').addEventListener('input', ()=>renderList());
     const id = window.netlifyIdentity;
     const user = id && id.currentUser ? id.currentUser() : null;
     btn.style.display = user ? 'inline-block' : 'none';
-    // если нужно только для роли admin:
-    // const roles = (user && user.app_metadata && user.app_metadata.roles) || [];
-    // btn.style.display = roles.includes('admin') ? 'inline-block' : 'none';
   }
   if(window.netlifyIdentity){
     window.netlifyIdentity.on('init', update);
@@ -211,6 +216,8 @@ $('#q').addEventListener('input', ()=>renderList());
 })();
 
 /* ====== СТАРТ ====== */
+const params = new URLSearchParams(location.search);
+const slug = params.get('slug');
 if(slug){ renderArticle(slug); } else { renderList(); }
 </script>
 </body>
