@@ -4,76 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>Наши учителя — 2024/2025</title>
-  <style>
-    /* ========= базовые стили ========= */
-    *{box-sizing:border-box;margin:0;padding:0}
-    :root{
-      --bg:#121212;--bg-2:#1a1a1a;--bg-3:#1f1f1f;
-      --fg:#eeeeee;--muted:#aaaaaa;--line:#2b2b2b;
-      --accent:#f5c542;--shadow:0 10px 30px rgba(0,0,0,.6);
-      --radius:16px
-    }
-    html,body{height:100%}
-    body{font-family:Segoe UI,Arial,sans-serif;background:var(--bg);color:var(--fg);line-height:1.6;overflow-x:hidden;-webkit-text-size-adjust:100%}
-    a{color:var(--accent);text-decoration:none}
-    a:hover{text-decoration:underline}
-
-    /* утилиты против наложения текста */
-    .wrap{overflow-wrap:anywhere;word-break:break-word}
-    .min-0{min-width:0}
-    .lh-tight{line-height:1.35}
-
-    .container{max-width:1200px;margin:0 auto;padding:24px}
-
-    /* ======= заголовок ======= */
-    header.page{padding:8px 0 12px}
-    .kicker{color:var(--muted);font-size:14px}
-    h1{font-size:clamp(26px,3.6vw,40px);letter-spacing:.2px;color:var(--accent)}
-    .sub{color:var(--muted)}
-
-    /* ======= кнопка назад ======= */
-    .back-btn{display:inline-flex;align-items:center;gap:8px;padding:10px 16px;border-radius:10px;border:1px solid var(--line);background:var(--accent);color:#111;font-weight:700;box-shadow:var(--shadow);cursor:pointer}
-    .back-btn svg{flex-shrink:0}
-    .back-btn:hover{filter:brightness(1.05)}
-
-    /* ======= сетка основного контента ======= */
-    main.grid{display:grid;gap:24px;grid-template-columns:300px 1fr;grid-template-areas:
-      "search  search"
-      "sidebar results";}
-    @media (max-width: 980px){
-      main.grid{grid-template-columns:1fr;grid-template-areas:
-        "search"
-        "results"
-        "sidebar";}
-    }
-
-    /* ======= карточки/контейнеры ======= */
-    .card{background:var(--bg-2);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
-    .card .body{padding:18px}
-
-    /* ======= поиск (вне сайдбара, чтобы результат был сразу под ним) ======= */
-    .searchbar{grid-area:search}
-    .searchbar .field{display:flex;align-items:center;gap:10px;border:1px solid var(--line);background:var(--bg-3);padding:10px 12px;border-radius:12px}
-    .searchbar input[type="search"]{flex:1;background:transparent;border:0;outline:0;color:var(--fg);font-size:16px;/* предотвращает авто-zoom на iOS */}
-
-    /* ======= сайдбар с разделами ======= */
-    .sidebar{grid-area:sidebar}
-    .menu h3{font-size:16px;margin:0 0 8px}
-    .menu ul{display:grid;gap:8px;list-style:none}
-    .menu a{display:block;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:var(--bg-3);color:var(--fg);text-decoration:none}
-    .menu a.active{background:var(--accent);color:#111;border-color:#000}
-
-    /* ======= результаты ======= */
-    #results{grid-area:results}
-    .group+.group{margin-top:16px}
-    .group .title{display:flex;align-items:center;gap:8px;font-weight:800;font-size:clamp(18px,2.2vw,24px);color:var(--accent)}
-    .counter{display:inline-block;min-width:28px;padding:4px 8px;font-size:12px;border-radius:999px;background:var(--bg-3);border:1px solid var(--line);text-align:center;color:#cfcfcf}
-    .teachers{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:10px}
-    @media (max-width: 760px){.teachers{grid-template-columns:1fr}}
-    .teacher{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:12px 14px;border-radius:12px;background:var(--bg-3);border:1px solid var(--line)}
-    .teacher .name{font-weight:600}
-    .teacher .note{color:var(--accent)}
-  </style>
+  <link rel="stylesheet" href="assets/css/teachers.css">
 </head>
 <body>
   <div class="container">
@@ -90,7 +21,7 @@
   </header>
 
   <main class="container grid" id="layoutRoot">
-    <!-- Поиск вынесен отдельно: на телефоне результаты сразу под ним -->
+    <!-- Поиск -->
     <section class="searchbar card">
       <div class="body">
         <label class="wrap" for="q">Поиск</label>
@@ -132,7 +63,7 @@
   </template>
 
   <script>
-    // ======= данные (из твоего списка) =======
+    // ======= данные =======
     const DATA = [
       {subject:'Учителя белорусского языка и литературы', list:[
         'Лапицкая О.В. (заместитель директора по воспитательной работе)',
