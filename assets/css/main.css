@@ -1,7 +1,19 @@
 /* ================== BASE / TOKENS ================== */
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%}
-:root{ --radius:14px; --hero-img:url("assets/images/school.jpg"); }
+:root{
+  --radius:14px;
+  --hero-img:url("assets/images/school.jpg");
+
+  /* Новые переменные для анимаций */
+  --anim-slow: 36s;
+  --anim-mid: 18s;
+  --anim-fast: 8s;
+
+  --orb-1: rgba(31,163,109,.22);
+  --orb-2: rgba(56,212,151,.18);
+  --orb-3: rgba(26,133,90,.22);
+}
 
 /* ===== ТЁМНАЯ (чёрно-золотая) ===== */
 :root[data-theme="dark"]{
@@ -43,28 +55,50 @@ body{
 }
 
 /* ================== BACKGROUND LAYERS ================== */
+/* — Актуализирован: более выразительная «аврора» и мягкие сферические огни — */
 .bg-canvas{position:fixed; inset:0; z-index:-3; pointer-events:none}
+
+/* Главные «ленты-авроры» */
 :root[data-theme="emerald"] .bg-canvas::before,
 :root[data-theme="emerald"] .bg-canvas::after{
-  content:""; position:absolute; inset:-20%; filter:blur(80px);
+  content:""; position:absolute; inset:-30%;
+  /* Используем смесь conic + radial для живых переливов */
   background:
-    radial-gradient(560px 420px at 16% 18%, rgba(31,163,109,.48), transparent 65%),
-    radial-gradient(560px 380px at 84% 12%, rgba(87,207,153,.40), transparent 60%),
-    radial-gradient(680px 460px at 20% 88%, rgba(105,196,157,.40), transparent 65%),
-    radial-gradient(640px 440px at 88% 82%, rgba(26,133,90,.40), transparent 65%);
-  opacity:.78; animation:drift 28s linear infinite;
+    conic-gradient(from 210deg at 30% 40%,
+      rgba(31,163,109,.0) 0 12%,
+      rgba(31,163,109,.35) 18%,
+      rgba(56,212,151,.25) 28%,
+      rgba(26,133,90,.35) 40%,
+      rgba(26,133,90,.0) 52%),
+    conic-gradient(from -15deg at 70% 60%,
+      rgba(56,212,151,.0) 0 10%,
+      rgba(56,212,151,.28) 18%,
+      rgba(31,163,109,.22) 30%,
+      rgba(31,163,109,.0) 46%),
+    radial-gradient(700px 520px at 18% 20%, rgba(31,163,109,.22), transparent 60%),
+    radial-gradient(780px 560px at 82% 18%, rgba(87,207,153,.18), transparent 62%),
+    radial-gradient(860px 620px at 20% 86%, rgba(105,196,157,.20), transparent 64%),
+    radial-gradient(820px 580px at 86% 84%, rgba(26,133,90,.22), transparent 66%);
+  filter: blur(90px) saturate(1.05);
+  opacity:.85;
+  animation:
+    aurora-rotate var(--anim-slow) linear infinite,
+    aurora-pan var(--anim-mid) ease-in-out infinite;
 }
 :root[data-theme="emerald"] .bg-canvas::after{
-  filter:blur(110px); opacity:.58; animation-direction:reverse;
+  opacity:.55; filter: blur(120px) saturate(1.05);
+  animation:
+    aurora-rotate-rev calc(var(--anim-slow) * 1.2) linear infinite,
+    aurora-pan-rev calc(var(--anim-mid) * 1.15) ease-in-out infinite;
 }
-@keyframes drift{ 0%{transform:translate3d(0,0,0)} 50%{transform:translate3d(2%,-1%,0)} 100%{transform:none} }
 
+/* Тонкие «звёздочки» в узоре — теперь медленно плывут */
 .bg-pattern, .bg-noise{position:fixed; inset:0; z-index:-2; pointer-events:none}
 :root[data-theme="emerald"] .bg-pattern{
-  opacity:.22;
+  opacity:.20;
   background-image:url('data:image/svg+xml;utf8,\
     <svg xmlns="http://www.w3.org/2000/svg" width="180" height="180" viewBox="0 0 180 180">\
-      <g fill="none" stroke="%2333b184" stroke-opacity=".4" stroke-width="1.1">\
+      <g fill="none" stroke="%2333b184" stroke-opacity=".35" stroke-width="1.1">\
         <path d="M0 90 Q45 45 90 90 T180 90" />\
         <path d="M0 135 Q45 90 90 135 T180 135" />\
         <path d="M0 45 Q45 0 90 45 T180 45" />\
@@ -74,14 +108,30 @@ body{
       </g>\
     </svg>');
   background-size:180px 180px;
+  animation: slow-pan var(--anim-slow) linear infinite;
 }
 .bg-noise{
-  z-index:-1; opacity:.08;
+  z-index:-1; opacity:.07;
   background-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="140" height="140"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23n)" opacity="0.35"/></svg>');
   mix-blend-mode:soft-light;
 }
 
-/* фон для тёмной темы */
+/* Дополнительные «световые шары» через body::before/::after — без HTML правок */
+body::before,
+body::after{
+  content:""; position:fixed; z-index:-2; pointer-events:none; border-radius:50%;
+  filter: blur(60px);
+}
+body::before{
+  width:40vmax; height:40vmax; left:-10vmax; top:10vmax; background:var(--orb-1);
+  animation: orb-float var(--anim-mid) ease-in-out infinite;
+}
+body::after{
+  width:32vmax; height:32vmax; right:-8vmax; bottom:8vmax; background:var(--orb-2);
+  animation: orb-float-2 calc(var(--anim-mid)*1.1) ease-in-out infinite;
+}
+
+/* фон для тёмной темы (чуть глубже контраст) */
 :root[data-theme="dark"] body{
   background:
     radial-gradient(1200px 600px at 60% -10%, #1a1a1a 0%, transparent 60%),
@@ -96,18 +146,22 @@ header.hero{
   background:var(--bg) center/cover no-repeat;
   background-image:var(--hero-img);
   border-bottom:none;
+  /* лёгкий параллакс с помощью background-position анимируемого слоя-подсветки */
+  overflow:clip;
 }
 :root[data-theme="emerald"] header.hero::after{
   content:""; position:absolute; inset:0;
   background:
     linear-gradient(180deg, rgba(0,0,0,.38), rgba(0,0,0,.56)),
     radial-gradient(900px 260px at 50% 86%, var(--accent-12), transparent 60%);
+  animation: subtle-glow var(--anim-mid) ease-in-out infinite;
 }
 :root[data-theme="dark"] header.hero::after{
   content:""; position:absolute; inset:0;
   background:
     linear-gradient(180deg, rgba(0,0,0,.60), rgba(0,0,0,.85)),
     radial-gradient(900px 260px at 50% 86%, var(--accent-12), transparent 60%);
+  animation: subtle-glow var(--anim-mid) ease-in-out infinite;
 }
 header.hero::before{
   content:""; position:absolute; left:50%; bottom:-1px; transform:translateX(-50%);
@@ -120,13 +174,11 @@ header .inner{position:relative; z-index:1; max-width:1100px; margin:0 auto}
 /* ================== ГЕРБ (PNG) ================== */
 .hero-logo{
   display:block;
-  margin:0 auto 18px;   /* по центру */
-  width:399px;          /* десктоп: как в исходнике */
-  height:auto;
-  image-rendering:auto;
+  margin:0 auto 18px;
+  width:399px; height:auto; image-rendering:auto;
+  /* едва заметная «дыхательная» анимация для живости */
+  animation: breathe 8s ease-in-out infinite;
 }
-
-/* адаптация вниз по ширине */
 @media (max-width: 1024px){ .hero-logo{ width:280px; } }
 @media (max-width: 768px){  .hero-logo{ width:220px; } }
 @media (max-width: 480px){  .hero-logo{ width:160px; } }
@@ -182,6 +234,7 @@ section{padding:64px 20px}
 .section-title{
   display:block; text-align:center; margin:0 auto 26px;
   font-size:1.9rem; color:var(--accent); letter-spacing:.2px; position:relative; font-weight:800;
+  /* «шайни» на линии снизу */
 }
 .section-title::before{
   content:""; position:absolute; left:50%; transform:translateX(-50%); top:-14px;
@@ -189,9 +242,14 @@ section{padding:64px 20px}
   background:linear-gradient(90deg, transparent, var(--accent-2), transparent);
 }
 .section-title::after{
-  content:""; display:block; height:1px; width:min(680px,86vw); margin:12px auto 0;
-  background:linear-gradient(90deg, transparent, color-mix(in oklab, var(--accent) 45%, white), transparent);
+  content:""; display:block; height:2px; width:min(680px,86vw); margin:12px auto 0;
+  background:
+    linear-gradient(90deg, transparent, color-mix(in oklab, var(--accent) 45%, white), transparent),
+    linear-gradient(90deg, transparent 0%, rgba(255,255,255,.75) 15%, transparent 30%);
+  background-size:100% 100%, 180px 100%;
+  background-repeat:no-repeat, no-repeat;
   border-radius:999px;
+  animation: shine var(--anim-fast) linear infinite;
 }
 
 /* ================== CARDS ================== */
@@ -300,7 +358,7 @@ footer{
 }
 :root[data-theme="dark"] footer{
   background:linear-gradient(180deg,#0f0f0f,#0b0b0b);
-  color:#8a8a8a; /* fixed typo */
+  color:#8a8a8a;
   border-top:1px solid rgba(245,197,66,.25);
 }
 footer::before{
@@ -323,6 +381,7 @@ footer a:hover{text-decoration:underline}
   background:linear-gradient(180deg, var(--bg-2), color-mix(in oklab, var(--bg-2) 86%, #000 14%));
   border:1px solid var(--line); box-shadow:0 16px 40px rgba(39,112,84,.18);
   transition:.2s;
+  animation: pulse 3.2s ease-in-out infinite;
 }
 .fab:hover{ transform:translateY(-2px); border-color:var(--accent-28); box-shadow:0 20px 46px rgba(39,112,84,.22) }
 .label{
@@ -333,7 +392,56 @@ footer a:hover{text-decoration:underline}
 .group:hover .label{opacity:1;transform:translateX(0)}
 @media (max-width:520px){ .label{display:none} }
 
+/* ================== KEYFRAMES ================== */
+@keyframes aurora-rotate{
+  0%{ transform: rotate(0deg) }
+  100%{ transform: rotate(360deg) }
+}
+@keyframes aurora-rotate-rev{
+  0%{ transform: rotate(0deg) }
+  100%{ transform: rotate(-360deg) }
+}
+@keyframes aurora-pan{
+  0%,100%{ transform: translate3d(0,0,0) }
+  50%{ transform: translate3d(2%, -1%, 0) }
+}
+@keyframes aurora-pan-rev{
+  0%,100%{ transform: translate3d(0,0,0) }
+  50%{ transform: translate3d(-2%, 1%, 0) }
+}
+@keyframes slow-pan{
+  0%{ background-position: 0 0 }
+  100%{ background-position: 180px 180px }
+}
+@keyframes subtle-glow{
+  0%,100%{ opacity: .95; }
+  50%{ opacity: 1; }
+}
+@keyframes shine{
+  0%{ background-position: 0 0, -180px 0 }
+  100%{ background-position: 0 0, calc(100% + 180px) 0 }
+}
+@keyframes breathe{
+  0%,100%{ transform: translateY(0) scale(1) }
+  50%{ transform: translateY(2px) scale(1.01) }
+}
+@keyframes pulse{
+  0%,100%{ box-shadow:0 16px 40px rgba(39,112,84,.18) }
+  50%{ box-shadow:0 18px 44px rgba(39,112,84,.24) }
+}
+@keyframes orb-float{
+  0%,100%{ transform: translate3d(0,0,0) }
+  50%{ transform: translate3d(2vw,-1.2vw,0) }
+}
+@keyframes orb-float-2{
+  0%,100%{ transform: translate3d(0,0,0) }
+  50%{ transform: translate3d(-1.5vw,1vw,0) }
+}
+
+/* ================== REDUCED MOTION ================== */
 @media (prefers-reduced-motion: reduce){
   .fade{transition:none}
   .bg-canvas, .bg-pattern{display:none}
+  body::before, body::after{display:none}
+  .hero-logo, .fab, .section-title::after{animation:none}
 }
