@@ -5,220 +5,241 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>События — Урицкая средняя школа</title>
 
+  <!-- Внешние стили страницы новостей -->
   <link rel="stylesheet" href="assets/css/news.css">
 
-  <!-- Netlify Identity -->
+  <!-- Netlify Identity (для показа кнопки "Добавить" только авторизованным) -->
   <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
-  <!-- Markdown -->
+  <!-- Markdown парсер -->
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
 <body>
 
-<header class="hero">
-  <div class="inner">
-    <h1 class="title">События</h1>
-    <p class="subtitle">Новости школы</p>
-    <a href="index.html" class="back-btn">← Вернуться на главную</a>
-  </div>
-</header>
-
-<main id="app" class="container">
-  <!-- СПИСОК -->
-  <section id="list-view">
-    <div class="toolbar">
-      <div class="search"><input id="q" type="search" placeholder="Поиск по заголовку/аннотации…"></div>
-      <a class="btn" id="add-news-btn" href="admin/" target="_blank" style="display:none">➕ Добавить (админ)</a>
+  <!-- HERO как на главной -->
+  <header class="hero">
+    <div class="inner">
+      <h1 class="title">События</h1>
+      <p class="subtitle">Новости школы</p>
+      <a href="index.html" class="back-btn">← Вернуться на главную</a>
     </div>
-    <div id="news-grid" class="grid"></div>
-    <p id="list-empty" class="empty" style="display:none">Пока нет новостей.</p>
-    <p id="list-error" class="error" style="display:none">Не удалось загрузить новости.</p>
-  </section>
+  </header>
 
-  <!-- СТАТЬЯ -->
-  <section id="article-view" style="display:none">
-    <a class="btn" href="news.html">← К списку</a>
-    <article class="article" id="article">
+  <main id="app" class="container">
+    <!-- СПИСОК НОВОСТЕЙ -->
+    <section id="list-view">
+      <div class="toolbar">
+        <div class="search">
+          <input id="q" type="search" placeholder="Поиск по заголовку/аннотации…">
+        </div>
+        <a class="btn" id="add-news-btn" href="admin/" target="_blank" style="display:none">➕ Добавить (админ)</a>
+      </div>
+      <div id="news-grid" class="grid"></div>
+      <p id="list-empty" class="empty" style="display:none">Пока нет новостей.</p>
+      <p id="list-error" class="error" style="display:none">Не удалось загрузить новости.</p>
+    </section>
+
+    <!-- СТАТЬЯ -->
+    <section id="article-view" style="display:none">
+      <a class="btn" href="news.html">← К списку</a>
+      <article class="article" id="article">
+        <div class="cover skeleton"></div>
+        <div class="pad">
+          <div class="skeleton line-lg"></div>
+          <div class="skeleton line-md"></div>
+          <div class="skeleton line-sm"></div>
+        </div>
+      </article>
+    </section>
+  </main>
+
+  <!-- ФУТЕР как на главной -->
+  <footer id="contacts">
+    <p class="credit">
+      <a href="https://reklama322228.netlify.app/" target="_blank" rel="noopener">
+        <img src="assets/icons/logo 4.png" alt="ЕТ" width="80" height="80" style="vertical-align:-3px;margin-right:6px;">
+      </a>
+    </p>
+    <p>
+      Адрес: Тенистая ул., 10, агрогородок Урицкое ·
+      Тел.: <a href="tel:+375232985102">+375 23 298-51-02</a>
+    </p>
+  </footer>
+
+  <script>
+  /* ================== НАСТРОЙКИ РЕПОЗИТОРИЯ ================== */
+  const REPO_OWNER = "Lyrielochka";
+  const REPO_NAME  = "school-site";
+  const BRANCH     = "main";
+
+  /* ================== УТИЛИТЫ ================== */
+  const $ = (s) => document.querySelector(s);
+
+  // объявляем ОДИН раз
+  const params = new URLSearchParams(location.search);
+  const slug   = params.get('slug'); // имя .md файла (если открываем конкретную новость)
+
+  function fmtDate(s){
+    try { return new Date(s).toLocaleDateString('ru-RU', { year:'numeric', month:'long', day:'2-digit' }); }
+    catch { return s; }
+  }
+
+  function parseFrontMatter(md){
+    const m = md.match(/^---\s*([\s\S]*?)\s*---\s*([\s\S]*)$/);
+    if(!m) return {meta:{}, body:md};
+    const yaml = m[1], body = m[2]; const meta = {};
+    yaml.split(/\r?\n/).forEach(line=>{
+      const mm = line.match(/^(\w+):\s*(.*)$/);
+      if(mm){
+        const k = mm[1].trim();
+        let v   = mm[2].trim();
+        if(/^".*"$/.test(v) || /^'.*'$/.test(v)) v = v.slice(1,-1);
+        meta[k] = v;
+      }
+    });
+    return {meta, body};
+  }
+
+  /* ================== ИСТОЧНИКИ ДАННЫХ ================== */
+  const API_LIST = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/news?ref=${BRANCH}`;
+  const RAW_FILE = (name) => `https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/${BRANCH}/news/${encodeURIComponent(name)}`;
+
+  /* ================== РЕНДЕР СПИСКА ================== */
+  async function renderList(){
+    $('#article-view').style.display = 'none';
+    $('#list-view').style.display    = '';
+
+    // скелеты
+    $('#news-grid').innerHTML = Array.from({length:6}).map(()=>`
+      <article class="card">
+        <div class="skeleton cover"></div>
+        <div class="body">
+          <div class="skeleton line-lg"></div>
+          <div class="skeleton line-sm mt8"></div>
+          <div class="skeleton line-sm mt14"></div>
+        </div>
+      </article>
+    `).join('');
+    $('#list-empty').style.display = 'none';
+    $('#list-error').style.display = 'none';
+
+    try{
+      const res = await fetch(API_LIST);
+      if(!res.ok) throw res;
+      const files = await res.json();
+      const mdFiles = files.filter(f => /\.md$/i.test(f.name));
+
+      const raws = await Promise.all(mdFiles.map(f =>
+        fetch(RAW_FILE(f.name))
+          .then(r => r.ok ? r.text() : Promise.reject(r))
+          .then(text => ({ name:f.name, text }))
+      ));
+
+      let items = raws.map(({name, text})=>{
+        const {meta, body} = parseFrontMatter(text);
+        const firstLine = (body.split('\n').find(l=>l.trim()) || "").trim();
+        return {
+          file: name,
+          title:  meta.title || name.replace(/\.md$/, ''),
+          date:   meta.date  || "",
+          cover:  meta.cover || "",
+          excerpt: meta.excerpt || (firstLine.length>0 ? (firstLine.length>160 ? firstLine.slice(0,160)+'…' : firstLine) : "")
+        };
+      }).sort((a,b)=> new Date(b.date) - new Date(a.date));
+
+      // фильтр по поиску
+      const q = ($('#q').value || '').trim().toLowerCase();
+      if(q){
+        items = items.filter(it =>
+          (it.title  || '').toLowerCase().includes(q) ||
+          (it.excerpt|| '').toLowerCase().includes(q)
+        );
+      }
+
+      // вывод карточек
+      $('#news-grid').innerHTML = items.map(it => `
+        <article class="card">
+          ${it.cover ? `<img src="${it.cover}" loading="lazy" alt="">` : ``}
+          <div class="body">
+            <h3><a href="news.html?slug=${encodeURIComponent(it.file)}">${it.title}</a></h3>
+            ${it.date ? `<small>${fmtDate(it.date)}</small>` : ``}
+            ${it.excerpt ? `<p>${it.excerpt}</p>` : ``}
+          </div>
+        </article>
+      `).join('');
+
+      $('#list-empty').style.display = items.length ? 'none' : '';
+    }catch(err){
+      console.error('LIST ERR', err);
+      $('#news-grid').innerHTML = '';
+      $('#list-error').style.display = '';
+    }
+  }
+
+  /* ================== РЕНДЕР ОДНОЙ СТАТЬИ ================== */
+  async function renderArticle(file){
+    $('#list-view').style.display    = 'none';
+    $('#article-view').style.display = '';
+
+    const box = $('#article');
+    box.innerHTML = `
       <div class="cover skeleton"></div>
       <div class="pad">
         <div class="skeleton line-lg"></div>
         <div class="skeleton line-md"></div>
         <div class="skeleton line-sm"></div>
       </div>
-    </article>
-  </section>
-</main>
-
-<!-- ФУТЕР как на главной -->
-<footer id="contacts">
-  <p class="credit">
-    <a href="https://reklama322228.netlify.app/" target="_blank" rel="noopener">
-      <img src="assets/icons/logo 4.png" alt="ЕТ" width="80" height="80" style="vertical-align:-3px;margin-right:6px;">
-    </a>
-  </p>
-  <p>
-    Адрес: Тенистая ул., 10, агрогородок Урицкое ·
-    Тел.: <a href="tel:+375232985102">+375 23 298-51-02</a>
-  </p>
-</footer>
-
-<script>
-/* ====== РЕПО ====== */
-const REPO_OWNER = "Lyrielochka";
-const REPO_NAME  = "school-site";
-const BRANCH     = "main";
-
-/* ====== УТИЛИТЫ ====== */
-const $ = s => document.querySelector(s);
-const params = new URLSearchParams(location.search);
-const slug = params.get('slug');
-
-function fmtDate(s){
-  try{ return new Date(s).toLocaleDateString('ru-RU',{year:'numeric',month:'long',day:'2-digit'}); }
-  catch{ return s; }
-}
-function parseFrontMatter(md){
-  const m = md.match(/^---\s*([\s\S]*?)\s*---\s*([\s\S]*)$/);
-  if(!m) return {meta:{}, body:md};
-  const yaml = m[1], body = m[2]; const meta = {};
-  yaml.split(/\r?\n/).forEach(line=>{
-    const mm = line.match(/^(\w+):\s*(.*)$/);
-    if(mm){
-      const k=mm[1].trim(); let v=mm[2].trim();
-      if(/^".*"$/.test(v)||/^'.*'$/.test(v)) v=v.slice(1,-1);
-      meta[k]=v;
-    }
-  });
-  return {meta, body};
-}
-
-/* ====== ДАННЫЕ ====== */
-const API_LIST = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/news?ref=${BRANCH}`;
-const RAW_FILE = name => `https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/${BRANCH}/news/${encodeURIComponent(name)}`;
-
-/* ====== СПИСОК ====== */
-async function renderList(){
-  $('#article-view').style.display='none';
-  $('#list-view').style.display='';
-
-  $('#news-grid').innerHTML = Array.from({length:6}).map(()=>`
-    <article class="card">
-      <div class="skeleton cover ph"></div>
-      <div class="body">
-        <div class="skeleton line-lg"></div>
-        <div class="skeleton line-sm mt8"></div>
-        <div class="skeleton line-sm mt14"></div>
-      </div>
-    </article>
-  `).join('');
-  $('#list-empty').style.display='none';
-  $('#list-error').style.display='none';
-
-  try{
-    const res = await fetch(API_LIST);
-    if(!res.ok) throw res;
-    const files = await res.json();
-    const mdFiles = files.filter(f=>/\.md$/i.test(f.name));
-
-    const raws = await Promise.all(mdFiles.map(f=>
-      fetch(RAW_FILE(f.name)).then(r=>r.ok?r.text():Promise.reject(r)).then(text=>({name:f.name, text}))
-    ));
-
-    let items = raws.map(({name,text})=>{
-      const {meta, body} = parseFrontMatter(text);
-      const firstLine = (body.split('\n').find(l=>l.trim())||"").trim();
-      return {
-        file: name,
-        title: meta.title || name.replace(/\.md$/,''),
-        date:  meta.date || "",
-        cover: meta.cover || "",
-        excerpt: meta.excerpt || (firstLine.length>0 ? (firstLine.length>160?firstLine.slice(0,160)+'…':firstLine) : "")
-      };
-    }).sort((a,b)=> new Date(b.date) - new Date(a.date));
-
-    const q = ($('#q').value||'').trim().toLowerCase();
-    if(q){
-      items = items.filter(it =>
-        (it.title||'').toLowerCase().includes(q) ||
-        (it.excerpt||'').toLowerCase().includes(q)
-      );
-    }
-
-    $('#news-grid').innerHTML = items.map(it=> `
-      <article class="card">
-        ${it.cover ? `<img src="${it.cover}" loading="lazy" alt="">` : ``}
-        <div class="body">
-          <h3><a href="news.html?slug=${encodeURIComponent(it.file)}">${it.title}</a></h3>
-          ${it.date ? `<small>${fmtDate(it.date)}</small>` : ``}
-          ${it.excerpt ? `<p>${it.excerpt}</p>` : ``}
-        </div>
-      </article>
-    `).join('');
-
-    $('#list-empty').style.display = items.length ? 'none' : '';
-  }catch(err){
-    console.error('LIST ERR', err);
-    $('#news-grid').innerHTML = '';
-    $('#list-error').style.display = '';
-  }
-}
-
-/* ====== СТАТЬЯ ====== */
-async function renderArticle(file){
-  $('#list-view').style.display='none';
-  $('#article-view').style.display='';
-
-  const box = $('#article');
-  box.innerHTML = `
-    <div class="cover skeleton"></div>
-    <div class="pad">
-      <div class="skeleton line-lg"></div>
-      <div class="skeleton line-md"></div>
-      <div class="skeleton line-sm"></div>
-    </div>
-  `;
-
-  try{
-    const md = await fetch(RAW_FILE(file)).then(r=>r.ok?r.text():Promise.reject(r));
-    const {meta, body} = parseFrontMatter(md);
-    const html = marked.parse(body);
-    box.innerHTML = `
-      ${meta.cover ? `<img class="cover" src="${meta.cover}" alt="">` : ``}
-      <div class="pad">
-        <h1>${meta.title || file.replace(/\.md$/,'')}</h1>
-        ${meta.date ? `<time>${fmtDate(meta.date)}</time>`:''}
-        <div class="content">${html}</div>
-      </div>
     `;
-  }catch(err){
-    console.error('FILE ERR', err);
-    box.innerHTML = `<div class="pad">Не удалось загрузить новость.</div>`;
-  }
-}
 
-/* ====== ПОИСК ====== */
-$('#q').addEventListener('input', ()=>renderList());
-
-/* ====== АДМИН-КНОПКА ====== */
-(function(){
-  const btn = document.getElementById('add-news-btn');
-  function update(){
-    if(!btn) return;
-    const id = window.netlifyIdentity;
-    const user = id && id.currentUser ? id.currentUser() : null;
-    btn.style.display = user ? 'inline-block' : 'none';
+    try{
+      const md = await fetch(RAW_FILE(file)).then(r => r.ok ? r.text() : Promise.reject(r));
+      const {meta, body} = parseFrontMatter(md);
+      const html = marked.parse(body);
+      box.innerHTML = `
+        ${meta.cover ? `<img class="cover" src="${meta.cover}" alt="">` : ``}
+        <div class="pad">
+          <h1>${meta.title || file.replace(/\.md$/,'')}</h1>
+          ${meta.date ? `<time>${fmtDate(meta.date)}</time>` : ''}
+          <div class="content">${html}</div>
+        </div>
+      `;
+    }catch(err){
+      console.error('FILE ERR', err);
+      box.innerHTML = `<div class="pad">Не удалось загрузить новость.</div>`;
+    }
   }
-  if(window.netlifyIdentity){
-    window.netlifyIdentity.on('init', update);
-    window.netlifyIdentity.on('login', update);
-    window.netlifyIdentity.on('logout', update);
-    window.netlifyIdentity.init();
-  }
-})();
 
-/* ====== СТАРТ ====== */
-const params = new URLSearchParams(location.search);
-const slug = params.get('slug');
-if(slug){ renderArticle(slug); } else { renderList(); }
-</script>
+  /* ================== ПОИСК ================== */
+  const searchInput = document.getElementById('q');
+  if (searchInput) {
+    searchInput.addEventListener('input', () => renderList());
+  }
+
+  /* ================== ПОКАЗ КНОПКИ "ДОБАВИТЬ (АДМИН)" ================== */
+  (function(){
+    const btn = document.getElementById('add-news-btn');
+    function update(){
+      if(!btn) return;
+      const id = window.netlifyIdentity;
+      const user = id && id.currentUser ? id.currentUser() : null;
+      btn.style.display = user ? 'inline-block' : 'none';
+      // если нужно только для роли admin:
+      // const roles = (user && user.app_metadata && user.app_metadata.roles) || [];
+      // btn.style.display = roles.includes('admin') ? 'inline-block' : 'none';
+    }
+    if(window.netlifyIdentity){
+      window.netlifyIdentity.on('init',  update);
+      window.netlifyIdentity.on('login', update);
+      window.netlifyIdentity.on('logout',update);
+      window.netlifyIdentity.init();
+    }
+  })();
+
+  /* ================== СТАРТ ================== */
+  if (slug) {
+    renderArticle(slug);
+  } else {
+    renderList();
+  }
+  </script>
 </body>
 </html>
